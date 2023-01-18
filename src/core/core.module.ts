@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ExternalServiceRegisterService } from './service/external-service-register.service';
-import { ExternalServiceService } from './service/external-service.servic';
+import { ExternalServiceService } from './service/external-service.service';
 
 @Module({
   imports: [],

@@ -1,7 +1,7 @@
-import { ActionParameterDefinition } from './action-parameter-definition';
+import { ValueType } from '../value-types';
 
 export class ActionDefinition {
   name: string;
   description: string;
-  parameters: ActionParameterDefinition[];
+  parameters: ValueType;
 }

@@ -1,4 +1,4 @@
-import { Device } from 'src/domain/devices/device';
+import { Device } from '../../../domain/devices/device';
 
 export interface DeviceProvider {
   getAvailableDevices(): Device[];

@@ -1,15 +1,11 @@
 import { Module } from '@nestjs/common';
 import { CoreModule } from './core/core.module';
-import { ExternalServiceRegisterService } from './core/service/external-service-register.service';
-import { testModuleDefinition } from './test/test.definition';
+import { PersistenceModule } from './persistance/persistence.module';
 
 @Module({
-  imports: [CoreModule],
+  imports: [CoreModule, PersistenceModule],
   controllers: [],
   providers: [],
 })
 export class AppModule {
-  constructor(registerService: ExternalServiceRegisterService) {
-    registerService.register(testModuleDefinition);
-  }
 }

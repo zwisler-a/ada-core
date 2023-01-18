@@ -1,8 +1,11 @@
 import { Device } from 'src/domain/devices/device';
-import { DeviceProvider } from 'src/domain/provider/device-provider.interface';
+import { DeviceProvider } from 'src/core/service/provider/device-provider.interface';
+import { TestThermostat } from './test.thermostat.device';
 
-export class TestDevices implements DeviceProvider {
+export class TestDevicesProvider implements DeviceProvider {
   getAvailableDevices(): Device[] {
-    return [];
+    return [
+      new TestThermostat(1, 'Zimmer 1', 'Description')
+    ];
   }
 }
