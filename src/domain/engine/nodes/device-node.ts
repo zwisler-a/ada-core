@@ -15,6 +15,9 @@ export class DeviceNode extends LazyNode {
     }
 
     initalizeWith(device: Device) {
+        this.identifier = device.identifier;
+        this.description = device.description;
+        this.name = device.name;
         this.outputs = this.generateOutputs(device);
         this.inputs = this.generateInputs(device);
         this.initialized();

@@ -3,10 +3,11 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoreModule } from 'src/core/core.module';
-import { ExternalServiceRegisterService } from 'src/core/service/external-service-register.service';
-import { HomeAssistantDeviceController } from './controllers/device.controller';
-import { HomeAssistantFulfillmentController } from './controllers/home-assistant.controller';
-import { HomeAssistantService } from './home-assistant.service';
+import { ConnectorService } from 'src/core/service/connector.service';
+import { GoogleHomeDeviceController } from './controllers/device.controller';
+import { GoogleHomeFulfillmentController } from './controllers/fulfillment.controller';
+import { GoogleHomeDeviceService } from './device.service';
+import { GoogleHomeFulfillmentService } from './fulfillment.service';
 import { GoogleDeviceEntity } from './persistance/device.entitiy';
 
 
@@ -17,13 +18,14 @@ import { GoogleDeviceEntity } from './persistance/device.entitiy';
         JwtModule.register({ secret: process.env.JWT_SECRET }),
         TypeOrmModule.forFeature([GoogleDeviceEntity])
     ],
-    controllers: [HomeAssistantFulfillmentController, HomeAssistantDeviceController],
-    providers: [HomeAssistantService,],
+    controllers: [GoogleHomeFulfillmentController, GoogleHomeDeviceController],
+    providers: [GoogleHomeFulfillmentService, GoogleHomeDeviceService],
 })
 export class HomeAssistentModule {
     constructor(
-        private homeAssistantService: HomeAssistantService,
-        private registerService: ExternalServiceRegisterService
+        private homeAssistantService: GoogleHomeFulfillmentService,
+        private registerService: ConnectorService,
+        private deviceService: GoogleHomeDeviceService
     ) {
         this.initalize();
     }
@@ -33,7 +35,7 @@ export class HomeAssistentModule {
         this.registerService.register({
             name: 'Google Home',
             description: 'Google Smart Home Connector',
-            deviceProvider: { getAvailableDevices: () => this.homeAssistantService.getDevices() }
+            deviceProvider: this.deviceService
         })
     }
 

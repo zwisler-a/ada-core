@@ -1,40 +1,31 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { InjectRepository } from "@nestjs/typeorm";
 import {
     Headers, smarthome,
     SmartHomeV1ExecuteRequest, SmartHomeV1ExecuteResponseCommands,
     SmartHomeV1SyncDevices, SmartHomeV1SyncResponse
 } from 'actions-on-google';
 import { AccessTokenPayload } from "src/auth/data-types/access-token";
-import { Repository } from "typeorm";
 import { GoogleHomeDevice } from "./data-types/google-home.device";
-import { mapDeviceForGoogleSync } from "./mapper/device-to-google.mapper";
-import { GoogleDeviceEntity } from "./persistance/device.entitiy";
+import { GoogleHomeDeviceService } from "./device.service";
+import { mapEntityToGoogleDevice } from "./mapper/device-to-google.mapper";
 
 @Injectable()
-export class HomeAssistantService {
+export class GoogleHomeFulfillmentService {
     app: any;
     private devices: GoogleHomeDevice[]
     constructor(
         private jwtService: JwtService,
-        @InjectRepository(GoogleDeviceEntity) private deviceRepo: Repository<GoogleDeviceEntity>
+        private deviceService: GoogleHomeDeviceService
     ) { }
 
     public async init() {
-        Logger.debug('Init home assistant', HomeAssistantService.name);
+        Logger.debug('Init home assistant', GoogleHomeFulfillmentService.name);
         this.app = smarthome();
         this.app.onSync(this.onSync.bind(this));
         this.app.onQuery(this.onQuery.bind(this));
         this.app.onExecute(this.onExecute.bind(this));
         this.app.onDisconnect(this.onDisconnect.bind(this));
-
-        this.devices = (await this.deviceRepo.find()).map(device => new GoogleHomeDevice(device));
-
-    }
-
-    getDevices() {
-        return this.devices;
     }
 
     private async getUserIdOrThrow(headers: Headers): Promise<string> {
@@ -46,8 +37,7 @@ export class HomeAssistantService {
 
     private async onSync(body, headers) {
         const userId = await this.getUserIdOrThrow(headers);
-
-        const devices: SmartHomeV1SyncDevices[] = (await this.deviceRepo.find()).map(mapDeviceForGoogleSync)
+        const devices: SmartHomeV1SyncDevices[] = await this.deviceService.getDevices();
         const syncResponse: SmartHomeV1SyncResponse = {
             requestId: body.requestId,
             payload: {

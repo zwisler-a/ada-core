@@ -1,28 +1,42 @@
+import { ActionDefinition } from "src/domain/devices/action-definition";
 import { SensorDataDefinition } from "src/domain/devices/sensor-data-definition";
 import { PrimitiveValueType } from "src/domain/value-types";
-import { GoogleDeviceTrait } from "../data-types/device";
+import { GoogleDeviceTrait } from "../data-types/google-device.enums";
 
 export function mapTraitToSensorData(traits: GoogleDeviceTrait[] | string[]): { [command: string]: SensorDataDefinition } {
     const sensors: { [command: string]: SensorDataDefinition } = {}
 
     traits.forEach(trait => {
 
+     
+
+    })
+
+    return sensors;
+}
+
+
+export function mapTraitToActorData(traits: GoogleDeviceTrait[] | string[]): { [command: string]: ActionDefinition } {
+    const action: { [command: string]: ActionDefinition } = {}
+
+    traits.forEach(trait => {
+
         if (trait === GoogleDeviceTrait.OnOff) {
-            sensors['action.devices.commands.OnOff'] = {
+            action['action.devices.commands.OnOff'] = {
                 name: 'On/Off',
                 description: 'Turn device on or off',
-                type: { on: PrimitiveValueType.BOOLEAN }
+                parameters: { on: PrimitiveValueType.BOOLEAN }
             }
         }
         if (trait === GoogleDeviceTrait.TemperatureSetting) {
-            sensors['action.devices.commands.ThermostatTemperatureSetpoint'] = {
+            action['action.devices.commands.ThermostatTemperatureSetpoint'] = {
                 name: 'Set Temperature',
                 description: 'Sets the target temperature of the device',
-                type: { thermostatTemperatureSetpoint: PrimitiveValueType.NUMBER }
+                parameters: { thermostatTemperatureSetpoint: PrimitiveValueType.NUMBER }
             }
         }
 
     })
 
-    return sensors;
+    return action;
 }

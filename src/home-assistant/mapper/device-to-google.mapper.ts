@@ -1,8 +1,7 @@
-import { SmartHomeV1SyncDevices } from "actions-on-google";
-import { DeviceDto } from "../data-types/device.dto";
+import { GoogleDeviceDto } from "../data-types/google-device.dto";
 import { GoogleDeviceEntity } from "../persistance/device.entitiy";
 
-export function mapDeviceForGoogleSync(device: GoogleDeviceEntity): SmartHomeV1SyncDevices {
+export function mapEntityToGoogleDevice(device: GoogleDeviceEntity): GoogleDeviceDto {
     return {
         id: device.id,
         name: {
@@ -21,7 +20,7 @@ export function mapDeviceForGoogleSync(device: GoogleDeviceEntity): SmartHomeV1S
     }
 }
 
-export function mapGoogleDeviceToEntity(device: DeviceDto): GoogleDeviceEntity {
+export function mapGoogleDeviceToEntity(device: GoogleDeviceDto): GoogleDeviceEntity {
     return {
         attributes: JSON.stringify(device.attributes || {}),
         customData: JSON.stringify(device.customData || {}),

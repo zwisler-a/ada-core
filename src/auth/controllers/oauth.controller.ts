@@ -1,5 +1,6 @@
 import { BadRequestException, Body, Controller, Get, Post, Query, Res, UnauthorizedException, UseFilters, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ApiTags } from '@nestjs/swagger';
 import express from "express";
 import { AccessTokenPayload } from '../data-types/access-token';
 import { AuthorizationCodePayload } from '../data-types/authorization-code';
@@ -7,6 +8,8 @@ import { RefreshTokenPayload } from '../data-types/refresh-token';
 import { JwtAuthGuard } from '../strategies/jwt.strategy';
 import { UnauthorizedFilter } from '../unauthorized.filter';
 
+
+@ApiTags('Authentication')
 @Controller("/oauth")
 export class OAuth2Controller {
     constructor(private jwt: JwtService) { }

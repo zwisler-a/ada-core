@@ -1,9 +1,10 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../auth.service';
 import { GoogleService } from '../services/google.service';
 
+@ApiTags('Authentication')
 @Controller("/auth/google")
 export class GoogleController {
     constructor(private googleService: GoogleService, private authService: AuthService) { }

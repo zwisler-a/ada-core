@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { Connection } from "../../domain/engine/connection";
-import { AvailableDeviceService } from "../../core/service/available-device.service";
+import { AvailableNodeService } from "../../core/service/available-device.service";
 import { ActionDefinition } from "../../domain/devices/action-definition";
 import { Device } from "../../domain/devices/device";
 import { Network } from "../../domain/engine/network";
@@ -78,7 +78,7 @@ describe("Persistence Network Mapper", () => {
                 ConnectionMapper,
                 NetworkMapper,
                 {
-                    provide: AvailableDeviceService,
+                    provide: AvailableNodeService,
                     useValue: mockedAvailableDevices,
                 }
             ],

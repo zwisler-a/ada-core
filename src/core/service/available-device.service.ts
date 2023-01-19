@@ -1,21 +1,24 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Device } from '../../domain/devices/device';
-import { ExternalServiceService } from '../service/external-service.service';
+import { ConnectorService } from './connector.service';
 
 @Injectable()
 export class AvailableDeviceService {
 
   private readonly logger = new Logger(AvailableDeviceService.name);
 
-  constructor(private externalServiceService: ExternalServiceService) { }
+  constructor(private externalServiceService: ConnectorService) { }
 
-  getAvailableDevices(): Device[] {
-    return this.externalServiceService
-      .getAll()
-      .flatMap((service) => service.deviceProvider.getAvailableDevices());
+  getAvailableDevices(): Promise<Device[]> {
+    return Promise.all(
+      this.externalServiceService
+        .getAll()
+        .filter(service => !!service.deviceProvider)
+        .map((service) => service.deviceProvider.getAvailableDevices())
+    ).then(arr => arr.flatMap(device => device));
   }
 
-  findByIdentifier(deviceIdentifier: string) {
-    return this.getAvailableDevices().find(device => device.identifier === deviceIdentifier);
+  async findByIdentifier(deviceIdentifier: string) {
+    return (await this.getAvailableDevices()).find(device => device.identifier === deviceIdentifier);
   }
 }

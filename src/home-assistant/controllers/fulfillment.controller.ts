@@ -1,10 +1,12 @@
 import { Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/strategies/jwt.strategy';
-import { HomeAssistantService } from '../home-assistant.service';
+import { GoogleHomeFulfillmentService } from '../fulfillment.service';
 
+@ApiTags('Google Home')
 @Controller("/assistant")
-export class HomeAssistantFulfillmentController {
-    constructor(private homeAssistantService: HomeAssistantService) { }
+export class GoogleHomeFulfillmentController {
+    constructor(private homeAssistantService: GoogleHomeFulfillmentService) { }
 
     @UseGuards(JwtAuthGuard)
     @Post("fulfillment")

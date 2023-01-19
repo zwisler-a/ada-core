@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
+import { AvailableDeviceService } from "src/core/service/available-device.service";
 import { MapperNode } from "../../core/core-nodes/mapper-node";
-import { AvailableDeviceService } from "../../core/service/available-device.service";
 import { Device } from "../../domain/devices/device";
 import { Node } from "../../domain/engine/node";
 import { DeviceNode } from "../../domain/engine/nodes/device-node";
@@ -9,9 +9,9 @@ import { DeviceNodeEntity, MapperNodeEntity, NodeEntity } from "../entities/node
 @Injectable()
 export class NodeMapper {
 
-    constructor(private availableDeviceService: AvailableDeviceService) { }
+    constructor(private availableNodeService: AvailableDeviceService) { }
 
-    mapNodeEntityToNode(entity: NodeEntity): Node {
+    async mapNodeEntityToNode(entity: NodeEntity): Promise<Node> {
 
         if (entity instanceof MapperNodeEntity) {
             const node = new MapperNode<any, any>(new Function('object', 'return (' + entity.mapperFunc + ')(object)') as any); // TODO
@@ -20,7 +20,7 @@ export class NodeMapper {
         }
 
         if (entity instanceof DeviceNodeEntity) {
-            const device = this.availableDeviceService.findByIdentifier(entity.deviceIdentifier);
+            const device = await this.availableNodeService.findByIdentifier(entity.deviceIdentifier);
             let node: DeviceNode;
             if (device) {
                 node = new DeviceNode(device);

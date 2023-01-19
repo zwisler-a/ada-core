@@ -29,7 +29,7 @@ export class OtherDeviceIdsDto {
     deviceId: string;
 }
 
-export class DeviceDto {
+export class GoogleDeviceDto {
     @ApiProperty()
     id: string;
     @ApiProperty()

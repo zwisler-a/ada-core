@@ -13,8 +13,8 @@ export class NetworkMapper {
         private connectionMapper: ConnectionMapper
     ) { }
 
-    mapNetworkEntityToNetwork(networkEntity: NetworkEntity): Network {
-        const nodes = networkEntity.nodes.map(n => this.nodeMapper.mapNodeEntityToNode(n));
+    async mapNetworkEntityToNetwork(networkEntity: NetworkEntity): Promise<Network> {
+        const nodes = await Promise.all(networkEntity.nodes.map(n => this.nodeMapper.mapNodeEntityToNode(n)));
         return new Network(
             networkEntity.id,
             networkEntity.name,

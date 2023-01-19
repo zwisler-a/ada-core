@@ -4,7 +4,7 @@ import { Connection } from "../../domain/engine/connection";
 import { Node } from "../../domain/engine/node";
 import { DeviceNode } from "../../domain/engine/nodes/device-node";
 import { PrimitiveValueType } from "../../domain/value-types";
-import { MapperNode } from "./mapper-node";
+import { MapperNode } from "../core-nodes/mapper-node";
 
 
 class TestThermostat extends Device {

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { MapperNode } from '../core/core-nodes/mapper-node';
-import { AvailableDeviceService } from '../core/service/available-device.service';
+import { AvailableNodeService } from '../core/service/available-device.service';
 import { Connection } from '../domain/engine/connection';
 import { Network } from '../domain/engine/network';
 import { NetworkEntity } from './entities/network.entity';
@@ -29,7 +29,7 @@ describe('Persistence NetworkService', () => {
           useValue: mockedRepo,
         },
         {
-          provide: AvailableDeviceService,
+          provide: AvailableNodeService,
           useValue: jest.fn(),
         },
       ],
