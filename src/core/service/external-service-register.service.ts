@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Connector } from 'src/domain/connector.interface';
+import { Connector } from './connector.interface';
 
 @Injectable()
 export class ExternalServiceRegisterService {

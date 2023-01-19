@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CoreModule } from 'src/core/core.module';
 import { ConnectionEntity } from './entities/connection.entity';
 import { NetworkEntity } from './entities/network.entity';
 import { NodeEntity } from './entities/node.entity';
@@ -10,17 +11,7 @@ import { NetworkService } from './service/network.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      // TODO Env
-      type: 'mysql',
-      host: 'localhost',
-      port: 3307,
-      username: 'root',
-      password: 'password',
-      database: 'db',
-      entities: [NetworkEntity, NodeEntity, ConnectionEntity],
-      synchronize: true,
-    }),
+    CoreModule,
     TypeOrmModule.forFeature([NetworkEntity, NodeEntity, ConnectionEntity]),
   ],
   controllers: [],
