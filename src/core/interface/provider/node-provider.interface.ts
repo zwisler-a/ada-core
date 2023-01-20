@@ -1,5 +1,5 @@
-import { Node } from "src/domain/engine/node";
+import { NodeDefinition } from '../../../domain/node/definition/node-definition';
 
 export interface NodeProvider {
-  getAvailableNodes(): Promise<Node[]>;
+  getAvailableNodes(): Promise<NodeDefinition[]>;
 }

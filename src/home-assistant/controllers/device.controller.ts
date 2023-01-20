@@ -5,24 +5,26 @@ import { JwtAuthGuard } from 'src/auth/strategies/jwt.strategy';
 import { Repository } from 'typeorm';
 import { GoogleDeviceDto } from '../data-types/google-device.dto';
 import { GoogleHomeDeviceService } from '../device.service';
-import { mapEntityToGoogleDevice, mapGoogleDeviceToEntity } from '../mapper/device-to-google.mapper';
+import {
+  mapEntityToGoogleDevice,
+  mapGoogleDeviceToEntity,
+} from '../mapper/device-to-google.mapper';
 import { GoogleDeviceEntity } from '../persistance/device.entitiy';
 
 @ApiTags('Google Home')
-@Controller("/assistant/device")
+@Controller('/assistant/device')
 export class GoogleHomeDeviceController {
-    constructor(private deviceService: GoogleHomeDeviceService) { }
+  constructor(private deviceService: GoogleHomeDeviceService) {}
 
-    @Post()
-    @UseGuards(JwtAuthGuard)
-    createGoogleDevice(@Body() device: GoogleDeviceDto) {
-        this.deviceService.createDevice(device);
-    }
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  createGoogleDevice(@Body() device: GoogleDeviceDto) {
+    this.deviceService.createDevice(device);
+  }
 
-
-    @Get()
-    @UseGuards(JwtAuthGuard)
-    async getGoogleDevices(): Promise<GoogleDeviceDto[]> {
-        return this.deviceService.getDevices();
-    }
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async getGoogleDevices(): Promise<GoogleDeviceDto[]> {
+    return this.deviceService.getDevices();
+  }
 }

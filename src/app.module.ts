@@ -6,7 +6,6 @@ import { ApiModule } from './api/api.module';
 import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core/core.module';
 import { HomeAssistentModule } from './home-assistant/home-assistant.module';
-import { PersistenceModule } from './persistance/persistence.module';
 
 @Module({
   imports: [
@@ -19,7 +18,7 @@ import { PersistenceModule } from './persistance/persistence.module';
       password: 'password',
       database: 'db',
       synchronize: true,
-      autoLoadEntities: true
+      autoLoadEntities: true,
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
@@ -27,10 +26,10 @@ import { PersistenceModule } from './persistance/persistence.module';
     ApiModule,
     CoreModule,
     AuthModule,
-    PersistenceModule,
-    HomeAssistentModule
+
+    HomeAssistentModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

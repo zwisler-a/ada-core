@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
-dotenv.config()
+
+dotenv.config();
 
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
@@ -16,14 +17,13 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
-  app.use(cookieParser())
+  app.use(cookieParser());
 
-  const config = new DocumentBuilder()
-    .setTitle('Smartstuff')
-    .build();
+  const config = new DocumentBuilder().setTitle('Smartstuff').build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 
   await app.listen(3000);
 }
+
 bootstrap();

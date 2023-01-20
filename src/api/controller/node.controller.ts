@@ -1,16 +1,20 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AvailableNodeService } from 'src/core/service/available-node.service';
-import { nodeToDto } from '../mapper/node.mapper';
+import { NodeDtoMapper } from '../mapper/node.mapper';
+import { NodeDefinitionDto } from '../dto/node-definition.dto';
 
 @ApiTags('Core')
-@Controller("/core/node")
+@Controller('/core/node')
 export class NodeController {
-    constructor(private availableNodesService: AvailableNodeService) { }
+  constructor(
+    private availableNodesService: AvailableNodeService,
+    private nodeMapper: NodeDtoMapper,
+  ) {}
 
-    @Get()
-    async getAvailableNodes() {
-        const nodes = await this.availableNodesService.getAvailableNodes();
-        return nodes.map(nodeToDto)
-    }
+  @Get('available')
+  async getAvailableNodes(): Promise<NodeDefinitionDto[]> {
+    const nodes = await this.availableNodesService.getAvailableNodes();
+    return nodes.map((n) => this.nodeMapper.nodeDefinitionToDto(n));
+  }
 }

@@ -1,39 +1,42 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { DeviceProvider } from "src/core/interface/provider/device-provider.interface";
-import { Device } from "src/domain/devices/device";
-import { Repository } from "typeorm";
-import { GoogleDeviceDto } from "./data-types/google-device.dto";
-import { GoogleHomeDevice } from "./data-types/google-home.device";
-import { mapEntityToGoogleDevice, mapGoogleDeviceToEntity } from "./mapper/device-to-google.mapper";
-import { GoogleDeviceEntity } from "./persistance/device.entitiy";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { GoogleDeviceDto } from './data-types/google-device.dto';
+import { GoogleHomeDevice } from './data-types/google-home.device';
+import {
+  mapEntityToGoogleDevice,
+  mapGoogleDeviceToEntity,
+} from './mapper/device-to-google.mapper';
+import { GoogleDeviceEntity } from './persistance/device.entitiy';
+import { NodeProvider } from '../core/interface/provider/node-provider.interface';
+import { NodeDefinition } from '../domain/node/definition/node-definition';
 
 @Injectable()
-export class GoogleHomeDeviceService implements DeviceProvider {
+export class GoogleHomeDeviceService implements NodeProvider {
+  constructor(
+    @InjectRepository(GoogleDeviceEntity)
+    private deviceRepo: Repository<GoogleDeviceEntity>,
+  ) {}
 
-    constructor(
-        @InjectRepository(GoogleDeviceEntity) private deviceRepo: Repository<GoogleDeviceEntity>
-    ) { }
+  async getDevicesForSync(): Promise<GoogleDeviceDto[]> {
+    return this.getDevices();
+  }
 
+  async getDevices(): Promise<GoogleDeviceDto[]> {
+    const entities = await this.deviceRepo.find();
+    return entities.map(mapEntityToGoogleDevice);
+  }
 
+  async createDevice(device: GoogleDeviceDto) {
+    const entity = await this.deviceRepo.save(mapGoogleDeviceToEntity(device));
+    return mapEntityToGoogleDevice(entity);
+  }
 
-    async getDevicesForSync(): Promise<GoogleDeviceDto[]> {
-        return this.getDevices();
-    }
-
-    async getDevices(): Promise<GoogleDeviceDto[]> {
-        const entities = await this.deviceRepo.find();
-        return entities.map(mapEntityToGoogleDevice)
-    }
-
-    async createDevice(device: GoogleDeviceDto) {
-        const entity = await this.deviceRepo.save(mapGoogleDeviceToEntity(device));
-        return mapEntityToGoogleDevice(entity)
-    }
-
-    async getAvailableDevices(): Promise<Device[]> {
-        const savedDevices = await this.getDevices();
-        const googleDevices = savedDevices.map(device => new GoogleHomeDevice(device));
-        return googleDevices;
-    }
+  async getAvailableNodes(): Promise<NodeDefinition[]> {
+    const savedDevices = await this.getDevices();
+    const googleDevices = savedDevices.map(
+      (device) => new GoogleHomeDevice(device),
+    );
+    return googleDevices;
+  }
 }

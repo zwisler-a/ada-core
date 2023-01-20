@@ -1,30 +1,37 @@
-import { ActionDefinition } from "src/domain/devices/action-definition";
-import { SensorDataDefinition } from "src/domain/devices/sensor-data-definition";
-import { Device } from "../../domain/devices/device";
-import { mapTraitToActorData, mapTraitToSensorData } from "../mapper/trait-to-sensor.mapper";
-import { GoogleDeviceDto } from "./google-device.dto";
+import {
+  mapTraitToNodeInputDefinition,
+  mapTraitToNodeOutputDefinition,
+} from '../mapper/trait-to-sensor.mapper';
+import { GoogleDeviceDto } from './google-device.dto';
+import { NodeSingletonDefinition } from '../../domain/node/definition/node-singleton-definition';
+import { NodeAttributeDefinition } from '../../domain/node/definition/node-attribute-definition';
+import { NodeOutputDefinition } from '../../domain/node/definition/node-output-definition';
+import { NodeInputDefinition } from '../../domain/node/definition/node-input-definition';
+import { DataHolder } from '../../domain/node/data-holder';
 
-export class GoogleHomeDevice extends Device {
+export class GoogleHomeDevice extends NodeSingletonDefinition {
+  identifier = this.googleDevice.id;
+  name = this.googleDevice.name.name;
+  description = this.googleDevice.name.name;
 
-    identifier = this.googleDevice.id;
+  attributes: NodeAttributeDefinition[];
+  inputs: NodeInputDefinition[] = mapTraitToNodeInputDefinition(
+    this.googleDevice.traits,
+  );
+  outputs: NodeOutputDefinition[] = mapTraitToNodeOutputDefinition(
+    this.googleDevice.traits,
+  );
 
-    synced = true;
-    name = this.googleDevice.name.name
-    description = this.googleDevice.name.name;
+  constructor(private googleDevice: GoogleDeviceDto) {
+    super();
+  }
 
-    sensorCommandDefinitions = mapTraitToSensorData(this.googleDevice.traits);
-    actorCommandDefinition = mapTraitToActorData(this.googleDevice.traits)
+  executeCommand(command: string, data: any) {
+    const output = this.outputs.find((o) => (o.identifier = command));
+    if (output) this.updateOutput(output, data);
+  }
 
-    sensorDefinition?: SensorDataDefinition[] = Object.values(this.sensorCommandDefinitions);
-    actorDefinition?: ActionDefinition[] = Object.values(this.actorCommandDefinition);
-    
-    constructor(private googleDevice: GoogleDeviceDto) {
-        super();
-    }
-
-    executeCommand(command: string, data: any) {
-        const output = this.sensorCommandDefinitions[command];
-        if (output) this.updateSensor.next({ definition: output, data });
-    }
-
+  handleInput(input: NodeInputDefinition, data: DataHolder) {
+    console.log('data', data);
+  }
 }

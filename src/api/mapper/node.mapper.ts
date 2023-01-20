@@ -1,34 +1,101 @@
-import { Node } from "src/domain/engine/node";
-import { NodeInput } from "src/domain/engine/node-input";
-import { NodeOutput } from "src/domain/engine/node-output";
-import { NodeInputDto } from "../dto/node-input.dto";
-import { NodeOutputDto } from "../dto/node-output.dto";
-import { NodeDto } from "../dto/node.dto";
+import { NodeInputDefinitionDto } from '../dto/node-input-definition.dto';
+import { NodeOutputDefinitionDto } from '../dto/node-output-definition.dto';
+import { NodeDefinitionDto } from '../dto/node-definition.dto';
+import { NodeDefinition } from '../../domain/node/definition/node-definition';
+import { NodeInputDefinition } from '../../domain/node/definition/node-input-definition';
+import { NodeOutputDefinition } from '../../domain/node/definition/node-output-definition';
+import { NodeInputInstance } from '../../domain/node/instance/node-input-instance';
+import { NodeInputInstanceDto } from '../dto/node-input-instance.dto';
+import { NodeOutputInstance } from '../../domain/node/instance/node-output-instance';
+import { NodeOutputInstanceDto } from '../dto/node-output-instance.dto';
+import { NodeInstance } from '../../domain/node/instance/node-instance';
+import { Injectable } from '@nestjs/common';
+import { AvailableNodeService } from '../../core/service/available-node.service';
+import { NodeInstanceDto } from '../dto/node-instance.dto';
+import { AttributeDtoMapper } from './attribute.mapper';
 
-export function nodeToDto(node: Node): NodeDto {
-    const inputs = node.getInputs();
-    const outputs = node.getOutputs();
+@Injectable()
+export class NodeDtoMapper {
+  constructor(
+    private availableNodeService: AvailableNodeService,
+    private attributeMapper: AttributeDtoMapper,
+  ) {}
+
+  async dtoToNode(dto: NodeInstanceDto): Promise<NodeInstance> {
+    const nodeDefinition = await this.availableNodeService.getByIdentifier(
+      dto.definitionId,
+    );
+    if (!nodeDefinition) throw new Error('Node definition is not available!');
+
+    const instance = nodeDefinition.createInstance();
+    instance.identifier = dto.identifier;
+    instance.name = dto.name;
+    instance.description = dto.description;
+    instance.attributes =
+      dto.attributes?.map((dto) =>
+        this.attributeMapper.dtoToAttribute(dto, instance),
+      ) ?? instance.attributes;
+    return instance;
+  }
+
+  nodeInstanceToDto(node: NodeInstance): NodeInstanceDto {
+    return {
+      identifier: node.identifier,
+      name: node.name,
+      description: node.description,
+      definitionId: node.definition.identifier,
+      attributes: node.attributes.map((attribute) =>
+        this.attributeMapper.attributeToDto(attribute),
+      ),
+    };
+  }
+
+  nodeDefinitionToDto(node: NodeDefinition): NodeDefinitionDto {
+    const inputs = node.inputs;
+    const outputs = node.outputs;
 
     return {
-        identifier: node.identifier,
-        name: node.name,
-        description: node.description,
-        inputs: Object.keys(inputs).map(id => nodeInputToDto(id, inputs[id])),
-        outputs: Object.keys(outputs).map(id => nodeOutputToDto(id, outputs[id])),
-    }
-}
+      identifier: node.identifier,
+      name: node.name,
+      description: node.description,
+      inputs: inputs.map(this.nodeInputDefinitionToDto),
+      outputs: outputs.map(this.nodeOutputDefinitionToDto),
+    };
+  }
 
-export function nodeInputToDto(id: string, input: NodeInput): NodeInputDto {
+  nodeInputDefinitionToDto(input: NodeInputDefinition): NodeInputDefinitionDto {
     return {
-        identifier: id,
-        name: input.name,
-        description: input.description
-    }
-}
-export function nodeOutputToDto(id: string, input: NodeOutput): NodeOutputDto {
+      identifier: input.identifier,
+      name: input.name,
+      description: input.description,
+    };
+  }
+
+  nodeOutputDefinitionToDto(
+    input: NodeOutputDefinition,
+  ): NodeOutputDefinitionDto {
     return {
-        identifier: id,
-        name: input.name,
-        description: input.description,
-    }
+      identifier: input.identifier,
+      name: input.name,
+      description: input.description,
+    };
+  }
+
+  nodeInputInstanceToDto(input: NodeInputInstance): NodeInputInstanceDto {
+    return {
+      identifier: input.identifier,
+      name: input.name,
+      description: input.description,
+      definition: this.nodeInputDefinitionToDto(input.definition),
+    };
+  }
+
+  nodeOutputInstanceToDto(output: NodeOutputInstance): NodeOutputInstanceDto {
+    return {
+      identifier: output.identifier,
+      name: output.name,
+      description: output.description,
+      definition: this.nodeOutputDefinitionToDto(output.definition),
+    };
+  }
 }

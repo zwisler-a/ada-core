@@ -10,33 +10,31 @@ import { GoogleHomeDeviceService } from './device.service';
 import { GoogleHomeFulfillmentService } from './fulfillment.service';
 import { GoogleDeviceEntity } from './persistance/device.entitiy';
 
-
 @Module({
-    imports: [
-        CoreModule,
-        HttpModule,
-        JwtModule.register({ secret: process.env.JWT_SECRET }),
-        TypeOrmModule.forFeature([GoogleDeviceEntity])
-    ],
-    controllers: [GoogleHomeFulfillmentController, GoogleHomeDeviceController],
-    providers: [GoogleHomeFulfillmentService, GoogleHomeDeviceService],
+  imports: [
+    CoreModule,
+    HttpModule,
+    JwtModule.register({ secret: process.env.JWT_SECRET }),
+    TypeOrmModule.forFeature([GoogleDeviceEntity]),
+  ],
+  controllers: [GoogleHomeFulfillmentController, GoogleHomeDeviceController],
+  providers: [GoogleHomeFulfillmentService, GoogleHomeDeviceService],
 })
 export class HomeAssistentModule {
-    constructor(
-        private homeAssistantService: GoogleHomeFulfillmentService,
-        private registerService: ConnectorService,
-        private deviceService: GoogleHomeDeviceService
-    ) {
-        this.initalize();
-    }
+  constructor(
+    private homeAssistantService: GoogleHomeFulfillmentService,
+    private registerService: ConnectorService,
+    private deviceService: GoogleHomeDeviceService,
+  ) {
+    this.initalize();
+  }
 
-    private async initalize() {
-        await this.homeAssistantService.init();
-        this.registerService.register({
-            name: 'Google Home',
-            description: 'Google Smart Home Connector',
-            deviceProvider: this.deviceService
-        })
-    }
-
+  private async initalize() {
+    await this.homeAssistantService.init();
+    this.registerService.register({
+      name: 'Google Home',
+      description: 'Google Smart Home Connector',
+      nodeProvider: this.deviceService,
+    });
+  }
 }

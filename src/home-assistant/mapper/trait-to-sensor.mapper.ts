@@ -1,42 +1,41 @@
-import { ActionDefinition } from "src/domain/devices/action-definition";
-import { SensorDataDefinition } from "src/domain/devices/sensor-data-definition";
-import { PrimitiveValueType } from "src/domain/value-types";
-import { GoogleDeviceTrait } from "../data-types/google-device.enums";
+import { GoogleDeviceTrait } from '../data-types/google-device.enums';
+import { NodeOutputDefinition } from '../../domain/node/definition/node-output-definition';
 
-export function mapTraitToSensorData(traits: GoogleDeviceTrait[] | string[]): { [command: string]: SensorDataDefinition } {
-    const sensors: { [command: string]: SensorDataDefinition } = {}
+export function mapTraitToNodeOutputDefinition(
+  traits: GoogleDeviceTrait[] | string[],
+): NodeOutputDefinition[] {
+  const sensors: NodeOutputDefinition[] = [];
 
-    traits.forEach(trait => {
+  // traits.forEach((trait) => {});
 
-     
-
-    })
-
-    return sensors;
+  return sensors;
 }
 
+export function mapTraitToNodeInputDefinition(
+  traits: GoogleDeviceTrait[] | string[],
+): NodeOutputDefinition[] {
+  const nodeOutputDefinitions: NodeOutputDefinition[] = [];
 
-export function mapTraitToActorData(traits: GoogleDeviceTrait[] | string[]): { [command: string]: ActionDefinition } {
-    const action: { [command: string]: ActionDefinition } = {}
+  traits.forEach((trait) => {
+    if (trait === GoogleDeviceTrait.OnOff) {
+      nodeOutputDefinitions.push(
+        NodeOutputDefinition.from(
+          'action.devices.commands.OnOff',
+          'On/Off',
+          'Description',
+        ),
+      );
+    }
+    if (trait === GoogleDeviceTrait.TemperatureSetting) {
+      nodeOutputDefinitions.push(
+        NodeOutputDefinition.from(
+          'action.devices.commands.ThermostatTemperatureSetpoint',
+          'Set Temperature',
+          'Set Temperature',
+        ),
+      );
+    }
+  });
 
-    traits.forEach(trait => {
-
-        if (trait === GoogleDeviceTrait.OnOff) {
-            action['action.devices.commands.OnOff'] = {
-                name: 'On/Off',
-                description: 'Turn device on or off',
-                parameters: { on: PrimitiveValueType.BOOLEAN }
-            }
-        }
-        if (trait === GoogleDeviceTrait.TemperatureSetting) {
-            action['action.devices.commands.ThermostatTemperatureSetpoint'] = {
-                name: 'Set Temperature',
-                description: 'Sets the target temperature of the device',
-                parameters: { thermostatTemperatureSetpoint: PrimitiveValueType.NUMBER }
-            }
-        }
-
-    })
-
-    return action;
+  return nodeOutputDefinitions;
 }
