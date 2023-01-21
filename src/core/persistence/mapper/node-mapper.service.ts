@@ -38,6 +38,10 @@ export class NodeMapperService {
     entity.name = node.name;
     entity.description = node.description;
     entity.definitionId = node.definition.identifier;
+    entity.attributes =
+      node.attributes?.map((attr) =>
+        this.attributeMapper.attributeToEntity(attr),
+      ) ?? [];
     return entity;
   }
 }

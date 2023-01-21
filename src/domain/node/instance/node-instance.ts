@@ -40,7 +40,7 @@ export abstract class NodeInstance extends Identifiable {
 
   getAttribute(identifier: string) {
     const instance = this.attributes.find(
-      (instance) => instance.identifier === identifier,
+      (instance) => instance.definition.identifier === identifier,
     );
     if (instance) return instance.value;
   }

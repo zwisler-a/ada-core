@@ -22,12 +22,18 @@ export class NetworkRepository {
 
   async find() {
     const nodes = await this.networkRepo.find();
-    return Promise.all(nodes.map(this.networkMapper.entityToNetwork));
+    return Promise.all(
+      nodes.map((node) => this.networkMapper.entityToNetwork(node)),
+    );
   }
 
   async findBy(identifier: string) {
     const network = await this.networkRepo.findOneBy({ id: identifier });
     console.log(network.nodes);
     return this.networkMapper.entityToNetwork(network);
+  }
+
+  deleteBy(id: string) {
+    return this.networkRepo.delete({ id });
   }
 }

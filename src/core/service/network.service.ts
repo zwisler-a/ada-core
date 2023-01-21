@@ -33,4 +33,15 @@ export class NetworkService {
     }
     return false;
   }
+
+  delete(id: string) {
+    const network = this.networks.find((network) => network.identifier !== id);
+    this.networks = this.networks.filter(
+      (network) => network.identifier !== id,
+    );
+    if (network) {
+      network.stop();
+    }
+    return this.networkRepo.deleteBy(id);
+  }
 }

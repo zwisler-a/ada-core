@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { NetworkService } from '../../core/service/network.service';
 import { NetworkDtoMapper } from '../mapper/network.mapper';
@@ -15,7 +15,9 @@ export class NetworkController {
   @Get()
   async getAllNetworks() {
     const networks = await this.networkService.getAll();
-    return networks.map(this.networkDtoMapper.networkToDto);
+    return networks.map((network) =>
+      this.networkDtoMapper.networkToDto(network),
+    );
   }
 
   @Post()
@@ -24,8 +26,12 @@ export class NetworkController {
     const saved = this.networkDtoMapper.networkToDto(
       await this.networkService.save(network),
     );
-    console.log(saved);
     return saved;
+  }
+
+  @Delete('/:identifier')
+  async deleteNetwork(@Param('identifier') id: string) {
+    await this.networkService.delete(id);
   }
 
   @Post('start/:networkId')

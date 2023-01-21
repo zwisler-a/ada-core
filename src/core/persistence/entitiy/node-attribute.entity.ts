@@ -1,4 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { NodeEntity } from './node.entitiy';
 
 @Entity()
@@ -10,6 +16,6 @@ export class NodeAttributeEntity {
   @Column()
   value: string;
 
-  @OneToMany((type) => NodeEntity, (object) => object.attributes)
+  @ManyToOne((type) => NodeEntity, (object) => object.attributes)
   node: NodeEntity;
 }

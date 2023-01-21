@@ -8,9 +8,7 @@ import { NodeInstance } from '../../domain/node/instance/node-instance';
 export class NodeMapperInstance extends NodeInstance {
   handleInput(input: NodeInputDefinition, data: DataHolder) {
     const attr = this.getAttribute('MapperFunction');
-    console.log(attr);
-    const functionString = attr.func;
-    const func = new Function('object', `return (${functionString})(object)`);
+    const func = new Function('object', `return (${attr})(object)`);
     this.updateOutput(this.outputs[0].definition, func(data));
   }
 }

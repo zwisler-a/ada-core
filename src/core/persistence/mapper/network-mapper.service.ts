@@ -34,8 +34,8 @@ export class NetworkMapperService {
     entity.id = network.identifier;
     entity.name = network.name;
     entity.description = network.description;
-    entity.nodes = network.nodes.map(this.nodeMapper.nodeToEntity);
-    entity.edges = network.edges.map(this.edgeMapper.edgeToEntity);
+    entity.nodes = network.nodes.map((n) => this.nodeMapper.nodeToEntity(n));
+    entity.edges = network.edges.map((e) => this.edgeMapper.edgeToEntity(e));
     return entity;
   }
 }
