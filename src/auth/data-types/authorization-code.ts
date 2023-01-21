@@ -1,4 +1,4 @@
 export interface AuthorizationCodePayload {
-    userId: string;
-    redirect_uri: string;
+  userId: string;
+  redirect_uri: string;
 }

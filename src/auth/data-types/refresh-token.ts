@@ -1,3 +1,3 @@
 export interface RefreshTokenPayload {
-    userId:string;
+  userId: string;
 }

@@ -13,12 +13,18 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([UserEntity]),
-        JwtModule.register({ secret: process.env.JWT_SECRET }),
-        HttpModule
-    ],
-    controllers: [OAuth2Controller, AuthController, GoogleController],
-    providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy, GoogleService],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity]),
+    JwtModule.register({ secret: process.env.JWT_SECRET }),
+    HttpModule,
+  ],
+  controllers: [OAuth2Controller, AuthController, GoogleController],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    GoogleStrategy,
+    GoogleService,
+  ],
 })
-export class AuthModule { }
+export class AuthModule {}
