@@ -1,1 +1,1 @@
-export type DataHolder = { [key: string]: any };
+export type DataHolder = { [key: string]: any } | string | number | boolean;

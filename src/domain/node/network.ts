@@ -27,13 +27,4 @@ export class Network extends Identifiable {
     this.subscriptions = [];
     this.isActive = false;
   }
-
-  toString() {
-    return `Network {
-      identifier: ${this.identifier},
-      name: ${this.name},
-      description: ${this.description},
-      nodes: ${this.nodes?.map((n) => n.identifier)},
-      edges: ${this.edges?.map((e) => e.identifier)} }`;
-  }
 }

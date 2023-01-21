@@ -6,11 +6,11 @@ import { NodeDefinition } from '../../domain/node/definition/node-definition';
 export class AvailableNodeService {
   private readonly logger = new Logger(AvailableNodeService.name);
 
-  constructor(private externalServiceService: ConnectorService) {}
+  constructor(private connectorService: ConnectorService) {}
 
   getAvailableNodes(): Promise<NodeDefinition[]> {
     return Promise.all(
-      this.externalServiceService
+      this.connectorService
         .getAll()
         .filter((service) => !!service.nodeProvider)
         .map((service) => service.nodeProvider.getAvailableNodes()),

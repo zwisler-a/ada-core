@@ -8,7 +8,7 @@ export class LoggerNode extends NodeSingletonDefinition {
   identifier = 'logger';
   name = 'Logger';
   description = 'Log input into application console';
-  private logger: Logger = new Logger(LoggerNode.name);
+  logger: Logger = new Logger(LoggerNode.name);
   attributes = [];
 
   inputs = [NodeInputDefinition.from('loggerIn', 'in', 'logs input')];

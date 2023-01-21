@@ -4,8 +4,6 @@ import { DataHolder } from '../../domain/node/data-holder';
 import { NodeInstance } from '../../domain/node/instance/node-instance';
 import { NodeDefinition } from '../../domain/node/definition/node-definition';
 import { NodeAttributeDefinition } from '../../domain/node/definition/node-attribute-definition';
-import { interval } from 'rxjs';
-import { DateTime } from 'actions-on-google';
 
 export class IntervalNodeInstance extends NodeInstance {
   private interval: any;

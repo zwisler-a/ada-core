@@ -3,6 +3,7 @@ import { NodeOutputDefinition } from './node-output-definition';
 import { NodeInstance } from '../instance/node-instance';
 import { DataHolder } from '../data-holder';
 import { NodeDefinition } from './node-definition';
+import { NodeAttributeDefinition } from './node-attribute-definition';
 
 class NodeCallbackInstance extends NodeInstance {
   constructor(private singletonDefinition: NodeSingletonDefinition) {
@@ -29,7 +30,9 @@ export abstract class NodeSingletonDefinition extends NodeDefinition {
     this.instances.forEach((instance) => instance.updateOutput(output, data));
   }
 
-  updateAttribute(output: NodeOutputDefinition, data: DataHolder) {
-    this.instances.forEach((instance) => instance.updateOutput(output, data));
+  updateAttribute(identifier: string, data: DataHolder) {
+    this.instances.forEach((instance) =>
+      instance.updateAttribute(identifier, data),
+    );
   }
 }

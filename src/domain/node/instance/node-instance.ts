@@ -28,14 +28,23 @@ export abstract class NodeInstance extends Identifiable {
     const instance = this.outputs.find(
       (instance) => instance.definition.identifier === output.identifier,
     );
-    if (instance) instance.next(data);
+    if (instance) {
+      instance.next(data);
+      return true;
+    }
+    return false;
   }
 
   updateAttribute(identifier: string, data: DataHolder) {
     const instance = this.attributes.find(
-      (instance) => instance.identifier === identifier,
+      (instance) => instance.definition.identifier === identifier,
     );
-    if (instance) instance.value = data;
+    if (instance) {
+      instance.value = data;
+      return true;
+    } else {
+      return false;
+    }
   }
 
   getAttribute(identifier: string) {

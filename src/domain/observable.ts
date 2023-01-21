@@ -14,13 +14,9 @@ export class Subject<T> implements Observable<T> {
       },
     };
   }
-
-  getObserver() {
-    return [...this.observers];
-  }
 }
 
-export interface Observable<T> {
+interface Observable<T> {
   subscribe(observer: Observer<T>): Subscription<T>;
 }
 
