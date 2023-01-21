@@ -6,11 +6,14 @@ import { NodeDtoMapper } from './mapper/node.mapper';
 import { NetworkDtoMapper } from './mapper/network.mapper';
 import { EdgeDtoMapper } from './mapper/edge.mapper';
 import { AttributeDtoMapper } from './mapper/attribute.mapper';
+import { ConnectorDtoMapper } from './mapper/connector.service';
+import { ConnectorController } from './controller/connector.controller';
 
 @Module({
   imports: [CoreModule],
-  controllers: [NodeController, NetworkController],
+  controllers: [NodeController, NetworkController, ConnectorController],
   providers: [
+    ConnectorDtoMapper,
     NodeDtoMapper,
     NetworkDtoMapper,
     EdgeDtoMapper,

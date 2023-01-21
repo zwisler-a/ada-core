@@ -26,6 +26,7 @@ export class NetworkMapperService {
     n.identifier = network.id;
     n.description = network.description;
     n.name = network.name;
+    n.isActive = network.active;
     return n;
   }
 
@@ -36,6 +37,7 @@ export class NetworkMapperService {
     entity.description = network.description;
     entity.nodes = network.nodes.map((n) => this.nodeMapper.nodeToEntity(n));
     entity.edges = network.edges.map((e) => this.edgeMapper.edgeToEntity(e));
+    entity.active = network.isActive;
     return entity;
   }
 }

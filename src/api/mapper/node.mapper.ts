@@ -13,6 +13,8 @@ import { Injectable } from '@nestjs/common';
 import { AvailableNodeService } from '../../core/service/available-node.service';
 import { NodeInstanceDto } from '../dto/node-instance.dto';
 import { AttributeDtoMapper } from './attribute.mapper';
+import { NodeAttributeDefinition } from '../../domain/node/definition/node-attribute-definition';
+import { NodeAttributeDefinitionDto } from '../dto/node-attribute-definition.dto';
 
 @Injectable()
 export class NodeDtoMapper {
@@ -47,6 +49,8 @@ export class NodeDtoMapper {
       attributes: node.attributes.map((attribute) =>
         this.attributeMapper.attributeToDto(attribute),
       ),
+      inputs: node.inputs.map((i) => this.nodeInputInstanceToDto(i)),
+      outputs: node.outputs.map((o) => this.nodeOutputInstanceToDto(o)),
     };
   }
 
@@ -60,6 +64,7 @@ export class NodeDtoMapper {
       description: node.description,
       inputs: inputs.map(this.nodeInputDefinitionToDto),
       outputs: outputs.map(this.nodeOutputDefinitionToDto),
+      attributes: node.attributes?.map(this.nodeAttributeDefinitionToDto),
     };
   }
 
@@ -78,6 +83,16 @@ export class NodeDtoMapper {
       identifier: input.identifier,
       name: input.name,
       description: input.description,
+    };
+  }
+
+  nodeAttributeDefinitionToDto(
+    attribute: NodeAttributeDefinition,
+  ): NodeAttributeDefinitionDto {
+    return {
+      identifier: attribute.identifier,
+      name: attribute.name,
+      description: attribute.description,
     };
   }
 

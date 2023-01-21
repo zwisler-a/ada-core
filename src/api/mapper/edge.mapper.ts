@@ -40,7 +40,6 @@ export class EdgeDtoMapper {
       (inputInstance) => inputInstance.identifier === edgeDto.outputIdentifier,
     );
     if (!input || !output) {
-      console.log(inputNode.inputs, outputNode.outputs);
       throw new Error(
         `Could not find node ${edgeDto.inputNodeIdentifier} input ${edgeDto.inputIdentifier} 
         or node ${edgeDto.outputNodeIdentifier} output ${edgeDto.outputNodeIdentifier}`,

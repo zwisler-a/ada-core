@@ -31,7 +31,5 @@ export class GoogleHomeDevice extends NodeSingletonDefinition {
     if (output) this.updateOutput(output, data);
   }
 
-  handleInput(input: NodeInputDefinition, data: DataHolder) {
-    console.log('data', data);
-  }
+  handleInput(input: NodeInputDefinition, data: DataHolder) {}
 }

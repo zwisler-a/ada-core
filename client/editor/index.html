@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="./editor.css">
+  <title>Network editor</title>
+</head>
+<body>
+<app-network-editor networkId="6457d204-e605-4122-bdf3-8175e567290e"></app-network-editor>
+</body>
+<script>
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  if (urlParams.has("networkId")) {
+    const elements = document.querySelectorAll("[networkId]");
+    elements.forEach(el => el.setAttribute("networkId", urlParams.get("networkId")));
+  }
+</script>
+<script type="module" src="./editor.component.js"></script>
+</html>

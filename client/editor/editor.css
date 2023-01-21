@@ -1,0 +1,37 @@
+
+html, body, .editor {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.node {
+    position: absolute;
+    display: block;
+    margin: 8px;
+    padding: 8px 0px;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    max-width: 300px;
+    width: 100%;
+}
+
+.node .description {
+    padding: 4px 8px 0 8px;
+}
+
+.node h2 {
+    margin: 0;
+}
+
+.node h3 {
+    margin: 0;
+}
+
+.node .outputs, .inputs, .attributes {
+    border-top: solid 1px rgba(0, 0, 0, 0.11);
+    min-height: 10px;
+    padding: 4px 8px;
+}

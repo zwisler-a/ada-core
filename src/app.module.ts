@@ -6,6 +6,7 @@ import { ApiModule } from './api/api.module';
 import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core/core.module';
 import { HomeAssistentModule } from './home-assistant/home-assistant.module';
+import { BaseNodesModule } from './base-nodes/base-nodes.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { HomeAssistentModule } from './home-assistant/home-assistant.module';
     CoreModule,
     AuthModule,
 
+    BaseNodesModule,
     HomeAssistentModule,
   ],
   controllers: [],

@@ -18,6 +18,7 @@ export class NetworkDtoMapper {
       description: network.description,
       edges: network.edges.map((e) => this.edgeMapper.edgeToDto(e)),
       nodes: network.nodes.map((n) => this.nodeMapper.nodeInstanceToDto(n)),
+      active: network.isActive,
     };
   }
 

@@ -8,7 +8,7 @@ import {
   mapGoogleDeviceToEntity,
 } from './mapper/device-to-google.mapper';
 import { GoogleDeviceEntity } from './persistance/device.entitiy';
-import { NodeProvider } from '../core/interface/provider/node-provider.interface';
+import { NodeProvider } from '../core/interface/node-provider.interface';
 import { NodeDefinition } from '../domain/node/definition/node-definition';
 
 @Injectable()

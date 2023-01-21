@@ -15,7 +15,6 @@ export class NetworkRepository {
 
   async save(network: Network) {
     const networkEntity = this.networkMapper.networkToEntity(network);
-    console.log(networkEntity);
     const entity = await this.networkRepo.save(networkEntity);
     return this.networkMapper.entityToNetwork(entity);
   }
@@ -29,7 +28,6 @@ export class NetworkRepository {
 
   async findBy(identifier: string) {
     const network = await this.networkRepo.findOneBy({ id: identifier });
-    console.log(network.nodes);
     return this.networkMapper.entityToNetwork(network);
   }
 

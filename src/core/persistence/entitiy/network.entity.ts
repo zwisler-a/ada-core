@@ -7,6 +7,9 @@ export class NetworkEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ default: false })
+  active: boolean;
+
   @Column({ default: '' })
   name: string;
   @Column({ default: '' })

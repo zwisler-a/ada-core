@@ -1,20 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Network } from '../../domain/node/network';
 import { NetworkRepository } from '../persistence/repository/network-repository.service';
 
 @Injectable()
 export class NetworkService {
+  private logger: Logger = new Logger(NetworkService.name);
   private networks: Network[] = [];
 
   constructor(private networkRepo: NetworkRepository) {}
 
   getAll() {
     return this.networkRepo.find();
-  }
-
-  executeNetwork(network: Network) {
-    this.networks.push(network);
-    network.start();
   }
 
   save(network: Network): Promise<Network> {
@@ -29,8 +25,12 @@ export class NetworkService {
       loadedNetwork = await this.networkRepo.findBy(networkId);
       this.networks.push(loadedNetwork);
     }
-    if (loadedNetwork) {
+    if (loadedNetwork && !loadedNetwork.isActive) {
+      this.logger.debug(
+        `Executing network with id ${loadedNetwork.identifier}!`,
+      );
       loadedNetwork.start();
+      await this.save(loadedNetwork);
       return true;
     }
     return false;
@@ -44,14 +44,19 @@ export class NetworkService {
     if (network) {
       network.stop();
     }
+    this.logger.debug(`Deleting network with id ${id}!`);
     return this.networkRepo.deleteBy(id);
   }
 
-  stopNetworkById(networkId: string) {
+  async stopNetworkById(networkId: string) {
     const network = this.networks.find(
       (network) => network.identifier === networkId,
     );
-    if (network) network.stop();
+    if (network) {
+      this.logger.debug(`Stopping network with id ${network.identifier}!`);
+      network.stop();
+      await this.save(network);
+    }
     return !!network;
   }
 

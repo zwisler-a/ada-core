@@ -1,8 +1,12 @@
+# Smartstuff
+
+[Documentation](./docs/)
+
 ### Example Network
 
 ```json
 {
-  "name": "Test network",
+  "name": "New network",
   "description": "This is a test network",
   "nodes": [
     {
@@ -19,7 +23,7 @@
       "attributes": [
         {
           "identifier": "MapperFunction",
-          "value": "{func: function (obj){return ({message: 'Hallo'})}}"
+          "value": "function (obj){return ({message: 'Hallo'})}"
         }
       ]
     },

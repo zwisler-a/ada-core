@@ -13,7 +13,7 @@ export class NodeAttributeEntity {
   id: string;
   @Column()
   attributeDefinitionId: string;
-  @Column()
+  @Column({ default: '' })
   value: string;
 
   @ManyToOne((type) => NodeEntity, (object) => object.attributes)

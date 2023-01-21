@@ -32,6 +32,7 @@ export class NetworkController {
   @Delete('/:identifier')
   async deleteNetwork(@Param('identifier') id: string) {
     await this.networkService.delete(id);
+    return { success: true };
   }
 
   @Post('running')
@@ -43,11 +44,11 @@ export class NetworkController {
 
   @Post('start/:networkId')
   async startNetwork(@Param('networkId') networkId: string) {
-    return this.networkService.executeNetworkById(networkId);
+    return { success: await this.networkService.executeNetworkById(networkId) };
   }
 
   @Post('stop/:networkId')
   async stopNetwork(@Param('networkId') networkId: string) {
-    return this.networkService.stopNetworkById(networkId);
+    return { success: await this.networkService.stopNetworkById(networkId) };
   }
 }

@@ -4,7 +4,7 @@ import { NodeInstance } from './instance/node-instance';
 import { Subscription } from '../observable';
 
 export class Network extends Identifiable {
-  private isActive = false;
+  isActive = false;
   private subscriptions: Subscription<any>[] = [];
 
   constructor(public nodes: NodeInstance[], public edges: Edge[]) {
@@ -13,6 +13,7 @@ export class Network extends Identifiable {
 
   start() {
     if (this.isActive) return;
+    this.isActive = true;
     this.edges.forEach((edge) => {
       const subscription = edge.output.subscribe((data) =>
         edge.input.node.handleInput(edge.input.definition, data),
@@ -24,6 +25,7 @@ export class Network extends Identifiable {
   stop() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
     this.subscriptions = [];
+    this.isActive = false;
   }
 
   toString() {

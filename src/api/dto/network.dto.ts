@@ -3,6 +3,8 @@ import { EdgeDto } from './edge.dto';
 import { NodeInstanceDto } from './node-instance.dto';
 
 export class NetworkDto {
+  @ApiProperty({ readOnly: true })
+  active: boolean;
   @ApiProperty()
   identifier: string;
   @ApiProperty()

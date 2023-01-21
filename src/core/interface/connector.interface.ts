@@ -1,4 +1,4 @@
-import { NodeProvider } from './provider/node-provider.interface';
+import { NodeProvider } from './node-provider.interface';
 
 export interface Connector {
   name: string;

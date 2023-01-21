@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { CoreNodeProvider } from './core-node/core-node.provider';
 import { AvailableNodeService } from './service/available-node.service';
 import { ConnectorService } from './service/connector.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -36,12 +35,4 @@ import { NodeAttributeMapperService } from './persistence/mapper/node-attribute-
   ],
   exports: [ConnectorService, AvailableNodeService, NetworkService],
 })
-export class CoreModule {
-  constructor(private connectorService: ConnectorService) {
-    this.connectorService.register({
-      name: 'Core',
-      description: 'Core Module',
-      nodeProvider: new CoreNodeProvider(),
-    });
-  }
-}
+export class CoreModule {}
