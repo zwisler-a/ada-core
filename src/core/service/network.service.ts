@@ -13,6 +13,7 @@ export class NetworkService {
   }
 
   executeNetwork(network: Network) {
+    this.networks.push(network);
     network.start();
   }
 
@@ -26,6 +27,7 @@ export class NetworkService {
     );
     if (!loadedNetwork) {
       loadedNetwork = await this.networkRepo.findBy(networkId);
+      this.networks.push(loadedNetwork);
     }
     if (loadedNetwork) {
       loadedNetwork.start();
@@ -35,7 +37,7 @@ export class NetworkService {
   }
 
   delete(id: string) {
-    const network = this.networks.find((network) => network.identifier !== id);
+    const network = this.networks.find((network) => network.identifier === id);
     this.networks = this.networks.filter(
       (network) => network.identifier !== id,
     );
@@ -43,5 +45,17 @@ export class NetworkService {
       network.stop();
     }
     return this.networkRepo.deleteBy(id);
+  }
+
+  stopNetworkById(networkId: string) {
+    const network = this.networks.find(
+      (network) => network.identifier === networkId,
+    );
+    if (network) network.stop();
+    return !!network;
+  }
+
+  getRunning() {
+    return this.networks;
   }
 }

@@ -34,8 +34,20 @@ export class NetworkController {
     await this.networkService.delete(id);
   }
 
+  @Post('running')
+  async getRunningNetworks() {
+    return this.networkService
+      .getRunning()
+      .map((network) => this.networkDtoMapper.networkToDto(network));
+  }
+
   @Post('start/:networkId')
   async startNetwork(@Param('networkId') networkId: string) {
     return this.networkService.executeNetworkById(networkId);
+  }
+
+  @Post('stop/:networkId')
+  async stopNetwork(@Param('networkId') networkId: string) {
+    return this.networkService.stopNetworkById(networkId);
   }
 }
