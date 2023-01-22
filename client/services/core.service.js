@@ -7,7 +7,7 @@ export const CoreApiService = {
   getNetworks: () => {
     return ApiService.fetch('/core/network');
   },
-  createNetwork: (network) => {
+  createOrSave: (network) => {
     return ApiService.fetch('/core/network', {
       method: 'POST',
       body: JSON.stringify(network),

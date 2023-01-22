@@ -13,8 +13,17 @@ export class NetworkService {
     return this.networkRepo.find();
   }
 
-  save(network: Network): Promise<Network> {
-    return this.networkRepo.save(network);
+  async save(network: Network): Promise<Network> {
+    const loadedNetwork = this.networks.find(
+      (nw) => nw.identifier === network.identifier,
+    );
+    if (loadedNetwork) {
+      loadedNetwork.stop();
+      this.networks = this.networks.filter(
+        (network) => network.identifier !== network.identifier,
+      );
+    }
+    return await this.networkRepo.save(network);
   }
 
   async executeNetworkById(networkId: string) {
@@ -30,10 +39,14 @@ export class NetworkService {
         `Executing network with id ${loadedNetwork.identifier}!`,
       );
       loadedNetwork.start();
-      await this.save(loadedNetwork);
+      await this.networkRepo.save(loadedNetwork);
       return true;
     }
     return false;
+  }
+
+  findOne(id: string) {
+    return this.networkRepo.findBy(id);
   }
 
   delete(id: string) {
@@ -55,7 +68,8 @@ export class NetworkService {
     if (network) {
       this.logger.debug(`Stopping network with id ${network.identifier}!`);
       network.stop();
-      await this.save(network);
+      this.networks = this.networks.filter((n) => n.identifier !== networkId);
+      await this.networkRepo.save(network);
     }
     return !!network;
   }

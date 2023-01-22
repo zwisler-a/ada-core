@@ -53,4 +53,8 @@ export abstract class NodeInstance extends Identifiable {
     );
     if (instance) return instance.value;
   }
+
+  onAttributeChange(identifier: string, value: DataHolder) {
+    // Noop
+  }
 }

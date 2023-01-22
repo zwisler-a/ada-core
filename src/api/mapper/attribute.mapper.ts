@@ -6,8 +6,6 @@ import { NodeAttributeDto } from '../dto/node-attribute.dto';
 
 @Injectable()
 export class AttributeDtoMapper {
-  constructor(private availableNodeService: AvailableNodeService) {}
-
   dtoToAttribute(
     dto: NodeAttributeDto,
     instance: NodeInstance,
@@ -24,7 +22,7 @@ export class AttributeDtoMapper {
 
   attributeToDto(node: NodeAttributeInstance): NodeAttributeDto {
     return {
-      identifier: node.identifier,
+      identifier: node.definition.identifier,
       value: node.value,
       name: node.name,
       description: node.description,

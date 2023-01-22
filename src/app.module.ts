@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core/core.module';
 import { HomeAssistentModule } from './home-assistant/home-assistant.module';
 import { BaseNodesModule } from './base-nodes/base-nodes.module';
+import { GraphicModule } from './graphic/graphic.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { BaseNodesModule } from './base-nodes/base-nodes.module';
     ApiModule,
     CoreModule,
     AuthModule,
+    GraphicModule,
 
     BaseNodesModule,
     HomeAssistentModule,

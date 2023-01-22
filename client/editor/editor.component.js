@@ -1,28 +1,28 @@
 import { EditorService } from './editor.service.js';
-import './node.component.js';
+import { EditorRenderer } from './editor.renderer.js';
+import './available-nodes.component.js';
+import './node-details.component.js';
 
 class NetworkEditorComponent extends HTMLElement {
   constructor() {
     super();
-    this.positions = {};
     this.classList.add('editor');
-    const networkId = this.getAttribute('networkId');
-    if (networkId) {
-      this._initializeWith(networkId);
-    }
-    this.addEventListener('dragenter', (e) => {
-      e.preventDefault();
+    this._initialize();
+    this.addEventListener('mousedown', EditorService.mouseDown());
+    this.addEventListener('mouseup', EditorService.mouseUp());
+    this.addEventListener('mousemove', EditorService.mouseMove());
+    EditorService.instance = this;
+    this.addEventListener('click', (ev) => {
+      if (ev.target.getAttribute('js-action') === 'save') {
+        EditorService.saveNetwork();
+      }
+      if (ev.target.hasAttribute('js-tool')) {
+        EditorService.selectedTool = ev.target.getAttribute('js-tool');
+      }
     });
-    this.addEventListener('dragover', (e) => {
-      e.preventDefault();
-    });
-    this.addEventListener('drop', (event) => {
-      const nodeIdentifier = event.dataTransfer.getData('text/html');
-      this.positions[nodeIdentifier] = {
-        x: event.clientX,
-        y: event.clientY,
-      };
-      this._render(EditorService.network);
+
+    this.addEventListener('add-node', (ev) => {
+      EditorService.addNode(ev.detail);
     });
   }
 
@@ -32,47 +32,47 @@ class NetworkEditorComponent extends HTMLElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === 'networkId') {
-      return this._initializeWith(newValue);
+      return this._initialize();
     }
   }
 
-  async _initializeWith(networkId) {
-    await EditorService.loadNetwork(networkId);
-    let x = 0;
-    EditorService.network.nodes.forEach((node) => {
-      this.positions[node.identifier] = {
-        x: x,
-        y: 100,
-      };
-      x += 350;
-    });
-    this._render(EditorService.network);
+  async _initialize() {
+    const networkId = this.getAttribute('networkId');
+    if (!networkId) {
+      return;
+    }
+    this._render();
+    this.canvas = document.getElementById('canvas');
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+    const network = await EditorService.loadNetwork(networkId);
+    EditorService.renderer = new EditorRenderer(this.ctx, this.canvas);
+    EditorService.renderer.render(network);
+    EditorService.renderer.render(network); // TODO Quick fix
   }
 
-  _getNodePositionCss(identifier) {
-    if (this.positions[identifier]) {
-      const pos = this.positions[identifier];
-      return ` style="left:${pos.x}px;top:${pos.y}px" `;
+  setDragcursor(there) {
+    if (there) {
+      this.classList.add('dragging');
+    } else {
+      this.classList.remove('dragging');
     }
-    return '';
   }
 
   _render(network) {
     this.innerHTML = `
-      <a href="/network">Back</a>
-     <h1>${network.name}</h1>
-     <div>Amount of nodes: ${network.nodes.length}</div>
-     <div>Amount of edges: ${network.edges.length}</div>
-       ${network.nodes
-         .map(
-           (node) =>
-             `<app-editor-node ${this._getNodePositionCss(
-               node.identifier,
-             )} nodeIdentifier="${node.identifier}"></app-editor-node>`,
-         )
-         .join('')}
+      <div class="flex align-center">
+        <a href="/network">Back</a>
+        <button js-action="save">Save</button>
+        <button js-tool="cursor">Cursor</button>
+        <button js-tool="connector">Connector</button>
+        <button js-tool="view">view</button>
+      </div>
+      <app-node-details js-id="details"></app-node-details>
+      <canvas id="canvas"></canvas>
+      <app-available-nodes></app-available-nodes>
     `;
-    EditorService.drawEdges();
+    EditorService.detailsComponent = this.querySelector('[js-id="details"]');
   }
 }
 

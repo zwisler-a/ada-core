@@ -15,6 +15,7 @@ import { NodeInstanceDto } from '../dto/node-instance.dto';
 import { AttributeDtoMapper } from './attribute.mapper';
 import { NodeAttributeDefinition } from '../../domain/node/definition/node-attribute-definition';
 import { NodeAttributeDefinitionDto } from '../dto/node-attribute-definition.dto';
+import { Position } from '../../graphic/position.interface';
 
 @Injectable()
 export class NodeDtoMapper {
@@ -40,7 +41,7 @@ export class NodeDtoMapper {
     return instance;
   }
 
-  nodeInstanceToDto(node: NodeInstance): NodeInstanceDto {
+  nodeInstanceToDto(node: NodeInstance, position: Position): NodeInstanceDto {
     return {
       identifier: node.identifier,
       name: node.name,
@@ -51,6 +52,8 @@ export class NodeDtoMapper {
       ),
       inputs: node.inputs.map((i) => this.nodeInputInstanceToDto(i)),
       outputs: node.outputs.map((o) => this.nodeOutputInstanceToDto(o)),
+      x: position?.x,
+      y: position?.y,
     };
   }
 

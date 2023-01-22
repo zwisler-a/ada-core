@@ -3,6 +3,8 @@ import { Network } from '../../domain/node/network';
 import { EdgeDtoMapper } from './edge.mapper';
 import { NodeDtoMapper } from './node.mapper';
 import { Injectable } from '@nestjs/common';
+import { Position } from '../../graphic/position.interface';
+import { NodeInstance } from '../../domain/node/instance/node-instance';
 
 @Injectable()
 export class NetworkDtoMapper {
@@ -11,13 +13,17 @@ export class NetworkDtoMapper {
     private edgeMapper: EdgeDtoMapper,
   ) {}
 
-  networkToDto(network: Network): NetworkDto {
+  networkToDto(network: Network, positions: Position[]): NetworkDto {
+    const findPosition = (node: NodeInstance) =>
+      positions.find((pos) => pos.identifier === node.identifier);
     return {
       identifier: network.identifier,
       name: network.name,
       description: network.description,
       edges: network.edges.map((e) => this.edgeMapper.edgeToDto(e)),
-      nodes: network.nodes.map((n) => this.nodeMapper.nodeInstanceToDto(n)),
+      nodes: network.nodes.map((n) =>
+        this.nodeMapper.nodeInstanceToDto(n, findPosition(n)),
+      ),
       active: network.isActive,
     };
   }

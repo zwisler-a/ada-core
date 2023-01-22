@@ -23,9 +23,16 @@ export class NodeMapperService {
     }
     const nodeInstance = nodeDefinition.createInstance();
     nodeInstance.attributes =
-      entity.attributes?.map((a) =>
-        this.attributeMapper.entityToAttribute(a, nodeInstance),
-      ) ?? nodeInstance.attributes;
+      entity.attributes?.map((attr) => {
+        const attribute = this.attributeMapper.entityToAttribute(
+          attr,
+          nodeInstance,
+        );
+        return attribute;
+      }) ?? nodeInstance.attributes;
+    nodeInstance.attributes.forEach((attr) =>
+      nodeInstance.onAttributeChange(attr.definition.identifier, attr.value),
+    );
     nodeInstance.name = entity.name;
     nodeInstance.identifier = entity.id;
     nodeInstance.description = entity.description;
@@ -39,8 +46,8 @@ export class NodeMapperService {
     entity.description = node.description;
     entity.definitionId = node.definition.identifier;
     entity.attributes =
-      node.attributes?.map((attr) =>
-        this.attributeMapper.attributeToEntity(attr),
+      node.definition.attributes.map((attr) =>
+        this.attributeMapper.attributeToEntity(attr, node),
       ) ?? [];
     return entity;
   }

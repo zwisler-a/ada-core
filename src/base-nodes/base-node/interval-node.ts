@@ -8,12 +8,6 @@ import { NodeAttributeDefinition } from '../../domain/node/definition/node-attri
 export class IntervalNodeInstance extends NodeInstance {
   private interval: any;
 
-  constructor(props) {
-    super(props);
-
-    this.setIntervalFromAttributes();
-  }
-
   handleInput(input: NodeInputDefinition, data: DataHolder) {
     if (input.identifier === 'setInterval') {
       this.updateAttribute('interval', data);
@@ -25,10 +19,15 @@ export class IntervalNodeInstance extends NodeInstance {
     const timeout = this.getAttribute('interval') ?? 5000;
     if (this.interval) clearInterval(this.interval);
     this.interval = setInterval(() => {
-      this.updateOutput(this.outputs[0].definition, {
-        currentTime: new Date().getTime(),
-      });
+      this.updateOutput(
+        this.outputs[0].definition,
+        this.getAttribute('value') ?? new Date().getTime(),
+      );
     }, +timeout);
+  }
+
+  onAttributeChange(identifier: string, value: DataHolder) {
+    this.setIntervalFromAttributes();
   }
 }
 
@@ -42,6 +41,11 @@ export class IntervalNode extends NodeDefinition {
       'interval',
       'Interval Timeout',
       'How often this node should emit',
+    ),
+    NodeAttributeDefinition.from(
+      'value',
+      'Value',
+      'Value which should be emitted',
     ),
   ];
 

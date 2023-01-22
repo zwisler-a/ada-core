@@ -11,7 +11,7 @@ export class LoggerNode extends NodeSingletonDefinition {
   logger: Logger = new Logger(LoggerNode.name);
   attributes = [];
 
-  inputs = [NodeInputDefinition.from('loggerIn', 'in', 'logs input')];
+  inputs = [NodeInputDefinition.from('loggerIn', 'Input', 'logs input')];
 
   outputs = [];
 

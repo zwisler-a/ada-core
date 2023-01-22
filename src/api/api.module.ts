@@ -8,11 +8,14 @@ import { EdgeDtoMapper } from './mapper/edge.mapper';
 import { AttributeDtoMapper } from './mapper/attribute.mapper';
 import { ConnectorDtoMapper } from './mapper/connector.service';
 import { ConnectorController } from './controller/connector.controller';
+import { NetworkPositionService } from './service/network-position.service';
+import { GraphicModule } from '../graphic/graphic.module';
 
 @Module({
-  imports: [CoreModule],
+  imports: [CoreModule, GraphicModule],
   controllers: [NodeController, NetworkController, ConnectorController],
   providers: [
+    NetworkPositionService,
     ConnectorDtoMapper,
     NodeDtoMapper,
     NetworkDtoMapper,

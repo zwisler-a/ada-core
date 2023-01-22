@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { NodeAttributeEntity } from '../entitiy/node-attribute.entity';
 import { NodeAttributeInstance } from '../../../domain/node/instance/node-attribute-instance';
 import { NodeInstance } from '../../../domain/node/instance/node-instance';
+import { NodeAttributeDefinition } from '../../../domain/node/definition/node-attribute-definition';
 
 @Injectable()
 export class NodeAttributeMapperService {
@@ -15,16 +16,18 @@ export class NodeAttributeMapperService {
       (attribute) => attribute.identifier === entity.attributeDefinitionId,
     );
     const instance = attributeDefinition.createInstance(nodeDefinition);
-    instance.identifier = entity.id;
     instance.value = entity.value ? JSON.parse(entity.value) : '';
     return instance;
   }
 
-  attributeToEntity(attr: NodeAttributeInstance): NodeAttributeEntity {
+  attributeToEntity(
+    attr: NodeAttributeDefinition,
+    node: NodeInstance,
+  ): NodeAttributeEntity {
     const entity = new NodeAttributeEntity();
-    entity.id = attr.identifier;
-    entity.attributeDefinitionId = attr.definition.identifier;
-    entity.value = JSON.stringify(attr.value);
+    entity.attributeDefinitionId = attr.identifier;
+    const value = node.getAttribute(attr.identifier);
+    entity.value = JSON.stringify(value);
     return entity;
   }
 }
