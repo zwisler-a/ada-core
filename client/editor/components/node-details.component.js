@@ -1,4 +1,4 @@
-import { EditorService } from './editor.service.js';
+import { EditorService } from '../editor.service.js';
 
 class NodeDetailsComponent extends HTMLElement {
   constructor() {

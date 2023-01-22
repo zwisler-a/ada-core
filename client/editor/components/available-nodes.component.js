@@ -1,4 +1,4 @@
-import { CoreApiService } from '../services/core.service.js';
+import { CoreApiService } from '../../services/core.service.js';
 
 class AvailableNodesComponent extends HTMLElement {
   constructor() {

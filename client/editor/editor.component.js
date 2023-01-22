@@ -1,7 +1,7 @@
 import { EditorService } from './editor.service.js';
-import { EditorRenderer } from './editor.renderer.js';
-import './available-nodes.component.js';
-import './node-details.component.js';
+import { EditorRenderer } from './renderer/editor.renderer.js';
+import './components/available-nodes.component.js';
+import './components/node-details.component.js';
 
 class NetworkEditorComponent extends HTMLElement {
   constructor() {
@@ -18,6 +18,7 @@ class NetworkEditorComponent extends HTMLElement {
       }
       if (ev.target.hasAttribute('js-tool')) {
         EditorService.selectedTool = ev.target.getAttribute('js-tool');
+        this._renderToolbar();
       }
     });
 
@@ -45,10 +46,10 @@ class NetworkEditorComponent extends HTMLElement {
     this.canvas = document.getElementById('canvas');
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
-    const network = await EditorService.loadNetwork(networkId);
     EditorService.renderer = new EditorRenderer(this.ctx, this.canvas);
-    EditorService.renderer.render(network);
-    EditorService.renderer.render(network); // TODO Quick fix
+    await EditorService.loadNetwork(networkId);
+    EditorService.rerender();
+    EditorService.rerender();
   }
 
   setDragcursor(there) {
@@ -59,20 +60,35 @@ class NetworkEditorComponent extends HTMLElement {
     }
   }
 
-  _render(network) {
-    this.innerHTML = `
-      <div class="flex align-center">
+  _tool(tool) {
+    if (EditorService.selectedTool === tool) {
+      return `class="active"`;
+    } else {
+      return `js-tool=${tool}`;
+    }
+  }
+
+  _renderToolbar() {
+    if (!this._toolbar) return;
+    this._toolbar.innerHTML = `
         <a href="/network">Back</a>
-        <button js-action="save">Save</button>
-        <button js-tool="cursor">Cursor</button>
-        <button js-tool="connector">Connector</button>
-        <button js-tool="view">view</button>
-      </div>
+        <button  js-action="save">Save</button>
+        <button ${this._tool('cursor')}>Cursor</button>
+        <button ${this._tool('connector')}>Connector</button>
+        <button ${this._tool('view')}>view</button>
+    `;
+  }
+
+  _render() {
+    this.innerHTML = `
+      <div class="toolbar"></div>
       <app-node-details js-id="details"></app-node-details>
-      <canvas id="canvas"></canvas>
       <app-available-nodes></app-available-nodes>
+      <canvas id="canvas"></canvas>
     `;
     EditorService.detailsComponent = this.querySelector('[js-id="details"]');
+    this._toolbar = this.querySelector('[class="toolbar"]');
+    this._renderToolbar();
   }
 }
 

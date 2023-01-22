@@ -70,6 +70,6 @@ describe('NetworkService', () => {
     fakeService.findBy = jest.fn(() => network);
     await testSubject.executeNetworkById('1');
     await testSubject.stopNetworkById('1');
-    expect(testSubject.getRunning().length).toBe(1);
+    expect(testSubject.getRunning().length).toBe(0);
   });
 });
