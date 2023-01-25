@@ -29,10 +29,12 @@ class NodeDetailsComponent extends HTMLElement {
   }
 
   _render() {
-    const attributeInputs = this._node.attributes.map(
-      (attr) =>
-        `<div><span>${attr.name}:</span> <input value="${attr.value}" js-node-attribute="${attr.identifier}" placeholder="${attr.name}" /></div>`,
-    );
+    const attributeInputs = this._node.attributes
+      .map(
+        (attr) =>
+          `<div><span>${attr.name}:</span> <input value="${attr.value}" js-node-attribute="${attr.identifier}" placeholder="${attr.name}" /></div>`,
+      )
+      .join('');
     this.innerHTML = `
       <div class="node-details">
         <h2>${this._node.name}</h2>
@@ -41,7 +43,7 @@ class NodeDetailsComponent extends HTMLElement {
         <b>Attributes</b>
         ${attributeInputs}
         <div>
-            <button js-save>Save</button>    
+            <button js-save>Update</button>    
         </div>
       </div>
     `;

@@ -10,9 +10,10 @@ import { ConnectorDtoMapper } from './mapper/connector.service';
 import { ConnectorController } from './controller/connector.controller';
 import { NetworkPositionService } from './service/network-position.service';
 import { GraphicModule } from '../graphic/graphic.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [CoreModule, GraphicModule],
+  imports: [CoreModule, GraphicModule, AuthModule],
   controllers: [NodeController, NetworkController, ConnectorController],
   providers: [
     NetworkPositionService,

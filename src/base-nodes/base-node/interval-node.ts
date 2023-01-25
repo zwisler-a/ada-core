@@ -1,71 +1,70 @@
-import { NodeInputDefinition } from '../../domain/node/definition/node-input-definition';
-import { NodeOutputDefinition } from '../../domain/node/definition/node-output-definition';
 import { DataHolder } from '../../domain/node/data-holder';
-import { NodeInstance } from '../../domain/node/instance/node-instance';
-import { NodeDefinition } from '../../domain/node/definition/node-definition';
-import { NodeAttributeDefinition } from '../../domain/node/definition/node-attribute-definition';
+import {
+  Attribute,
+  Deconstruct,
+  Input,
+  Node,
+  Output,
+} from '../../domain/proxy';
 
-export class IntervalNodeInstance extends NodeInstance {
-  private interval: any;
+@Node({
+  identifier: 'interval',
+  name: 'Interval',
+  description: 'Emits a value in a fixed interval',
+})
+export class IntervalNode {
+  private _interval: DataHolder = '5000';
+  @Attribute({
+    identifier: 'interval',
+    name: 'Interval',
+    description: 'Time between the emission of values',
+  })
+  set interval(v: DataHolder) {
+    this._interval = v;
+    this.setIntervalFromAttributes();
+  }
 
-  handleInput(input: NodeInputDefinition, data: DataHolder) {
-    if (input.identifier === 'setInterval') {
-      this.updateAttribute('interval', data);
-      this.setIntervalFromAttributes();
-    }
+  get interval() {
+    return this._interval;
+  }
+
+  @Attribute({
+    identifier: 'value',
+    name: 'Value',
+    description: 'Which value should be emitted',
+  })
+  value: DataHolder;
+
+  private intervalRef: any;
+
+  @Output({
+    identifier: 'intervalOut',
+    name: 'Output',
+    description: 'Output',
+  })
+  output: (data: DataHolder) => void;
+
+  @Input({
+    identifier: 'setInterval',
+    name: 'Set interval',
+    description: 'Sets the interval of the node',
+  })
+  setInterval(data: DataHolder) {
+    console.log('set inteval', data);
+    this.interval = data;
   }
 
   private setIntervalFromAttributes() {
-    const timeout = this.getAttribute('interval') ?? 5000;
-    if (this.interval) clearInterval(this.interval);
-    this.interval = setInterval(() => {
-      this.updateOutput(
-        this.outputs[0].definition,
-        this.getAttribute('value') ?? new Date().getTime(),
-      );
-    }, +timeout);
+    if (this.intervalRef) clearInterval(this.intervalRef);
+    this.intervalRef = setInterval(() => {
+      this.output(this.value ?? new Date().getTime());
+    }, +(this.interval ?? 5000));
   }
 
-  onAttributeChange(identifier: string, value: DataHolder) {
-    this.setIntervalFromAttributes();
-  }
-}
-
-export class IntervalNode extends NodeDefinition {
-  identifier = 'interval';
-  name = 'Interval';
-  description =
-    'Triggers the output in a fixed interval. Defaults to 5 if attribute is not set';
-  attributes = [
-    NodeAttributeDefinition.from(
-      'interval',
-      'Interval Timeout',
-      'How often this node should emit',
-    ),
-    NodeAttributeDefinition.from(
-      'value',
-      'Value',
-      'Value which should be emitted',
-    ),
-  ];
-
-  inputs = [
-    NodeInputDefinition.from(
-      'setInterval',
-      'Interval',
-      'Sets the interval of the output',
-    ),
-  ];
-
-  outputs = [
-    NodeOutputDefinition.from('intervalOut', 'Output', 'Interval Output'),
-  ];
-
-  constructor() {
-    super();
-  }
-
-  createInstance(): NodeInstance {
-    return new IntervalNodeInstance(this);
+  @Deconstruct()
+  stop() {
+    if (this.intervalRef) {
+      clearTimeout(this.intervalRef);
+    }
   }
 }

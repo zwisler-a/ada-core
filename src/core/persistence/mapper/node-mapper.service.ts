@@ -21,7 +21,7 @@ export class NodeMapperService {
       this.logger.error('Could not find node definition with id ' + entity.id);
       return null;
     }
-    const nodeInstance = nodeDefinition.createInstance();
+    const nodeInstance = await nodeDefinition.createInstance();
     nodeInstance.attributes =
       entity.attributes?.map((attr) => {
         const attribute = this.attributeMapper.entityToAttribute(
@@ -30,9 +30,6 @@ export class NodeMapperService {
         );
         return attribute;
       }) ?? nodeInstance.attributes;
-    nodeInstance.attributes.forEach((attr) =>
-      nodeInstance.onAttributeChange(attr.definition.identifier, attr.value),
-    );
     nodeInstance.name = entity.name;
     nodeInstance.identifier = entity.id;
     nodeInstance.description = entity.description;

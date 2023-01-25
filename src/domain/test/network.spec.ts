@@ -12,7 +12,7 @@ class TestNodeDef extends NodeSingletonDefinition {
   inputs = [NodeInputDefinition.from('1', '1', '1')];
   outputs = [NodeOutputDefinition.from('1', '1', '1')];
 
-  handleInput(input: NodeInputDefinition, data: DataHolder) {
+  handleInput(input: string, data: DataHolder) {
     this.spy(data);
   }
 }
@@ -45,10 +45,10 @@ describe('Network', () => {
     expect(networkString).toBeTruthy();
   });
 
-  it('should pass data between connections', () => {
+  it('should pass data between connections', async () => {
     const def = new TestNodeDef();
-    const node1 = def.createInstance();
-    const node2 = def.createInstance();
+    const node1 = await def.createInstance();
+    const node2 = await def.createInstance();
     const spy = jest.fn();
     def.spy = spy;
     const edge = new Edge(node1.outputs[0], node2.inputs[0]);

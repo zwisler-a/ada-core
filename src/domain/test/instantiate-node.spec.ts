@@ -13,7 +13,7 @@ export class TestNodeInstance extends NodeInstance {
     super(def);
   }
 
-  handleInput(input: NodeInputDefinition, data: DataHolder) {
+  handleInput(input: string, data: DataHolder) {
     this.cb(this.instanceNo);
   }
 }
@@ -21,7 +21,7 @@ export class TestNodeInstance extends NodeInstance {
 export class TestNode extends NodeDefinition {
   public cb: any;
 
-  createInstance(): NodeInstance {
+  async createInstance() {
     return new TestNodeInstance(this, this.cb);
   }
 
@@ -35,29 +35,29 @@ export class TestNode extends NodeDefinition {
 describe('Networks', () => {
   const nodeDef = new TestNode();
   nodeDef.name = 'Test';
-  it('should be able to instantiate a node', () => {
-    const instance = nodeDef.createInstance();
+  it('should be able to instantiate a node', async () => {
+    const instance = await nodeDef.createInstance();
     expect(instance.definition.name).toBe('Test');
   });
 
-  it('should have all instances', () => {
-    const instance = nodeDef.createInstance();
+  it('should have all instances', async () => {
+    const instance = await nodeDef.createInstance();
     expect(instance.outputs.length).toBe(1);
     expect(instance.inputs.length).toBe(1);
     expect(instance.attributes.length).toBe(1);
   });
 
-  it('should call handle function', () => {
+  it('should call handle function', async () => {
     TestNodeInstance.instanceCount = 0;
     const spy = jest.fn();
     nodeDef.cb = spy;
-    const instance = nodeDef.createInstance();
-    instance.handleInput(nodeDef.inputs[0], {});
+    const instance = await nodeDef.createInstance();
+    instance.handleInput(nodeDef.inputs[0].identifier, {});
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(0);
 
-    const instance2 = nodeDef.createInstance();
-    instance2.handleInput(nodeDef.inputs[0], {});
+    const instance2 = await nodeDef.createInstance();
+    instance2.handleInput(nodeDef.inputs[0].identifier, {});
     expect(spy).toHaveBeenCalledWith(1);
   });
 });

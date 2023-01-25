@@ -8,6 +8,7 @@ import { CoreModule } from './core/core.module';
 import { HomeAssistentModule } from './home-assistant/home-assistant.module';
 import { BaseNodesModule } from './base-nodes/base-nodes.module';
 import { GraphicModule } from './graphic/graphic.module';
+import { RemoteModule } from './remote/remote.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { GraphicModule } from './graphic/graphic.module';
     AuthModule,
     GraphicModule,
 
+    RemoteModule,
     BaseNodesModule,
     HomeAssistentModule,
   ],

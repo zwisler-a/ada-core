@@ -12,7 +12,7 @@ import { Network } from '../../../../domain/node/network';
 describe('NetworkRepository', () => {
   let testSubject: NetworkRepository;
   const fakeRepo = {
-    save: jest.fn(() => new Network([], [])),
+    save: jest.fn(async () => new Network([], [])),
     findOneBy: jest.fn(() => new Network([], [])),
     find: jest.fn(() => [new Network([], [])]),
     delete: jest.fn(),
@@ -43,8 +43,8 @@ describe('NetworkRepository', () => {
     testSubject.save(new Network([], []));
     expect(fakeRepo.save).toHaveBeenCalledTimes(1);
   });
-  it('should delete', () => {
-    testSubject.deleteBy('123');
+  it('should delete', async () => {
+    await testSubject.deleteBy('123');
     expect(fakeRepo.delete).toHaveBeenCalledTimes(1);
   });
   it('should find', () => {

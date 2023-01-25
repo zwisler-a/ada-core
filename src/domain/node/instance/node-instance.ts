@@ -6,6 +6,7 @@ import { NodeInputInstance } from './node-input-instance';
 import { NodeAttributeInstance } from './node-attribute-instance';
 import { NodeOutputInstance } from './node-output-instance';
 import { Identifiable } from '../identifiable';
+import { RemoteApiService } from '../../../remote/service/remote-api.service';
 
 export abstract class NodeInstance extends Identifiable {
   definition: NodeDefinition;
@@ -22,11 +23,11 @@ export abstract class NodeInstance extends Identifiable {
     this.attributes = definition.attributes?.map((a) => a.createInstance(this));
   }
 
-  abstract handleInput(input: NodeInputDefinition, data: DataHolder);
+  abstract handleInput(identifier: string, data: DataHolder);
 
-  updateOutput(output: NodeOutputDefinition, data: DataHolder) {
+  updateOutput(identifier: string, data: DataHolder) {
     const instance = this.outputs.find(
-      (instance) => instance.definition.identifier === output.identifier,
+      (instance) => instance.definition.identifier === identifier,
     );
     if (instance) {
       instance.next(data);
@@ -55,6 +56,10 @@ export abstract class NodeInstance extends Identifiable {
   }
 
   onAttributeChange(identifier: string, value: DataHolder) {
+    // Noop
+  }
+
+  deconstruct() {
     // Noop
   }
 }

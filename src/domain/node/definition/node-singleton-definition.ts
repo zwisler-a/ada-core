@@ -10,24 +10,30 @@ class NodeCallbackInstance extends NodeInstance {
     super(singletonDefinition);
   }
 
-  handleInput(input: NodeInputDefinition, data: DataHolder) {
+  handleInput(input: string, data: DataHolder) {
     this.singletonDefinition.handleInput(input, data);
+  }
+
+  onAttributeChange(identifier: string, value: DataHolder) {
+    this.singletonDefinition.onAttributeChange(identifier, value);
   }
 }
 
 export abstract class NodeSingletonDefinition extends NodeDefinition {
   protected instances: NodeInstance[] = [];
 
-  createInstance() {
+  async createInstance() {
     const instance = new NodeCallbackInstance(this);
     this.instances.push(instance);
     return instance;
   }
 
-  abstract handleInput(input: NodeInputDefinition, data: DataHolder);
+  abstract handleInput(identifier: string, data: DataHolder);
 
-  updateOutput(output: NodeOutputDefinition, data: DataHolder) {
-    this.instances.forEach((instance) => instance.updateOutput(output, data));
+  updateOutput(identifier: string, data: DataHolder) {
+    this.instances.forEach((instance) =>
+      instance.updateOutput(identifier, data),
+    );
   }
 
   updateAttribute(identifier: string, data: DataHolder) {
@@ -35,4 +41,6 @@ export abstract class NodeSingletonDefinition extends NodeDefinition {
       instance.updateAttribute(identifier, data),
     );
   }
+
+  onAttributeChange(identifier: string, value: DataHolder) {}
 }

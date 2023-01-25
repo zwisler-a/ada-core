@@ -7,7 +7,7 @@ import { NodeSingletonDefinition } from '../node/definition/node-singleton-defin
 export class TestNode extends NodeSingletonDefinition {
   public cb: any;
 
-  handleInput(input: NodeInputDefinition, data: DataHolder) {
+  handleInput(input: string, data: DataHolder) {
     if (this.cb) this.cb(data);
     return;
   }
@@ -22,23 +22,23 @@ export class TestNode extends NodeSingletonDefinition {
 describe('Networks', () => {
   const nodeDef = new TestNode();
   nodeDef.name = 'Test';
-  it('should be able to instantiate a node', () => {
-    const instance = nodeDef.createInstance();
+  it('should be able to instantiate a node', async () => {
+    const instance = await nodeDef.createInstance();
     expect(instance.definition.name).toBe('Test');
   });
 
-  it('should have all instances', () => {
-    const instance = nodeDef.createInstance();
+  it('should have all instances', async () => {
+    const instance = await nodeDef.createInstance();
     expect(instance.outputs.length).toBe(1);
     expect(instance.inputs.length).toBe(1);
     expect(instance.attributes.length).toBe(1);
   });
 
-  it('should call handle function', () => {
+  it('should call handle function', async () => {
     const spy = jest.fn();
     nodeDef.cb = spy;
-    const instance = nodeDef.createInstance();
-    instance.handleInput(nodeDef.inputs[0], {});
+    const instance = await nodeDef.createInstance();
+    instance.handleInput(nodeDef.inputs[0].identifier, {});
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith({});
   });

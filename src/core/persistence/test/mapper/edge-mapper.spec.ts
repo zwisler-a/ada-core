@@ -12,15 +12,15 @@ class TestNodeDef extends NodeSingletonDefinition {
   inputs = [NodeInputDefinition.from('1', '1', '1')];
   outputs = [NodeOutputDefinition.from('1', '1', '1')];
 
-  handleInput(input: NodeInputDefinition, data: DataHolder) {
+  handleInput(input: string, data: DataHolder) {
     this.spy(data);
   }
 }
 
 describe('Edge Mapper', () => {
-  it('should map an edge', function () {
+  it('should map an edge', async function () {
     const mapper = new EdgeMapperService();
-    const instance = new TestNodeDef().createInstance();
+    const instance = await new TestNodeDef().createInstance();
     instance.identifier = '1';
     const edge = new Edge(instance.outputs[0], instance.inputs[0]);
     edge.identifier = 'id';
@@ -33,11 +33,11 @@ describe('Edge Mapper', () => {
     expect(mapped.output.identifier).toBe(instance.identifier);
     expect(mapped.input.identifier).toBe(instance.identifier);
   });
-  it('should map an edge', function () {
+  it('should map an edge', async function () {
     const mapper = new EdgeMapperService();
-    const instance = new TestNodeDef().createInstance();
+    const instance = await new TestNodeDef().createInstance();
     instance.identifier = '1';
-    const instance2 = new TestNodeDef().createInstance();
+    const instance2 = await new TestNodeDef().createInstance();
     const edge = new Edge(instance.outputs[0], instance2.inputs[0]);
     expect(() =>
       mapper.entityToEdge(mapper.edgeToEntity(edge), [instance]),

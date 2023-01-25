@@ -1,5 +1,9 @@
 import { CoreApiService } from '../services/core.service.js';
-import { NodeRenderer } from './renderer/node.renderer.js';
+import { displayNotification } from './util.js';
+import { CursorTool } from './tool/cursor.js';
+import { ViewerTool } from './tool/viewer.js';
+import { ConnectorTool } from './tool/connector.js';
+import { DeleteTool } from './tool/delete.js';
 
 class EditorServiceClass {
   network = {
@@ -11,6 +15,12 @@ class EditorServiceClass {
   instance;
   detailsComponent;
 
+  tools = {
+    cursor: new CursorTool(),
+    viewer: new ViewerTool(),
+    connector: new ConnectorTool(),
+    deleteNode: new DeleteTool(),
+  };
   selectedTool = 'cursor'; // connector, view
 
   async loadNetwork(networkId) {
@@ -25,56 +35,26 @@ class EditorServiceClass {
 
   mouseDown() {
     return (ev) => {
-      const clicked = this._getNodeAndElementOn(ev.offsetX, ev.offsetY);
-      if (!clicked) return;
-      if (this.selectedTool === 'cursor') {
-        this.draggingOffsetX = clicked.node.x - ev.clientX;
-        this.draggingOffsetY = clicked.node.y - ev.clientY;
-        clicked.node.isDragging = true;
-        this.draggingNode = clicked.node;
-        this.instance.setDragcursor(true);
-      }
-      if (this.selectedTool === 'connector') {
-        this.connectingElement = clicked;
-      }
-      if (this.selectedTool === 'view') {
-        this.detailsComponent.load(clicked.node);
-      }
+      this.tools[this.selectedTool].mouseDown(ev);
     };
   }
 
   mouseMove() {
     return (ev) => {
-      let dirty = false;
-      if (this.draggingNode) {
-        this.draggingNode.x = ev.clientX + this.draggingOffsetX;
-        this.draggingNode.y = ev.clientY + this.draggingOffsetY;
-        dirty = true;
-      }
-      if (dirty) this.renderer.render(EditorService.network);
+      this.tools[this.selectedTool].mouseMove(ev);
     };
   }
 
   mouseUp() {
     return (ev) => {
-      if (this.connectingElement) {
-        const clicked = this._getNodeAndElementOn(ev.offsetX, ev.offsetY);
-        console.log(clicked);
-        if (clicked) {
-          this._createEdge(this.connectingElement, clicked);
-          this.connectingElement = null;
-          this.renderer.render(this.network);
-        }
-      }
-      if (!this.draggingNode) return;
-      this.draggingNode.isDragging = false;
-      this.draggingNode = null;
-      this.instance.setDragcursor(false);
+      this.tools[this.selectedTool].mouseUp(ev);
     };
   }
 
   saveNetwork() {
-    CoreApiService.createOrSave(this.network).then((res) => console.log(res));
+    CoreApiService.createOrSave(this.network).then((res) => {
+      displayNotification('Network saved', 3000);
+    });
   }
 
   addNode(node) {
@@ -82,49 +62,24 @@ class EditorServiceClass {
     this.renderer.render(this.network);
   }
 
-  _getNodeAndElementOn(offsetX, offsetY) {
-    const clickedNode = EditorService.network.nodes.find(
-      (node) =>
-        offsetX > node.x &&
-        node.x + node.width > offsetX &&
-        offsetY > node.y &&
-        offsetY < node.y + node.height,
-    );
-    if (!clickedNode) return;
-    const rowClicked = Math.floor(
-      (offsetY - clickedNode.y - NodeRenderer.headerHeight) /
-        NodeRenderer.rowHeight,
-    );
-    const clickedElement = [
-      ...clickedNode.attributes,
-      ...clickedNode.inputs,
-      ...clickedNode.outputs,
-    ][rowClicked];
-    return { node: clickedNode, element: clickedElement };
-  }
-
-  _createEdge(start, end) {
+  createEdge(start, end) {
     const edge = {
       inputIdentifier: end.element.identifier,
       inputNodeIdentifier: end.node.identifier,
       outputIdentifier: start.element.identifier,
       outputNodeIdentifier: start.node.identifier,
     };
-    console.log(edge);
     this.network.edges.push(edge);
+    displayNotification('Edge added', 1000);
   }
 
   rerender() {
     this.renderer.render(this.network);
   }
 
-  _uuidv4() {
-    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
-      (
-        c ^
-        (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
-      ).toString(16),
-    );
+  setCursor(cursor) {
+    if (cursor === 'drag') this.instance.setDragcursor(true);
+    if (cursor === 'pointer') this.instance.setDragcursor(false);
   }
 }
 

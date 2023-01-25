@@ -31,7 +31,8 @@ export class NetworkRepository {
     return this.networkMapper.entityToNetwork(network);
   }
 
-  deleteBy(id: string) {
+  async deleteBy(id: string) {
+    await this.networkRepo.save({ id, nodes: [], edges: [] } as any);
     return this.networkRepo.delete({ id });
   }
 }

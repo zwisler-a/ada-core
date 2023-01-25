@@ -21,8 +21,8 @@ export class NetworkEntity {
   })
   nodes: NodeEntity[];
   @OneToMany((type) => EdgeEntity, (object) => object.network, {
-    eager: true,
     cascade: true,
+    eager: true,
   })
   edges: EdgeEntity[];
 }

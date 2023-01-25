@@ -16,6 +16,8 @@ export class NodeAttributeEntity {
   @Column({ default: '' })
   value: string;
 
-  @ManyToOne((type) => NodeEntity, (object) => object.attributes)
+  @ManyToOne((type) => NodeEntity, (object) => object.attributes, {
+    orphanedRowAction: 'delete',
+  })
   node: NodeEntity;
 }

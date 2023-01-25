@@ -36,6 +36,7 @@ export class NodeEntity {
   @OneToMany((type) => NodeAttributeEntity, (object) => object.node, {
     cascade: true,
     eager: true,
+    orphanedRowAction: 'delete',
   })
   attributes: NodeAttributeEntity[];
 }

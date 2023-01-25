@@ -14,6 +14,9 @@ class NetworkEditorComponent extends HTMLElement {
     EditorService.instance = this;
     this.addEventListener('click', (ev) => {
       if (ev.target.getAttribute('js-action') === 'save') {
+        EditorService.network.name =
+          document.querySelector('[js-name]')?.value ??
+          EditorService.network.name;
         EditorService.saveNetwork();
       }
       if (ev.target.hasAttribute('js-tool')) {
@@ -48,6 +51,7 @@ class NetworkEditorComponent extends HTMLElement {
     this.canvas.height = window.innerHeight;
     EditorService.renderer = new EditorRenderer(this.ctx, this.canvas);
     await EditorService.loadNetwork(networkId);
+    document.querySelector('[js-name]').value = EditorService.network.name;
     EditorService.rerender();
     EditorService.rerender();
   }
@@ -73,15 +77,25 @@ class NetworkEditorComponent extends HTMLElement {
     this._toolbar.innerHTML = `
         <a href="/network">Back</a>
         <button  js-action="save">Save</button>
-        <button ${this._tool('cursor')}>Cursor</button>
-        <button ${this._tool('connector')}>Connector</button>
-        <button ${this._tool('view')}>view</button>
+        <button ${this._tool('cursor')}>
+          <span class="material-symbols-outlined">arrow_selector_tool</span>
+        </button>
+        <button ${this._tool('connector')}>
+          <span class="material-symbols-outlined">share</span>
+        </button>
+        <button ${this._tool('viewer')}>
+          <span class="material-symbols-outlined">settings_applications</span>
+        </button>
+        <button ${this._tool('deleteNode')}>
+          <span class="material-symbols-outlined">delete</span>
+        </button>
     `;
   }
 
   _render() {
     this.innerHTML = `
       <div class="toolbar"></div>
+      <input value="${EditorService.network.name}" js-name placeholder="Network Name" />
       <app-node-details js-id="details"></app-node-details>
       <app-available-nodes></app-available-nodes>
       <canvas id="canvas"></canvas>

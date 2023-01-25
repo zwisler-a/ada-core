@@ -27,21 +27,30 @@ export class NetworkService {
   }
 
   async executeNetworkById(networkId: string) {
-    let loadedNetwork = this.networks.find(
+    const inMemoryNetwork = this.networks.find(
       (network) => network.identifier === networkId,
     );
-    if (!loadedNetwork) {
-      loadedNetwork = await this.networkRepo.findBy(networkId);
-      this.networks.push(loadedNetwork);
-    }
-    if (loadedNetwork && !loadedNetwork.isActive) {
-      this.logger.debug(
-        `Executing network with id ${loadedNetwork.identifier}!`,
-      );
-      loadedNetwork.start();
-      await this.networkRepo.save(loadedNetwork);
+    if (inMemoryNetwork && !inMemoryNetwork.isActive) {
+      this.logger.debug('Executing Network from memory ...');
+      inMemoryNetwork.start();
+      await this.networkRepo.save(inMemoryNetwork);
       return true;
     }
+    if (!inMemoryNetwork) {
+      this.logger.debug(`Retrieving Network from DB ...`);
+      const dbNetwork = await this.networkRepo.findBy(networkId);
+      this.networks.push(dbNetwork);
+      if (dbNetwork.isActive) {
+        this.logger.debug(
+          'Network got into an inconsistent state. Not in memory but active in BD!',
+        );
+      }
+      this.logger.debug('Executing Network from DB ...');
+      dbNetwork.start();
+      await this.networkRepo.save(inMemoryNetwork);
+      return true;
+    }
+    this.logger.debug(`Could not start network ${inMemoryNetwork.identifier}!`);
     return false;
   }
 
@@ -70,6 +79,16 @@ export class NetworkService {
       network.stop();
       this.networks = this.networks.filter((n) => n.identifier !== networkId);
       await this.networkRepo.save(network);
+    } else {
+      const dbNetwork = await this.networkRepo.findBy(networkId);
+      if (dbNetwork.isActive) {
+        this.logger.debug(
+          `Inconsistent state between DB and Service. Stopping and saving network!`,
+        );
+        dbNetwork.stop();
+        await this.networkRepo.save(dbNetwork);
+        return true;
+      }
     }
     return !!network;
   }

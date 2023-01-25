@@ -1,21 +1,27 @@
-import { NodeSingletonDefinition } from '../../domain/node/definition/node-singleton-definition';
-import { NodeInputDefinition } from '../../domain/node/definition/node-input-definition';
-import { NodeOutputDefinition } from '../../domain/node/definition/node-output-definition';
 import { DataHolder } from '../../domain/node/data-holder';
 import { Logger } from '@nestjs/common';
+import { NodeInstance } from '../../domain/node/instance/node-instance';
+import { NodeDefinition } from '../../domain/node/definition/node-definition';
+import { Node } from '../../domain/proxy';
+import { Input } from '../../domain/proxy';
 
-export class LoggerNode extends NodeSingletonDefinition {
-  identifier = 'logger';
-  name = 'Logger';
-  description = 'Log input into application console';
-  logger: Logger = new Logger(LoggerNode.name);
-  attributes = [];
+@Node({
+  identifier: 'logger',
+  name: 'Logger',
+  description: 'Logs the input into the server console.',
+})
+export class LoggerNode extends NodeInstance {
+  constructor(definition: NodeDefinition, private logger: Logger) {
+    super(definition);
+    this.name = definition.name;
+  }
 
-  inputs = [NodeInputDefinition.from('loggerIn', 'Input', 'logs input')];
-
-  outputs = [];
-
-  handleInput(input: NodeInputDefinition, data: DataHolder) {
+  @Input({
+    identifier: 'input',
+    name: 'Logger input',
+    description: 'Logs the input',
+  })
+  handleInput(data: DataHolder) {
     this.logger.log(
       `[${this.identifier}][${this.name}]: ${JSON.stringify(data)}`,
     );

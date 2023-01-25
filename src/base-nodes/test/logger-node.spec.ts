@@ -1,16 +1,20 @@
 import { LoggerNode } from '../base-node/logger-node';
+import { ProxyHelper } from '../../domain/proxy/proxy-helper';
 
 describe('Logger Node', () => {
-  it('should log', () => {
-    const logDef = new LoggerNode();
-    logDef.logger = {
+  it('should log', async () => {
+    const loggerMock = {
       log: jest.fn(),
-    } as any;
+    };
+    const logDef = ProxyHelper.create(LoggerNode, loggerMock);
     const data = { data: true };
-    logDef.createInstance().handleInput(logDef.inputs[0], data);
-    expect(logDef.logger.log).toHaveBeenCalledTimes(1);
-    expect(logDef.logger.log).toHaveBeenCalledWith(
-      '[logger][Logger]: {"data":true}',
+    (await logDef.createInstance()).handleInput(
+      logDef.inputs[0].identifier,
+      data,
+    );
+    expect(loggerMock.log).toHaveBeenCalledTimes(1);
+    expect(loggerMock.log).toHaveBeenCalledWith(
+      '[undefined][Logger]: {"data":true}',
     );
   });
 });

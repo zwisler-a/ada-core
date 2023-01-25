@@ -12,15 +12,15 @@ class TestNodeDef extends NodeSingletonDefinition {
   inputs = [NodeInputDefinition.from('1', '1', '1')];
   outputs = [NodeOutputDefinition.from('1', '1', '1')];
 
-  handleInput(input: NodeInputDefinition, data: DataHolder) {
+  handleInput(input: string, data: DataHolder) {
     this.spy(data);
   }
 }
 
 describe('Edge Mapper', () => {
-  it('should map a network', function () {
+  it('should map a network', async function () {
     const mapper = new EdgeMapperService();
-    const instance = new TestNodeDef().createInstance();
+    const instance = await new TestNodeDef().createInstance();
     instance.identifier = '1';
     const edge = new Edge(instance.outputs[0], instance.inputs[0]);
     edge.identifier = 'id';

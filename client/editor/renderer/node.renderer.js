@@ -48,7 +48,7 @@ export class NodeRenderer {
       attr.y = yPos(rows);
       this.ctx.fillText(attr.name, attr.x, attr.y);
 
-      const displayValue = JSON.stringify(attr.value.slice(0, 10));
+      const displayValue = JSON.stringify(attr.value).slice(0, 10);
       const txtMeasure = this.ctx.measureText(displayValue);
       this.ctx.fillText(
         displayValue,

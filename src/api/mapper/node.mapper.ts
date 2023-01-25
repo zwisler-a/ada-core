@@ -30,7 +30,7 @@ export class NodeDtoMapper {
     );
     if (!nodeDefinition) throw new Error('Node definition is not available!');
 
-    const instance = nodeDefinition.createInstance();
+    const instance = await nodeDefinition.createInstance();
     instance.identifier = dto.identifier;
     instance.name = dto.name;
     instance.description = dto.description;

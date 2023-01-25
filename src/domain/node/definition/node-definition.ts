@@ -11,5 +11,5 @@ export abstract class NodeDefinition extends Identifiable {
 
   abstract outputs: NodeOutputDefinition[];
 
-  abstract createInstance(): NodeInstance;
+  abstract createInstance(): Promise<NodeInstance>;
 }

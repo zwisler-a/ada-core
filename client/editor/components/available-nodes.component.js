@@ -1,4 +1,5 @@
 import { CoreApiService } from '../../services/core.service.js';
+import { uuidv4 } from '../util.js';
 
 class AvailableNodesComponent extends HTMLElement {
   constructor() {
@@ -24,7 +25,7 @@ class AvailableNodesComponent extends HTMLElement {
     return {
       x: 10,
       y: 10,
-      identifier: this._uuidv4(),
+      identifier: uuidv4(),
       name: def.name,
       description: '',
       definitionId: defId,

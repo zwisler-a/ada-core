@@ -1,36 +1,37 @@
-import { NodeInputDefinition } from '../../domain/node/definition/node-input-definition';
-import { NodeOutputDefinition } from '../../domain/node/definition/node-output-definition';
 import { DataHolder } from '../../domain/node/data-holder';
-import { NodeAttributeDefinition } from '../../domain/node/definition/node-attribute-definition';
-import { NodeDefinition } from '../../domain/node/definition/node-definition';
-import { NodeInstance } from '../../domain/node/instance/node-instance';
+import { Node } from '../../domain/proxy';
+import { Attribute } from '../../domain/proxy';
+import { Output } from '../../domain/proxy';
+import { Input } from '../../domain/proxy';
 
-export class NodeMapperInstance extends NodeInstance {
-  handleInput(input: NodeInputDefinition, data: DataHolder) {
-    const attr = this.getAttribute('MapperFunction');
+@Node({
+  identifier: 'mapper',
+  name: 'Mapper',
+  description: 'Maps by the provided function',
+})
+export class MapperNode {
+  @Attribute({
+    identifier: 'MapperFunction',
+    name: 'Mapper function',
+    description: 'Function to map data',
+  })
+  mapperFunc: string;
+
+  @Output({
+    identifier: 'out',
+    name: 'Output',
+    description: 'Output of the function',
+  })
+  output: (data: DataHolder) => void;
+
+  @Input({
+    identifier: 'in',
+    name: 'Input',
+    description: 'Input of the mapper function',
+  })
+  handleInput(data: DataHolder) {
+    const attr = this.mapperFunc;
     const func = new Function('object', `return (${attr})(object)`);
-    this.updateOutput(this.outputs[0].definition, func(data));
-  }
-}
-
-export class MapperNode extends NodeDefinition {
-  identifier = 'mapper';
-  name = 'Mapper';
-  description = 'Maps by the provided function';
-
-  attributes = [
-    NodeAttributeDefinition.from(
-      'MapperFunction',
-      'Mapper Function',
-      'Javascript function to map data',
-    ),
-  ];
-
-  inputs = [NodeInputDefinition.from('in', 'in', 'desc')];
-
-  outputs = [NodeOutputDefinition.from('out', 'out', 'desc')];
-
-  createInstance(): NodeInstance {
-    return new NodeMapperInstance(this);
+    this.output(func(data));
   }
 }

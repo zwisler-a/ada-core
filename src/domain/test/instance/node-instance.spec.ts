@@ -14,7 +14,7 @@ class TestNodeDef extends NodeDefinition {
   inputs = [NodeInputDefinition.from('1', '1', '1')];
   outputs = [NodeOutputDefinition.from('1', '1', '1')];
 
-  createInstance(): NodeInstance {
+  async createInstance() {
     return null;
   }
 }
@@ -26,7 +26,7 @@ describe('Node Instance', () => {
     const spy = jest.fn();
     instance.outputs[0].subscribe(spy);
     const dataObj = { data: true };
-    instance.updateOutput(def.outputs[0], dataObj);
+    instance.updateOutput(def.outputs[0].identifier, dataObj);
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(dataObj);
   });
@@ -44,8 +44,6 @@ describe('Node Instance', () => {
     const instance = new TestNodeInstance(def);
 
     expect(instance.updateAttribute('2', {})).toBe(false);
-    expect(
-      instance.updateOutput(NodeOutputDefinition.from('2', '2', '2'), {}),
-    ).toBe(false);
+    expect(instance.updateOutput('2', {})).toBe(false);
   });
 });

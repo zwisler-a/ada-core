@@ -21,7 +21,7 @@ export class AuthController {
 
   @Get('login')
   login(@Res() res, @Query('redirect') redirect) {
-    res.cookie('redirect', redirect);
+    res.cookie('redirect', redirect, { httpOnly: false });
     res.redirect('/login/index.html');
     return;
   }

@@ -14,7 +14,7 @@ export class GoogleHomeDevice extends NodeSingletonDefinition {
   name = this.googleDevice.name.name;
   description = this.googleDevice.name.name;
 
-  attributes: NodeAttributeDefinition[];
+  attributes: NodeAttributeDefinition[] = [];
   inputs: NodeInputDefinition[] = mapTraitToNodeInputDefinition(
     this.googleDevice.traits,
   );
@@ -28,8 +28,8 @@ export class GoogleHomeDevice extends NodeSingletonDefinition {
 
   executeCommand(command: string, data: any) {
     const output = this.outputs.find((o) => (o.identifier = command));
-    if (output) this.updateOutput(output, data);
+    if (output) this.updateOutput(output.identifier, data);
   }
 
-  handleInput(input: NodeInputDefinition, data: DataHolder) {}
+  handleInput(input: string, data: DataHolder) {}
 }
