@@ -40,6 +40,9 @@ export class NetworkService {
       this.logger.debug(`Retrieving Network from DB ...`);
       const dbNetwork = await this.networkRepo.findBy(networkId);
       this.networks.push(dbNetwork);
+      if (!dbNetwork) {
+        return false;
+      }
       if (dbNetwork.isActive) {
         this.logger.debug(
           'Network got into an inconsistent state. Not in memory but active in BD!',
@@ -81,6 +84,9 @@ export class NetworkService {
       await this.networkRepo.save(network);
     } else {
       const dbNetwork = await this.networkRepo.findBy(networkId);
+      if (!dbNetwork) {
+        return false;
+      }
       if (dbNetwork.isActive) {
         this.logger.debug(
           `Inconsistent state between DB and Service. Stopping and saving network!`,
