@@ -28,6 +28,7 @@ export class NetworkRepository {
 
   async findBy(identifier: string) {
     const network = await this.networkRepo.findOneBy({ id: identifier });
+    if (!network) return null;
     return this.networkMapper.entityToNetwork(network);
   }
 

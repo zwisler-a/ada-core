@@ -1,58 +1,104 @@
 import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import { RemoteNodeDefinitionDto } from '../dto/remote-node-definition.dto';
-import { RemoteConnectorEntity } from '../persistance/remote-connector.entity';
-import { RemoteInstanceDto } from '../dto/remote-instance.dto';
-import { RemoteNodeOutputUpdateDto } from '../dto/remote-node-output-update.dto';
-import { firstValueFrom, map } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
+import { AmqpService } from './amqp.service';
+import { CreateInstanceEvent } from '../events/create-instance.event';
+import { RemoteNode } from '../node/remote-node';
+import { InputEvent } from '../events/input.event';
+import { AttributeEvent } from '../events/attribute.event';
+import { DestroyInstanceEvent } from '../events/destroy-instance.event';
+import { filter } from 'rxjs';
+import { ConnectorService } from '../../core/service/connector.service';
 
 @Injectable()
 export class RemoteApiService {
-  constructor(private http: HttpService) {}
+  constructor(
+    private amqp: AmqpService,
+    private connectorService: ConnectorService,
+  ) {
+    this.subscribeToConnectorUpdate();
+  }
 
-  async getAvailableNodes(connector: RemoteConnectorEntity) {
-    return firstValueFrom(
-      this.http
-        .get<RemoteNodeDefinitionDto[]>(connector.url)
-        .pipe(map((res) => res.data)),
+  createInstanceObservable(connectorId: string, instanceId: string) {
+    return this.amqp.ioEvents$.pipe(
+      filter(
+        (io) =>
+          io.connectorIdentifier === connectorId &&
+          io.nodeInstanceIdentifier === instanceId,
+      ),
     );
   }
 
-  async createInstance(connectorUrl: string) {
-    return firstValueFrom(
-      this.http
-        .post<RemoteInstanceDto>(connectorUrl + '/create-instance')
-        .pipe(map((response) => response.data)),
-    );
+  private subscribeToConnectorUpdate() {
+    this.amqp.connectors$.subscribe((connector) => {
+      this.connectorService.updateConnector({
+        name: connector.name,
+        description: connector.description,
+        nodeProvider: {
+          getAvailableNodes: async () => {
+            return connector.nodes.map(
+              (node) => new RemoteNode(node, connector.identifier, this),
+            );
+          },
+        },
+      });
+    });
   }
 
-  async updateInput(
-    connectorUrl: string,
-    nodeIdentifier: string,
+  async createInstance(
+    connectorIdentifier: string,
+    definitionIdentifier: string,
+  ) {
+    const instanceId = uuidv4();
+    const event: CreateInstanceEvent = {
+      type: 'CREATE',
+      connectorIdentifier,
+      definitionIdentifier,
+      nodeInstanceIdentifier: instanceId,
+    };
+    this.amqp.send(event);
+    return instanceId;
+  }
+
+  destroyInstance(connectorIdentifier: string, nodeInstanceIdentifier: string) {
+    const instanceId = uuidv4();
+    const event: DestroyInstanceEvent = {
+      type: 'DESTROY',
+      connectorIdentifier,
+      nodeInstanceIdentifier,
+    };
+    this.amqp.send(event);
+    return instanceId;
+  }
+
+  updateInput(
+    connectorIdentifier: string,
+    nodeInstanceIdentifier: string,
     inputIdentifier: string,
     data: string,
   ) {
-    return firstValueFrom(
-      this.http
-        .post<RemoteNodeOutputUpdateDto[]>(connectorUrl + '/update-input', {
-          nodeIdentifier,
-          inputIdentifier,
-          data,
-        })
-        .pipe(map((response) => response.data)),
-    );
+    const event: InputEvent = {
+      type: 'INPUT',
+      connectorIdentifier,
+      nodeInstanceIdentifier,
+      inputIdentifier,
+      value: data,
+    };
+    this.amqp.send(event);
   }
 
-  async updateAttribute(
-    connectorUrl: string,
+  updateAttribute(
+    connectorIdentifier: string,
+    nodeInstanceIdentifier: string,
     attributeIdentifier: string,
     data: string,
   ) {
-    return this.http
-      .post<RemoteInstanceDto>(connectorUrl + '/update-attribute', {
-        attributeIdentifier,
-        data,
-      })
-      .pipe(map((response) => response.data));
+    const event: AttributeEvent = {
+      type: 'ATTRIBUTE',
+      connectorIdentifier,
+      nodeInstanceIdentifier,
+      attributeIdentifier,
+      value: data,
+    };
+    this.amqp.send(event);
   }
 }

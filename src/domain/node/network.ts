@@ -25,6 +25,7 @@ export class Network extends Identifiable {
         node.onAttributeChange(attr.definition.identifier, attr.value),
       );
     });
+    this.nodes.forEach((node) => node.initialize());
   }
 
   stop() {

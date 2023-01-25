@@ -50,7 +50,7 @@ export class NetworkService {
       }
       this.logger.debug('Executing Network from DB ...');
       dbNetwork.start();
-      await this.networkRepo.save(inMemoryNetwork);
+      await this.networkRepo.save(dbNetwork);
       return true;
     }
     this.logger.debug(`Could not start network ${inMemoryNetwork.identifier}!`);

@@ -1,12 +1,9 @@
 import { NodeDefinition } from '../definition/node-definition';
-import { NodeOutputDefinition } from '../definition/node-output-definition';
 import { DataHolder } from '../data-holder';
-import { NodeInputDefinition } from '../definition/node-input-definition';
 import { NodeInputInstance } from './node-input-instance';
 import { NodeAttributeInstance } from './node-attribute-instance';
 import { NodeOutputInstance } from './node-output-instance';
 import { Identifiable } from '../identifiable';
-import { RemoteApiService } from '../../../remote/service/remote-api.service';
 
 export abstract class NodeInstance extends Identifiable {
   definition: NodeDefinition;
@@ -60,6 +57,10 @@ export abstract class NodeInstance extends Identifiable {
   }
 
   deconstruct() {
+    // Noop
+  }
+
+  initialize() {
     // Noop
   }
 }

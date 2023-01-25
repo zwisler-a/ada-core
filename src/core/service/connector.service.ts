@@ -8,7 +8,21 @@ export class ConnectorService {
 
   register(con: Connector) {
     this.logger.debug(`Registering external service "${con.name}".`);
+    const existing = this.connectors.find((exist) => exist.name === con.name);
+    if (existing) throw new Error('Connector with same name already exists!');
     this.connectors.push(con);
+  }
+
+  updateConnector(con: Connector) {
+    this.logger.debug(`Updating external service "${con.name}".`);
+    const existing = this.connectors.find((exist) => exist.name === con.name);
+    if (existing) {
+      this.connectors = this.connectors.map((existing) =>
+        existing.name === con.name ? con : existing,
+      );
+    } else {
+      this.connectors.push(con);
+    }
   }
 
   getAll() {

@@ -1,18 +1,27 @@
-import { NodeDefinition } from '../../domain/node/definition/node-definition';
-import { NodeInstance } from '../../domain/node/instance/node-instance';
-import { RemoteNodeDefinitionDto } from '../dto/remote-node-definition.dto';
+import {
+  NodeAttributeDefinition,
+  NodeDefinition,
+  NodeInputDefinition,
+  NodeOutputDefinition,
+} from '../../domain';
 import { RemoteNodeInstance } from './remote-node-instance';
-import { HttpService } from '@nestjs/axios';
 import { RemoteApiService } from '../service/remote-api.service';
+import { RemoteNodeDefinition } from '../events/connector.event';
 
 export class RemoteNode extends NodeDefinition {
-  attributes = this.remoteNode.attributes;
-  inputs = this.remoteNode.inputs;
-  outputs = this.remoteNode.outputs;
+  attributes = this.remoteNode.attributes.map((def) =>
+    NodeAttributeDefinition.from(def.identifier, def.name, def.description),
+  );
+  inputs = this.remoteNode.inputs.map((def) =>
+    NodeInputDefinition.from(def.identifier, def.name, def.description),
+  );
+  outputs = this.remoteNode.outputs.map((def) =>
+    NodeOutputDefinition.from(def.identifier, def.name, def.description),
+  );
 
   constructor(
-    private remoteNode: RemoteNodeDefinitionDto,
-    private connectorUrl: string,
+    private remoteNode: RemoteNodeDefinition,
+    private connectorIdentifier: string,
     private api: RemoteApiService,
   ) {
     super();
@@ -22,11 +31,14 @@ export class RemoteNode extends NodeDefinition {
   }
 
   async createInstance() {
-    const { identifier } = await this.api.createInstance(this.connectorUrl);
+    const identifier = await this.api.createInstance(
+      this.connectorIdentifier,
+      this.identifier,
+    );
     return new RemoteNodeInstance(
       this,
       identifier,
-      this.connectorUrl,
+      this.connectorIdentifier,
       this.api,
     );
   }
