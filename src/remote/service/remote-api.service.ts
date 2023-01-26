@@ -7,7 +7,7 @@ import { InputEvent } from '../events/input.event';
 import { AttributeEvent } from '../events/attribute.event';
 import { DestroyInstanceEvent } from '../events/destroy-instance.event';
 import { filter } from 'rxjs';
-import { ConnectorService } from '../../core/service/connector.service';
+import { ConnectorService } from '../../execution/service/connector.service';
 
 @Injectable()
 export class RemoteApiService {

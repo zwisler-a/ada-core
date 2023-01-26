@@ -11,7 +11,7 @@ provide it to the cure using the `ConnectorService.register(connector: Connector
 
 ```ts 
 // src/base-nodes/base-node.provider.ts
-import { NodeProvider } from "../core/interface/node-provider.interface";
+import { NodeProvider } from "../execution/interface/node-provider.interface";
 import { MapperNode } from "./base-node/mapper-node";
 import { NodeDefinition } from "../domain/node/definition/node-definition";
 import { LoggerNode } from "./base-node/logger-node";

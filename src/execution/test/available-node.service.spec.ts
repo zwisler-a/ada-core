@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { NetworkService } from '../service/network.service';
+import { NetworkExecutionService } from '../service/network-execution.service';
 import { AvailableNodeService } from '../service/available-node.service';
 import { ConnectorService } from '../service/connector.service';
 import { NodeDefinition } from '../../domain/node/definition/node-definition';

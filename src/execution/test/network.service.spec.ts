@@ -1,10 +1,10 @@
 import { Test } from '@nestjs/testing';
 import { NetworkRepository } from '../persistence/repository/network-repository.service';
-import { NetworkService } from '../service/network.service';
+import { NetworkExecutionService } from '../service/network-execution.service';
 import { Network } from '../../domain/node/network';
 
 describe('NetworkService', () => {
-  let testSubject: NetworkService;
+  let testSubject: NetworkExecutionService;
   const fakeService = {
     save: jest.fn(),
     findBy: jest.fn(),
@@ -14,12 +14,14 @@ describe('NetworkService', () => {
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
-        NetworkService,
+        NetworkExecutionService,
         { provide: NetworkRepository, useValue: fakeService },
       ],
     }).compile();
 
-    testSubject = moduleRef.get<NetworkService>(NetworkService);
+    testSubject = moduleRef.get<NetworkExecutionService>(
+      NetworkExecutionService,
+    );
   });
 
   it('should be created', async () => {

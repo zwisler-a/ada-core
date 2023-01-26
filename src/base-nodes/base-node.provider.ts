@@ -1,4 +1,4 @@
-import { NodeProvider } from '../core/interface/node-provider.interface';
+import { NodeProvider } from '../execution/interface/node-provider.interface';
 import { MapperNode } from './base-node/mapper-node';
 import { NodeDefinition } from '../domain/node/definition/node-definition';
 import { LoggerNode } from './base-node/logger-node';

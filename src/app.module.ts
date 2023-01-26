@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { ApiModule } from './api/api.module';
 import { AuthModule } from './auth/auth.module';
-import { CoreModule } from './core/core.module';
+import { CoreModule } from './execution/core.module';
 import { BaseNodesModule } from './base-nodes/base-nodes.module';
 import { GraphicModule } from './graphic/graphic.module';
 import { RemoteModule } from './remote/remote.module';

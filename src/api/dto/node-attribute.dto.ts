@@ -7,7 +7,8 @@ export class NodeAttributeDto {
   name: string;
   @ApiProperty()
   description: string;
-
+  @ApiProperty()
+  definitionId: string;
   @ApiProperty()
   value: any;
 }

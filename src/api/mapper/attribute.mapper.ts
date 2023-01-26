@@ -1,31 +1,30 @@
 import { NodeInstance } from '../../domain/node/instance/node-instance';
 import { Injectable } from '@nestjs/common';
-import { AvailableNodeService } from '../../core/service/available-node.service';
 import { NodeAttributeInstance } from '../../domain/node/instance/node-attribute-instance';
 import { NodeAttributeDto } from '../dto/node-attribute.dto';
+import { NodeAttributeRepresentation } from '../../persistance';
+import { NodeAttributeDefinition } from '../../domain';
 
 @Injectable()
 export class AttributeDtoMapper {
-  dtoToAttribute(
-    dto: NodeAttributeDto,
-    instance: NodeInstance,
-  ): NodeAttributeInstance {
-    const attributeDefinition = instance.definition.attributes.find(
-      (attrDefinition) => dto.identifier === attrDefinition.identifier,
-    );
-    const attributeInstance = attributeDefinition.createInstance(instance);
-    attributeInstance.value = dto.value;
-    attributeInstance.name = dto.name;
-    attributeInstance.description = dto.description;
-    return attributeInstance;
+  dtoToAttribute(dto: NodeAttributeDto): NodeAttributeRepresentation {
+    const attribute = new NodeAttributeRepresentation();
+    attribute.id = dto.identifier;
+    attribute.value = dto.value;
+    attribute.attributeDefinitionId = dto.identifier;
+    return attribute;
   }
 
-  attributeToDto(node: NodeAttributeInstance): NodeAttributeDto {
+  attributeToDto(
+    attr: NodeAttributeRepresentation,
+    definition: NodeAttributeDefinition,
+  ): NodeAttributeDto {
     return {
-      identifier: node.definition.identifier,
-      value: node.value,
-      name: node.name,
-      description: node.description,
+      identifier: attr.id,
+      definitionId: definition.identifier,
+      value: attr.value,
+      name: definition.name,
+      description: definition.description,
     };
   }
 }

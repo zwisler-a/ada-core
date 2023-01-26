@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Connector } from '../../core/interface/connector.interface';
+import { Connector } from '../../execution/interface/connector.interface';
 import { ConnectorDto } from '../dto/connector.dto';
 
 @Injectable()

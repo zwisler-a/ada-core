@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ConnectorService } from '../core/service/connector.service';
+import { ConnectorService } from '../execution/service/connector.service';
 import { BaseNodeProvider } from './base-node.provider';
-import { CoreModule } from '../core/core.module';
+import { CoreModule } from '../execution/core.module';
 
 @Module({
   imports: [CoreModule],

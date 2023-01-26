@@ -1,32 +1,36 @@
-import { Delete, Injectable, Param, Post } from '@nestjs/common';
-import { NetworkService } from '../../core/service/network.service';
+import { Injectable } from '@nestjs/common';
+import { NetworkExecutionService } from '../../execution/service/network-execution.service';
 import { NetworkDtoMapper } from '../mapper/network.mapper';
 import { PositionService } from '../../graphic/position.service';
 import { NetworkDto } from '../dto/network.dto';
 import { Position } from '../../graphic/position.interface';
+import { PersistenceService } from '../../persistance';
 
 @Injectable()
 export class NetworkPositionService {
   constructor(
-    private networkService: NetworkService,
+    private persistenceService: PersistenceService,
+    private networkExecutionService: NetworkExecutionService,
     private networkDtoMapper: NetworkDtoMapper,
     private positionService: PositionService,
   ) {}
 
   async getAllNetworks() {
-    const networks = await this.networkService.getAll();
+    const networks = await this.persistenceService.getAll();
     const networksAndPositions = await Promise.all(
       networks.map(async (network) => ({
         network,
         positions: await this.positionService.findPositionsFor(
-          network.nodes.map((n) => n.identifier),
+          network.nodes.map((n) => n.id),
         ),
       })),
     );
-    return networksAndPositions.map((networkAndPosition) =>
-      this.networkDtoMapper.networkToDto(
-        networkAndPosition.network,
-        networkAndPosition.positions,
+    return Promise.all(
+      networksAndPositions.map((networkAndPosition) =>
+        this.networkDtoMapper.networkToDto(
+          networkAndPosition.network,
+          networkAndPosition.positions,
+        ),
       ),
     );
   }
@@ -43,16 +47,18 @@ export class NetworkPositionService {
     const savedPositions = await this.positionService.savePositions(positions);
 
     const network = await this.networkDtoMapper.dtoToNetwork(dto);
-    const savedNetwork = await this.networkService.save(network);
+    const savedNetwork = await this.persistenceService.save(network);
     return this.networkDtoMapper.networkToDto(savedNetwork, savedPositions);
   }
 
   async deleteNetwork(id: string) {
-    const network = await this.networkService.findOne(id);
-    await this.positionService.delete(
-      network.nodes.map((node) => node.identifier),
+    const networkStopped = await this.networkExecutionService.stopNetworkById(
+      id,
     );
-    await this.networkService.delete(id);
-    return { success: true };
+    if (networkStopped) {
+      await this.persistenceService.delete(id);
+      return { success: true };
+    }
+    return { success: false };
   }
 }

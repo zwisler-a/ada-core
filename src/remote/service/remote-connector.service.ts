@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { NodeProvider } from '../../core/interface/node-provider.interface';
+import { NodeProvider } from '../../execution/interface/node-provider.interface';
 import { NodeDefinition } from '../../domain';
 import { RemoteApiService } from './remote-api.service';
 

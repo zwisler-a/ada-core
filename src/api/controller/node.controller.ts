@@ -1,11 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AvailableNodeService } from 'src/core/service/available-node.service';
+import { AvailableNodeService } from 'src/execution/service/available-node.service';
 import { NodeDtoMapper } from '../mapper/node.mapper';
 import { NodeDefinitionDto } from '../dto/node-definition.dto';
 
 @ApiTags('Core')
-@Controller('/core/node')
+@Controller('/execution/node')
 export class NodeController {
   constructor(
     private availableNodesService: AvailableNodeService,

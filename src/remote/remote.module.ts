@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { CoreModule } from '../core/core.module';
+import { CoreModule } from '../execution/core.module';
 import { HttpModule } from '@nestjs/axios';
-import { ConnectorService } from '../core/service/connector.service';
+import { ConnectorService } from '../execution/service/connector.service';
 import { RemoteConnectorService } from './service/remote-connector.service';
 import { RemoteApiService } from './service/remote-api.service';
 import { AmqpService } from './service/amqp.service';

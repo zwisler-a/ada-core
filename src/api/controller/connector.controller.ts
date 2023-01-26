@@ -1,8 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ConnectorService } from '../../core/service/connector.service';
+import { ConnectorService } from '../../execution/service/connector.service';
 import { ConnectorDto } from '../dto/connector.dto';
-import { ConnectorDtoMapper } from '../mapper/connector.service';
+import { ConnectorDtoMapper } from '../mapper/connector.mapper';
 
 @ApiTags('Connector')
 @Controller('/connectors')

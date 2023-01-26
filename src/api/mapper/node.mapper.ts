@@ -10,12 +10,13 @@ import { NodeOutputInstance } from '../../domain/node/instance/node-output-insta
 import { NodeOutputInstanceDto } from '../dto/node-output-instance.dto';
 import { NodeInstance } from '../../domain/node/instance/node-instance';
 import { Injectable } from '@nestjs/common';
-import { AvailableNodeService } from '../../core/service/available-node.service';
+import { AvailableNodeService } from '../../execution/service/available-node.service';
 import { NodeInstanceDto } from '../dto/node-instance.dto';
 import { AttributeDtoMapper } from './attribute.mapper';
 import { NodeAttributeDefinition } from '../../domain/node/definition/node-attribute-definition';
 import { NodeAttributeDefinitionDto } from '../dto/node-attribute-definition.dto';
 import { Position } from '../../graphic/position.interface';
+import { NodeRepresentation } from '../../persistance';
 
 @Injectable()
 export class NodeDtoMapper {
@@ -24,34 +25,47 @@ export class NodeDtoMapper {
     private attributeMapper: AttributeDtoMapper,
   ) {}
 
-  async dtoToNode(dto: NodeInstanceDto): Promise<NodeInstance> {
+  async dtoToNode(dto: NodeInstanceDto): Promise<NodeRepresentation> {
     const nodeDefinition = await this.availableNodeService.getByIdentifier(
       dto.definitionId,
     );
     if (!nodeDefinition) throw new Error('Node definition is not available!');
 
-    const instance = await nodeDefinition.createInstance();
-    instance.identifier = dto.identifier;
+    const instance = new NodeRepresentation();
+    instance.id = dto.identifier;
     instance.name = dto.name;
+    instance.definitionId = dto.definitionId;
     instance.description = dto.description;
     instance.attributes =
-      dto.attributes?.map((dto) =>
-        this.attributeMapper.dtoToAttribute(dto, instance),
-      ) ?? instance.attributes;
+      dto.attributes?.map((dto) => this.attributeMapper.dtoToAttribute(dto)) ??
+      [];
     return instance;
   }
 
-  nodeInstanceToDto(node: NodeInstance, position: Position): NodeInstanceDto {
+  async nodeToDto(
+    node: NodeRepresentation,
+    position: Position,
+  ): Promise<NodeInstanceDto> {
+    const definition = await this.availableNodeService.getByIdentifier(
+      node.definitionId,
+    );
+    const findAttributeDef = (id: string) =>
+      definition?.attributes.find((attr) => attr.identifier === id);
     return {
-      identifier: node.identifier,
+      identifier: node.id,
       name: node.name,
       description: node.description,
-      definitionId: node.definition.identifier,
+      definitionId: node.definitionId,
       attributes: node.attributes.map((attribute) =>
-        this.attributeMapper.attributeToDto(attribute),
+        this.attributeMapper.attributeToDto(
+          attribute,
+          findAttributeDef(attribute.attributeDefinitionId),
+        ),
       ),
-      inputs: node.inputs.map((i) => this.nodeInputInstanceToDto(i)),
-      outputs: node.outputs.map((o) => this.nodeOutputInstanceToDto(o)),
+      inputs: definition?.inputs.map((i) => this.nodeInputDefinitionToDto(i)),
+      outputs: definition?.outputs.map((o) =>
+        this.nodeOutputDefinitionToDto(o),
+      ),
       x: position?.x,
       y: position?.y,
     };
@@ -96,24 +110,6 @@ export class NodeDtoMapper {
       identifier: attribute.identifier,
       name: attribute.name,
       description: attribute.description,
-    };
-  }
-
-  nodeInputInstanceToDto(input: NodeInputInstance): NodeInputInstanceDto {
-    return {
-      identifier: input.identifier,
-      name: input.name,
-      description: input.description,
-      definition: this.nodeInputDefinitionToDto(input.definition),
-    };
-  }
-
-  nodeOutputInstanceToDto(output: NodeOutputInstance): NodeOutputInstanceDto {
-    return {
-      identifier: output.identifier,
-      name: output.name,
-      description: output.description,
-      definition: this.nodeOutputDefinitionToDto(output.definition),
     };
   }
 }

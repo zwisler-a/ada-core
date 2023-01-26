@@ -3,6 +3,8 @@ import { NodeAttributeDto } from './node-attribute.dto';
 import { NodeInputInstanceDto } from './node-input-instance.dto';
 import { NodeOutputInstanceDto } from './node-output-instance.dto';
 import { Position } from '../../graphic/position.interface';
+import { NodeInputDefinitionDto } from './node-input-definition.dto';
+import { NodeOutputDefinitionDto } from './node-output-definition.dto';
 
 export class NodeInstanceDto implements Position {
   @ApiProperty()
@@ -17,10 +19,10 @@ export class NodeInstanceDto implements Position {
   attributes: NodeAttributeDto[];
 
   @ApiProperty({ type: NodeInputInstanceDto, isArray: true, required: false })
-  inputs: NodeInputInstanceDto[];
+  inputs: NodeInputDefinitionDto[];
 
   @ApiProperty({ type: NodeOutputInstanceDto, isArray: true, required: false })
-  outputs: NodeOutputInstanceDto[];
+  outputs: NodeOutputDefinitionDto[];
 
   @ApiProperty({ required: false })
   x: number;

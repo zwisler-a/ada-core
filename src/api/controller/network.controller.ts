@@ -9,17 +9,17 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { NetworkService } from '../../core/service/network.service';
+import { NetworkExecutionService } from '../../execution/service/network-execution.service';
 import { NetworkDto } from '../dto/network.dto';
 import { NetworkPositionService } from '../service/network-position.service';
 import { UnauthorizedFilter } from '../../auth/unauthorized.filter';
 import { JwtAuthGuard } from '../../auth/strategies/jwt.strategy';
 
 @ApiTags('Core')
-@Controller('/core/network')
+@Controller('/execution/network')
 export class NetworkController {
   constructor(
-    private networkService: NetworkService,
+    private networkService: NetworkExecutionService,
     private networkPositionService: NetworkPositionService,
   ) {}
 
