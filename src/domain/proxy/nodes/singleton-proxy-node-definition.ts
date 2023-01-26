@@ -8,29 +8,29 @@ import { NodeAttributeProxyDefinition } from '../decorator/node-attribute.decora
 import { Identifiable } from '../../node/identifiable';
 import { DataHolder } from '../../node/data-holder';
 import { proxyAttributeChange } from '../property-definition-helper';
+import { NodeDefinition } from '../../node/definition/node-definition';
 
 export class SingletonProxyNodeDefinition extends NodeSingletonDefinition {
-  attributes: NodeAttributeDefinition[] = this.proxyAttribute.map(
-    (a) => a.definition,
-  );
-  inputs: NodeInputDefinition[] = this.proxyInputs.map(
-    (input) => input.definition,
-  );
-  outputs: NodeOutputDefinition[] = this.proxyOutputs.map(
-    (output) => output.definition,
-  );
+  attributes: NodeAttributeDefinition[] =
+    this.proxyAttribute?.map((a) => a.definition) ?? [];
+  inputs: NodeInputDefinition[] =
+    this.proxyInputs?.map((input) => input.definition) ?? [];
+  outputs: NodeOutputDefinition[] =
+    this.proxyOutputs?.map((output) => output.definition) ?? [];
+  private readonly instance: any;
 
   constructor(
-    private proxyInputs: NodeInputProxyDefinition[],
-    private proxyOutputs: NodeOutputProxyDefinition[],
-    private proxyAttribute: NodeAttributeProxyDefinition[],
+    private proxyInputs: NodeInputProxyDefinition[] = [],
+    private proxyOutputs: NodeOutputProxyDefinition[] = [],
+    private proxyAttribute: NodeAttributeProxyDefinition[] = [],
     private nodeDefinition: Identifiable,
-    private instance: any,
+    private instanceCreator: (def: NodeDefinition) => any,
   ) {
     super();
     this.identifier = nodeDefinition.identifier;
     this.name = nodeDefinition.name;
     this.description = nodeDefinition.description;
+    this.instance = instanceCreator(this);
     this.initializeOutputs();
     this.initializeAttributes();
   }
@@ -65,5 +65,9 @@ export class SingletonProxyNodeDefinition extends NodeSingletonDefinition {
     if (input) {
       this.instance[input.propertyKey](data);
     }
+  }
+
+  getInstance() {
+    return this.instance;
   }
 }

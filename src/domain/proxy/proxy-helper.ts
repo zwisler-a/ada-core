@@ -18,10 +18,16 @@ import { NodeDefinition } from '../node/definition/node-definition';
 import { NODE_DATA_HOLDER, NodeOptions } from './decorator/node.decorator';
 import { SingletonProxyNodeDefinition } from './nodes/singleton-proxy-node-definition';
 import { ProxyNodeDefinition } from './nodes/proxy-node-definition';
-import { NodeDeconstructProxyDefinition } from './decorator/node-deconstruct.decorator';
+import {
+  DECONSTRUCT_DATA_HOLDER,
+  NodeDeconstructProxyDefinition,
+} from './decorator/node-deconstruct.decorator';
 
 export class ProxyHelper {
-  static create(nodeClass: any, ...dependencies: any[]): NodeDefinition {
+  static create(
+    nodeClass: any,
+    ...dependencies: any[]
+  ): ProxyNodeDefinition | SingletonProxyNodeDefinition {
     const nodeOptions: NodeOptions = nodeClass.prototype[NODE_DATA_HOLDER];
     const nodeSingletonOptions: SingletonNodeOptions =
       nodeClass.prototype[SINGLETON_NODE_DATA_HOLDER];
@@ -32,7 +38,7 @@ export class ProxyHelper {
     const attributeOptions: NodeAttributeProxyDefinition[] =
       nodeClass.prototype[ATTRIBUTE_DATA_HOLDER];
     const deconstructOptions: NodeDeconstructProxyDefinition =
-      nodeClass.prototype[ATTRIBUTE_DATA_HOLDER];
+      nodeClass.prototype[DECONSTRUCT_DATA_HOLDER];
     if (nodeOptions) {
       return new ProxyNodeDefinition(
         inputOptions,

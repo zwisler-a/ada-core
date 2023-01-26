@@ -5,7 +5,7 @@ import { NodeDtoMapper } from '../mapper/node.mapper';
 import { NodeDefinitionDto } from '../dto/node-definition.dto';
 
 @ApiTags('Core')
-@Controller('/execution/node')
+@Controller('core/node')
 export class NodeController {
   constructor(
     private availableNodesService: AvailableNodeService,

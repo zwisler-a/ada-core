@@ -16,7 +16,7 @@ import { UnauthorizedFilter } from '../../auth/unauthorized.filter';
 import { JwtAuthGuard } from '../../auth/strategies/jwt.strategy';
 
 @ApiTags('Core')
-@Controller('/execution/network')
+@Controller('/core/network')
 export class NetworkController {
   constructor(
     private networkService: NetworkExecutionService,

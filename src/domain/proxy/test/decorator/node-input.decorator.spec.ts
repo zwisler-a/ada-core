@@ -1,12 +1,7 @@
-import { Input, INPUT_DATA_HOLDER } from './node-input.decorator';
-import { DataHolder } from '../../node/data-holder';
-import {
-  SINGLETON_NODE_DATA_HOLDER,
-  SingletonNode,
-} from './singleton-node.decorator';
+import { Input, INPUT_DATA_HOLDER } from '../../decorator/node-input.decorator';
 
-describe('Node Input Decorator', () => {
-  it('shoudl do stuff', () => {
+describe('Node Output Decorator', () => {
+  it('should do stuff', () => {
     const options = {
       identifier: '1',
       name: '2',

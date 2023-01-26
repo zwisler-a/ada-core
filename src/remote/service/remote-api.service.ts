@@ -60,14 +60,12 @@ export class RemoteApiService {
   }
 
   destroyInstance(connectorIdentifier: string, nodeInstanceIdentifier: string) {
-    const instanceId = uuidv4();
     const event: DestroyInstanceEvent = {
       type: 'DESTROY',
       connectorIdentifier,
       nodeInstanceIdentifier,
     };
     this.amqp.send(event);
-    return instanceId;
   }
 
   updateInput(
