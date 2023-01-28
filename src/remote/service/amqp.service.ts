@@ -3,6 +3,7 @@ import * as amqplib from 'amqplib';
 import { Subject } from 'rxjs';
 import { ConnectorEvent } from '../events/connector.event';
 import { IOEvent } from '../events/io.event';
+import * as process from 'process';
 
 @Injectable()
 export class AmqpService {
@@ -18,7 +19,7 @@ export class AmqpService {
   private connectorChannel: any;
 
   async initialize() {
-    this.conn = await amqplib.connect('amqp://localhost');
+    this.conn = await amqplib.connect('amqp://' + process.env.RABBIT_HOST);
 
     this.connectorChannel = await this.conn.createChannel();
     await this.connectorChannel.assertExchange(

@@ -55,14 +55,22 @@ export class NetworkMapper {
       (node) => node.identifier === edge.outputNode.id,
     );
     const input = inputNode.inputs.find(
-      (i) => i.identifier === edge.inputIdentifier,
+      (i) => i.definition.identifier === edge.inputIdentifier,
     );
     const output = outputNode.outputs.find(
-      (o) => o.identifier === edge.outputIdentifier,
+      (o) => o.definition.identifier === edge.outputIdentifier,
     );
 
-    if (!inputNode || !outputNode || input || output) {
+    if (!inputNode || !outputNode || !input || !output) {
       this.logger.error(`Something went wrong with the mapping`);
+      if (!inputNode)
+        this.logger.error(`Could not find input node ${edge.inputNode.id}`);
+      if (!outputNode)
+        this.logger.error(`Could not find output node ${edge.outputNode.id}`);
+      if (!input)
+        this.logger.error(`Could not find input ${edge.inputIdentifier}`);
+      if (!output)
+        this.logger.error(`Could not find input node ${edge.outputIdentifier}`);
     }
 
     const e = new Edge(output, input);

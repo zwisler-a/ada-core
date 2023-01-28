@@ -16,7 +16,7 @@ export class Network extends Identifiable {
     this.isActive = true;
     this.edges.forEach((edge) => {
       const subscription = edge.output.subscribe((data) =>
-        edge.input.node.handleInput(edge.input.definition.identifier, data),
+        edge.input.receive(data),
       );
       this.subscriptions.push(subscription);
     });

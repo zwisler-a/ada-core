@@ -1,9 +1,10 @@
 import { NodeOutputDefinition } from '../../node/definition/node-output-definition';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface NodeOutputOptions {
-  identifier: string;
+  identifier?: string;
   name: string;
-  description: string;
+  description?: string;
 }
 
 export class NodeOutputProxyDefinition {
@@ -14,6 +15,14 @@ export class NodeOutputProxyDefinition {
 export const OUTPUT_DATA_HOLDER = '_proxyOutputDefinition';
 
 export function Output(options: NodeOutputOptions) {
+  options = Object.assign(
+    {
+      identifier: uuidv4(),
+      name: '',
+      description: '',
+    },
+    options,
+  );
   return function (target: any, propertyKey: string) {
     let existingDefinitions = target.constructor.prototype[OUTPUT_DATA_HOLDER];
     if (!existingDefinitions) {

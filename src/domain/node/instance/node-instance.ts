@@ -17,7 +17,7 @@ export abstract class NodeInstance extends Identifiable {
     this.definition = definition;
     this.inputs = definition.inputs?.map((input) => input.createInstance(this));
     this.outputs = definition.outputs?.map((o) => o.createInstance(this));
-    this.attributes = definition.attributes?.map((a) => a.createInstance(this));
+    this.attributes = definition.attributes?.map((a) => a.createInstance());
   }
 
   abstract handleInput(identifier: string, data: DataHolder);

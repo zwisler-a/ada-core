@@ -1,9 +1,8 @@
-import { NodeInstance } from '../../domain/node/instance/node-instance';
 import { Injectable } from '@nestjs/common';
-import { NodeAttributeInstance } from '../../domain/node/instance/node-attribute-instance';
 import { NodeAttributeDto } from '../dto/node-attribute.dto';
 import { NodeAttributeRepresentation } from '../../persistance';
 import { NodeAttributeDefinition } from '../../domain';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AttributeDtoMapper {
@@ -11,20 +10,20 @@ export class AttributeDtoMapper {
     const attribute = new NodeAttributeRepresentation();
     attribute.id = dto.identifier;
     attribute.value = dto.value;
-    attribute.attributeDefinitionId = dto.identifier;
+    attribute.attributeDefinitionId = dto.definitionId;
     return attribute;
   }
 
   attributeToDto(
-    attr: NodeAttributeRepresentation,
-    definition: NodeAttributeDefinition,
+    attr: NodeAttributeDefinition,
+    representation: NodeAttributeRepresentation,
   ): NodeAttributeDto {
     return {
-      identifier: attr.id,
-      definitionId: definition.identifier,
-      value: attr.value,
-      name: definition.name,
-      description: definition.description,
+      identifier: representation?.id ?? uuidv4(),
+      definitionId: attr?.identifier,
+      value: representation?.value,
+      name: attr.name,
+      description: attr.description,
     };
   }
 }

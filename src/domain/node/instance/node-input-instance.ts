@@ -1,8 +1,12 @@
 import { NodeInputDefinition } from '../definition/node-input-definition';
 import { NodeInstance } from './node-instance';
-import { Identifiable } from '../identifiable';
+import { DataHolder } from '../data-holder';
 
-export class NodeInputInstance extends Identifiable {
+export class NodeInputInstance {
   definition: NodeInputDefinition;
   node: NodeInstance;
+
+  receive(data: DataHolder) {
+    this.node.handleInput(this.definition.identifier, data);
+  }
 }

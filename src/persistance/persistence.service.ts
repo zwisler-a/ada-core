@@ -4,7 +4,6 @@ import { NetworkEntity } from './entitiy/network.entity';
 import { Repository } from 'typeorm';
 import { NetworkRepresentation } from './dto/network.dto';
 import { NetworkMapperService } from './mapper/network-mapper.service';
-import { rethrow } from '@nestjs/core/helpers/rethrow';
 
 @Injectable()
 export class PersistenceService {

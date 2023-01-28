@@ -1,0 +1,73 @@
+html, body {
+    margin: 0;
+    overflow: hidden;
+}
+
+.cursor-dragging {
+    cursor: move;
+}
+
+.context-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+button:hover {
+    background: rgb(215, 215, 215);
+}
+
+button {
+    cursor: pointer;
+    background: white;
+    padding: 8px 16px;
+    border: solid 2px rgba(0, 0, 0, 0.47);
+    border-radius: 3px;
+}
+
+.flex-fill {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+.toolbar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 32px;
+    border-bottom: solid 1px black;
+}
+
+.notification-container {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 16px;
+}
+
+.notification.success {
+    background: #f0fff0;
+    border: solid 1px #1fff1f;
+}
+
+.notification.error {
+    background: #fca7a7;
+    border: solid 1px #ff4444;
+}
+
+.notification.info {
+    background: #ececff;
+    border: solid 1px #7171ff;
+}
+
+.notification {
+    background: white;
+    border-radius: 4px;
+    border: solid 1px black;
+    padding: 10px 16px;
+}

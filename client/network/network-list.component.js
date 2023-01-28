@@ -52,7 +52,7 @@ class NetworkListComponent extends HTMLElement {
           }</span>
               <button js-action-start="${network.identifier}">start</button>
               <button js-action-stop="${network.identifier}">stop</button>
-              <a href="/editor?networkId=${
+              <a href="/editor/?networkId=${
                 network.identifier
               }"><button>view</button></a>
               <button js-action-delete="${network.identifier}">delete</button>

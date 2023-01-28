@@ -49,17 +49,17 @@ export class NodeDtoMapper {
     const definition = await this.availableNodeService.getByIdentifier(
       node.definitionId,
     );
-    const findAttributeDef = (id: string) =>
-      definition?.attributes.find((attr) => attr.identifier === id);
+    const findAttribute = (id: string) =>
+      node.attributes?.find((attr) => attr.attributeDefinitionId === id);
     return {
       identifier: node.id,
       name: node.name,
       description: node.description,
       definitionId: node.definitionId,
-      attributes: node.attributes.map((attribute) =>
+      attributes: definition?.attributes.map((attribute) =>
         this.attributeMapper.attributeToDto(
           attribute,
-          findAttributeDef(attribute.attributeDefinitionId),
+          findAttribute(attribute.identifier),
         ),
       ),
       inputs: definition?.inputs.map((i) => this.nodeInputDefinitionToDto(i)),

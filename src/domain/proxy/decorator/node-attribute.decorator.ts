@@ -3,7 +3,7 @@ import { NodeAttributeDefinition } from '../../node/definition/node-attribute-de
 export interface NodeAttributeOptions {
   identifier: string;
   name: string;
-  description: string;
+  description?: string;
 }
 
 export class NodeAttributeProxyDefinition {

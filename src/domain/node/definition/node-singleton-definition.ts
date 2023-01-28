@@ -1,9 +1,6 @@
-import { NodeInputDefinition } from './node-input-definition';
-import { NodeOutputDefinition } from './node-output-definition';
 import { NodeInstance } from '../instance/node-instance';
 import { DataHolder } from '../data-holder';
 import { NodeDefinition } from './node-definition';
-import { NodeAttributeDefinition } from './node-attribute-definition';
 
 class NodeCallbackInstance extends NodeInstance {
   constructor(private singletonDefinition: NodeSingletonDefinition) {

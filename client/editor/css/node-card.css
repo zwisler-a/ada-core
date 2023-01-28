@@ -1,0 +1,33 @@
+.node-container {
+    display: flex;
+    gap: 8px;
+    padding: 23px 16px 16px 16px;
+    position: fixed;
+    width: 100%;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    background: white;
+    left: 0px;
+    border-bottom: solid 1px black;
+}
+
+
+.node-card {
+    padding: 8px;
+    border: solid 1px black;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    background: white;
+}
+
+.node-card h1 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    margin-top: 0;
+}
+
+.node-card.details {
+    gap: 8px;
+}

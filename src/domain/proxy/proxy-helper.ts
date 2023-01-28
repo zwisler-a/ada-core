@@ -15,7 +15,11 @@ import {
   NodeAttributeProxyDefinition,
 } from './decorator/node-attribute.decorator';
 import { NodeDefinition } from '../node/definition/node-definition';
-import { NODE_DATA_HOLDER, NodeOptions } from './decorator/node.decorator';
+import {
+  NODE_DATA_HOLDER,
+  NodeOptions,
+  NodeProxyDefinition,
+} from './decorator/node.decorator';
 import { SingletonProxyNodeDefinition } from './nodes/singleton-proxy-node-definition';
 import { ProxyNodeDefinition } from './nodes/proxy-node-definition';
 import {
@@ -28,7 +32,8 @@ export class ProxyHelper {
     nodeClass: any,
     ...dependencies: any[]
   ): ProxyNodeDefinition | SingletonProxyNodeDefinition {
-    const nodeOptions: NodeOptions = nodeClass.prototype[NODE_DATA_HOLDER];
+    const nodeOptions: NodeProxyDefinition =
+      nodeClass.prototype[NODE_DATA_HOLDER];
     const nodeSingletonOptions: SingletonNodeOptions =
       nodeClass.prototype[SINGLETON_NODE_DATA_HOLDER];
     const inputOptions: NodeInputProxyDefinition[] =

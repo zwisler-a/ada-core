@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "build:editor": "cd editor && npm run build && cp -r dist/ ../client/editor/",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -33,6 +34,7 @@
     "amqplib": "^0.10.3",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
+    "express-http-proxy": "^1.6.3",
     "express-session": "^1.17.3",
     "mysql2": "^2.3.3",
     "passport-google-oauth20": "^2.0.0",

@@ -17,6 +17,9 @@ export class NetworkPositionService {
 
   async getAllNetworks() {
     const networks = await this.persistenceService.getAll();
+    const runningNetworkIds = this.networkExecutionService
+      .getRunning()
+      .map((n) => n.identifier);
     const networksAndPositions = await Promise.all(
       networks.map(async (network) => ({
         network,
@@ -28,7 +31,10 @@ export class NetworkPositionService {
     return Promise.all(
       networksAndPositions.map((networkAndPosition) =>
         this.networkDtoMapper.networkToDto(
-          networkAndPosition.network,
+          {
+            ...networkAndPosition.network,
+            active: runningNetworkIds.includes(networkAndPosition.network.id),
+          },
           networkAndPosition.positions,
         ),
       ),

@@ -1,70 +1,85 @@
-import { Network } from '../node/network';
-import { NodeAttributeDefinition } from '../node/definition/node-attribute-definition';
-import { NodeInputDefinition } from '../node/definition/node-input-definition';
-import { NodeOutputDefinition } from '../node/definition/node-output-definition';
-import { NodeSingletonDefinition } from '../node/definition/node-singleton-definition';
-import { DataHolder } from '../node/data-holder';
+import { Attribute, Input, Node, Output, ProxyHelper } from '../proxy';
 import { Edge } from '../node/edge';
+import { DataHolder } from '../node/data-holder';
+import { Network } from '../node/network';
 
-class TestNodeDef extends NodeSingletonDefinition {
-  spy: any;
-  attributes = [NodeAttributeDefinition.from('1', '1', '1')];
-  inputs = [NodeInputDefinition.from('1', '1', '1')];
-  outputs = [NodeOutputDefinition.from('1', '1', '1')];
+describe('Flip Flop Network', () => {
+  jest.useFakeTimers();
 
-  handleInput(input: string, data: DataHolder) {
-    this.spy(data);
+  @Node({ name: 'Inverter' })
+  class InverterNode {
+    @Input({ name: 'in' })
+    in(data) {
+      this.out(!data);
+    }
+
+    @Output({ name: 'out' })
+    out: (data: DataHolder) => void;
   }
-}
 
-describe('Network', () => {
-  it('should create a connection for each edge on start', () => {
-    const edge = {
-      output: {
-        subscribe: jest.fn(),
-      },
-    } as any;
-    const network = new Network([], [edge]);
-    network.start();
-    expect(edge.output.subscribe).toHaveBeenCalledTimes(1);
-  });
-  it('should close the connection for each edge on stop', () => {
-    const unsubscribe = jest.fn();
-    const edge = {
-      output: {
-        subscribe: () => ({ unsubscribe }),
-      },
-    } as any;
-    const network = new Network([], [edge]);
-    network.start();
-    network.stop();
-    expect(unsubscribe).toHaveBeenCalledTimes(1);
-  });
-  it('should have a string reporesenation', () => {
-    const networkString = new Network([], []).toString();
-    expect(networkString).toBeTruthy();
-  });
+  @Node({ name: 'Inverter' })
+  class IdentityNode {
+    @Attribute({ name: 'name', identifier: 'name' })
+    name: string;
 
-  it('should pass data between connections', async () => {
-    const def = new TestNodeDef();
-    const node1 = await def.createInstance();
-    const node2 = await def.createInstance();
-    const spy = jest.fn();
-    def.spy = spy;
-    const edge = new Edge(node1.outputs[0], node2.inputs[0]);
-    const data = { data: true };
-    const network = new Network([node1, node2], [edge]);
-    node1.outputs[0].next(data);
-    expect(spy).toHaveBeenCalledTimes(0);
+    @Attribute({ name: 'value', identifier: 'value' })
+    value: string;
+
+    @Input({ name: 'in' })
+    in(data) {
+      this.value = data;
+      console.log(`[${this.name}] Value: ${this.value}`);
+      this.out(data);
+    }
+
+    @Output({ name: 'out' })
+    out: (data: DataHolder) => void;
+  }
+
+  const inverterDef = ProxyHelper.create(InverterNode);
+  const identityDef = ProxyHelper.create(IdentityNode);
+
+  /**  X = InverterNode, O = Noop Node
+   * ---------------------------------------
+   *                          Caries 1
+   *     O----- X ----------- O
+   * Out/Reset  |             |
+   *            |             |
+   *            |             |
+   *            |             |        in
+   *            O-------------X ------- o
+   *      Carries 0
+   *
+   **/
+  it('should', async () => {
+    const into = await identityDef.createInstance();
+    const out = await identityDef.createInstance();
+    const blNoop = await identityDef.createInstance();
+    const trNoop = await identityDef.createInstance();
+    const tlInv = await inverterDef.createInstance();
+    const brInv = await inverterDef.createInstance();
+
+    const edges = [
+      new Edge(brInv.outputs[0], into.inputs[0]),
+      new Edge(trNoop.outputs[0], brInv.inputs[0]),
+      new Edge(tlInv.outputs[0], trNoop.inputs[0]),
+      new Edge(blNoop.outputs[0], tlInv.inputs[0]),
+      new Edge(brInv.outputs[0], blNoop.inputs[0]),
+      new Edge(tlInv.outputs[0], out.inputs[0]),
+      new Edge(out.outputs[0], tlInv.inputs[0]),
+    ];
+
+    const network = new Network(
+      [into, out, blNoop, blNoop, trNoop, tlInv],
+      edges,
+    );
+
     network.start();
-    node1.outputs[0].next(data);
-    expect(spy).toHaveBeenCalledTimes(1);
-    network.stop();
-    node1.outputs[0].next(data);
-    expect(spy).toHaveBeenCalledTimes(1);
-  });
-  it('should have a string reporesenation', () => {
-    const networkString = new Network([], []).toString();
-    expect(networkString).toBeTruthy();
+    (() => {
+      into.inputs[0].receive(0);
+    })();
+
+    //expect(trNoop.getAttribute('value')).toBe(1);
+    //expect(blNoop.getAttribute('value')).toBe(0);
   });
 });

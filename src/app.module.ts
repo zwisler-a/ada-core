@@ -8,17 +8,18 @@ import { CoreModule } from './execution/core.module';
 import { BaseNodesModule } from './base-nodes/base-nodes.module';
 import { GraphicModule } from './graphic/graphic.module';
 import { RemoteModule } from './remote/remote.module';
+import * as process from 'process';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       // TODO Env
-      type: 'mysql',
-      host: 'localhost',
-      port: 3307,
-      username: 'root',
-      password: 'password',
-      database: 'db',
+      type: (process.env.DB_TYPE as any) || 'mysql',
+      host: process.env.DB_HOST || 'localhost',
+      port: Number.parseInt(process.env.DB_PORT),
+      username: process.env.DB_USER || 'root',
+      password: process.env.DB_PASSWORD || 'password',
+      database: process.env.DB_DATABASE || 'db',
       synchronize: true,
       autoLoadEntities: true,
     }),

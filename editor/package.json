@@ -1,0 +1,21 @@
+{
+  "name": "smart-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "esbuild src/main.ts --bundle --outfile=src/bunde.js --serve --servedir=src/",
+    "build:static": "rm -rf dist && mkdir dist && mkdir dist/css && cp src/index.html dist/ && cp -r src/css dist",
+    "build": "npm run build:static && esbuild src/main.ts --bundle --outfile=dist/bunde.js",
+    "generate:api": "npx openapi-typescript-codegen   --input http://localhost:3000/swagger-json   --output ./openapi-typescript-codegen   --exportSchemas true\n"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "esbuild": "0.17.4",
+    "rxjs": "^7.8.0"
+  }
+}

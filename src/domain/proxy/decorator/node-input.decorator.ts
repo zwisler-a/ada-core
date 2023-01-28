@@ -1,9 +1,10 @@
 import { NodeInputDefinition } from '../../node/definition/node-input-definition';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface NodeInputOptions {
-  identifier: string;
+  identifier?: string;
   name: string;
-  description: string;
+  description?: string;
 }
 
 export class NodeInputProxyDefinition {
@@ -14,6 +15,14 @@ export class NodeInputProxyDefinition {
 export const INPUT_DATA_HOLDER = '_proxyInputDefinition';
 
 export function Input(options: NodeInputOptions) {
+  options = Object.assign(
+    {
+      identifier: uuidv4(),
+      name: '',
+      description: '',
+    },
+    options,
+  );
   return function (
     target: any,
     propertyKey: string,

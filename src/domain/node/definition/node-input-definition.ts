@@ -6,9 +6,6 @@ export class NodeInputDefinition extends Identifiable {
   createInstance(node: NodeInstance): NodeInputInstance {
     const instance = new NodeInputInstance();
     instance.definition = this;
-    instance.identifier = this.identifier;
-    instance.name = this.name;
-    instance.description = this.description;
     instance.node = node;
     return instance;
   }

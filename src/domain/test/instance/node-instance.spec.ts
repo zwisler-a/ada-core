@@ -6,7 +6,7 @@ import { NodeInstance } from '../../node/instance/node-instance';
 import { DataHolder } from '../../node/data-holder';
 
 class TestNodeInstance extends NodeInstance {
-  handleInput(input: NodeInputDefinition, data: DataHolder) {}
+  handleInput(input: string, data: DataHolder) {}
 }
 
 class TestNodeDef extends NodeDefinition {

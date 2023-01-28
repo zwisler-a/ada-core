@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ConnectorService } from '../../execution/service/connector.service';
 import { ConnectorDto } from '../dto/connector.dto';
 import { ConnectorDtoMapper } from '../mapper/connector.mapper';
@@ -12,6 +12,7 @@ export class ConnectorController {
     private connectorMapper: ConnectorDtoMapper,
   ) {}
 
+  @ApiOperation({ operationId: 'get-all-connectors' })
   @Get()
   async getAllConnectors(): Promise<ConnectorDto[]> {
     return this.connectorService
