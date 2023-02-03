@@ -12,3 +12,6 @@ export * from './node/instance/node-instance';
 export * from './node/instance/node-attribute-instance';
 export * from './node/instance/node-input-instance';
 export * from './node/instance/node-output-instance';
+export * from './node/state/node-state';
+export * from './node/state/network-state';
+export * from './node/state/attribute-state';

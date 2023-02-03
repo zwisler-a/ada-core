@@ -1,4 +1,9 @@
-import { DataHolder, NodeDefinition, NodeInstance } from '../../domain';
+import {
+  DataHolder,
+  NodeDefinition,
+  NodeInstance,
+  NodeState,
+} from '../../domain';
 import { RemoteApiService } from '../service/remote-api.service';
 import { filter, Observable } from 'rxjs';
 import { IOEvent } from '../events/io.event';
@@ -10,11 +15,12 @@ export class RemoteNodeInstance extends NodeInstance {
 
   constructor(
     definition: NodeDefinition,
+    state: NodeState,
     private remoteIdentifier: string,
     private connectorIdentifier: string,
     private api: RemoteApiService,
   ) {
-    super(definition);
+    super(definition, state);
     this.instanceUpdates$ = this.api.createInstanceObservable(
       this.connectorIdentifier,
       this.remoteIdentifier,

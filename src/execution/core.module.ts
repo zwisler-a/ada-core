@@ -4,6 +4,7 @@ import { ConnectorService } from './service/connector.service';
 import { NetworkExecutionService } from './service/network-execution.service';
 import { PersistenceModule } from '../persistance';
 import { NetworkMapper } from './mapper/network.mapper';
+import { NetworkStateMapper } from './mapper/network-state.mapper';
 
 @Module({
   imports: [PersistenceModule],
@@ -13,6 +14,7 @@ import { NetworkMapper } from './mapper/network.mapper';
     AvailableNodeService,
     NetworkExecutionService,
     NetworkMapper,
+    NetworkStateMapper,
   ],
   exports: [ConnectorService, AvailableNodeService, NetworkExecutionService],
 })

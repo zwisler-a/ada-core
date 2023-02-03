@@ -13,6 +13,7 @@ import {
   proxyIdentifiable,
 } from '../property-definition-helper';
 import { NodeDeconstructProxyDefinition } from '../decorator/node-deconstruct.decorator';
+import { NodeState } from '../../node/state/node-state';
 
 class ProxyNodeInstance extends NodeInstance {
   constructor(
@@ -21,9 +22,10 @@ class ProxyNodeInstance extends NodeInstance {
     private proxyAttribute: NodeAttributeProxyDefinition[],
     private proxyDeconstruct: NodeDeconstructProxyDefinition,
     private nodeDefinition: NodeDefinition,
+    private state: NodeState,
     private instance,
   ) {
-    super(nodeDefinition);
+    super(nodeDefinition, state);
     this.identifier = nodeDefinition.identifier;
     this.name = nodeDefinition.name;
     this.description = nodeDefinition.description;
@@ -41,9 +43,13 @@ class ProxyNodeInstance extends NodeInstance {
   }
 
   handleInput(identifier: string, data: DataHolder) {
-    const input = this.proxyInputs.find((input) => input.definition.identifier);
+    const input = this.proxyInputs.find(
+      (input) => input.definition.identifier === identifier,
+    );
     if (input) {
       this.instance[input.propertyKey](data);
+    } else {
+      throw new Error('Unknown input received!');
     }
   }
 
@@ -92,7 +98,7 @@ export class ProxyNodeDefinition extends NodeDefinition {
     this.description = nodeDefinition.description;
   }
 
-  createInstance(): Promise<NodeInstance> {
+  createInstance(state: NodeState): Promise<NodeInstance> {
     return Promise.resolve(
       new ProxyNodeInstance(
         this.proxyInputs,
@@ -100,6 +106,7 @@ export class ProxyNodeDefinition extends NodeDefinition {
         this.proxyAttribute,
         this.proxyDeconstruct,
         this,
+        state,
         this.instantiateFunction(this),
       ),
     );

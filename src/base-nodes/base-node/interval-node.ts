@@ -1,11 +1,5 @@
-import { DataHolder } from '../../domain/node/data-holder';
-import {
-  Attribute,
-  Deconstruct,
-  Input,
-  Node,
-  Output,
-} from '../../domain/proxy';
+import { DataHolder } from '../../domain';
+import { Attribute, Deconstruct, Input, Node, Output } from '../../domain';
 
 @Node({
   identifier: 'interval',
@@ -25,7 +19,7 @@ export class IntervalNode {
   }
 
   get interval() {
-    return this._interval;
+    return this._interval ?? 5000;
   }
 
   @Attribute({
@@ -50,15 +44,38 @@ export class IntervalNode {
     description: 'Sets the interval of the node',
   })
   setInterval(data: DataHolder) {
-    console.log('set inteval', data);
     this.interval = data;
   }
 
+  @Input({
+    identifier: 'start-interval',
+    name: 'Start interval',
+    description: 'Starts the interval if stopped',
+  })
+  startInterval(data: DataHolder) {
+    this.setIntervalFromAttributes();
+  }
+
+  @Input({
+    identifier: 'stop-interval',
+    name: 'Stop interval',
+    description: 'Stops the interval if stopped',
+  })
+  stopInterval(data: DataHolder) {
+    if (this.intervalRef) {
+      clearInterval(this.intervalRef);
+      this.intervalRef = null;
+    }
+  }
+
   private setIntervalFromAttributes() {
-    if (this.intervalRef) clearInterval(this.intervalRef);
+    if (this.intervalRef) {
+      clearInterval(this.intervalRef);
+      this.intervalRef = null;
+    }
     this.intervalRef = setInterval(() => {
       this.output(this.value ?? new Date().getTime());
-    }, +(this.interval ?? 5000));
+    }, +this.interval ?? 5000);
   }
 
   @Deconstruct()

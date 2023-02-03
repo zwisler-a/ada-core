@@ -2,6 +2,7 @@ import { Attribute, Input, Node, Output, ProxyHelper } from '../proxy';
 import { Edge } from '../node/edge';
 import { DataHolder } from '../node/data-holder';
 import { Network } from '../node/network';
+import { NodeState } from '../node/state/node-state';
 
 describe('Flip Flop Network', () => {
   jest.useFakeTimers();
@@ -52,12 +53,12 @@ describe('Flip Flop Network', () => {
    *
    **/
   it('should', async () => {
-    const into = await identityDef.createInstance();
-    const out = await identityDef.createInstance();
-    const blNoop = await identityDef.createInstance();
-    const trNoop = await identityDef.createInstance();
-    const tlInv = await inverterDef.createInstance();
-    const brInv = await inverterDef.createInstance();
+    const into = await identityDef.createInstance(new NodeState());
+    const out = await identityDef.createInstance(new NodeState());
+    const blNoop = await identityDef.createInstance(new NodeState());
+    const trNoop = await identityDef.createInstance(new NodeState());
+    const tlInv = await inverterDef.createInstance(new NodeState());
+    const brInv = await inverterDef.createInstance(new NodeState());
 
     const edges = [
       new Edge(brInv.outputs[0], into.inputs[0]),

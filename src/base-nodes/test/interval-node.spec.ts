@@ -1,13 +1,12 @@
-import { LoggerNode } from '../base-node/logger-node';
 import { IntervalNode } from '../base-node/interval-node';
-import { ProxyHelper } from '../../domain/proxy/proxy-helper';
+import { NodeState, ProxyHelper } from '../../domain';
 
 describe('Interval Node', () => {
   it('should interval', async () => {
     jest.useFakeTimers();
     jest.spyOn(global, 'setInterval');
     const intervalDef = ProxyHelper.create(IntervalNode);
-    const instance = await intervalDef.createInstance();
+    const instance = await intervalDef.createInstance(new NodeState());
     instance.onAttributeChange('interval', null);
     expect(setInterval).toHaveBeenCalledTimes(1);
     expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 5000);

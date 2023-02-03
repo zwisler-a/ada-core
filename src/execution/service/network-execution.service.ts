@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Network } from '../../domain';
 import { PersistenceService } from '../../persistance';
 import { NetworkMapper } from '../mapper/network.mapper';
+import { NetworkStateRepresentation } from '../../persistance/dto/network-state.representation';
+import { NetworkStateMapper } from '../mapper/network-state.mapper';
 
 @Injectable()
 export class NetworkExecutionService {
@@ -11,6 +13,7 @@ export class NetworkExecutionService {
   constructor(
     private persistenceService: PersistenceService,
     private networkMapper: NetworkMapper,
+    private networkStateMapper: NetworkStateMapper,
   ) {}
 
   private isNetworkRunning(id: string) {
@@ -41,9 +44,18 @@ export class NetworkExecutionService {
         this.logger.debug(`Unable to find network ${networkId}.`);
         return false;
       }
+      this.logger.debug(`Fetching network state ...`);
+      let networkState = await this.persistenceService.getStateByNetworkId(
+        networkId,
+      );
+      if (!networkState) {
+        this.logger.debug(`Creating empty state ...`);
+        networkState = new NetworkStateRepresentation();
+      }
       this.logger.debug(`Creating network from representation ...`);
       const network = await this.networkMapper.createNetwork(
         networkRepresentation,
+        this.networkStateMapper.representationToState(networkState),
       );
       this.networks.push(network);
       network.start();

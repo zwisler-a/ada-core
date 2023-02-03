@@ -2,12 +2,17 @@ import { Edge } from './edge';
 import { Identifiable } from './identifiable';
 import { NodeInstance } from './instance/node-instance';
 import { Subscription } from '../observable';
+import { NetworkState } from './state/network-state';
 
 export class Network extends Identifiable {
   isActive = false;
   private subscriptions: Subscription<any>[] = [];
 
-  constructor(public nodes: NodeInstance[], public edges: Edge[]) {
+  constructor(
+    public nodes: NodeInstance[],
+    public edges: Edge[],
+    public state: NetworkState = new NetworkState(),
+  ) {
     super();
   }
 

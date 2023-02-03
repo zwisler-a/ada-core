@@ -1,11 +1,10 @@
 import { Identifiable } from '../identifiable';
 import { NodeAttributeInstance } from '../instance/node-attribute-instance';
+import { AttributeState } from '../state/attribute-state';
 
 export class NodeAttributeDefinition extends Identifiable {
-  createInstance(): NodeAttributeInstance {
-    const instance = new NodeAttributeInstance();
-    instance.definition = this;
-    return instance;
+  createInstance(state: AttributeState): NodeAttributeInstance {
+    return new NodeAttributeInstance(this, state);
   }
 
   static from(identifier: string, name: string, description: string) {

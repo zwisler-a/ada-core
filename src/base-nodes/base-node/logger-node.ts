@@ -1,9 +1,11 @@
-import { DataHolder } from '../../domain/node/data-holder';
+import {
+  DataHolder,
+  Input,
+  Node,
+  NodeDefinition,
+  NodeInstance,
+} from '../../domain';
 import { Logger } from '@nestjs/common';
-import { NodeInstance } from '../../domain/node/instance/node-instance';
-import { NodeDefinition } from '../../domain/node/definition/node-definition';
-import { Node } from '../../domain/proxy';
-import { Input } from '../../domain/proxy';
 
 @Node({
   identifier: 'logger',
@@ -12,7 +14,7 @@ import { Input } from '../../domain/proxy';
 })
 export class LoggerNode extends NodeInstance {
   constructor(definition: NodeDefinition, private logger: Logger) {
-    super(definition);
+    super(definition, null);
     this.name = definition.name;
   }
 

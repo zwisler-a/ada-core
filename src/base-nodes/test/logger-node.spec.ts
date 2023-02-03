@@ -1,5 +1,5 @@
 import { LoggerNode } from '../base-node/logger-node';
-import { ProxyHelper } from '../../domain/proxy/proxy-helper';
+import { NodeState, ProxyHelper } from '../../domain';
 
 describe('Logger Node', () => {
   it('should log', async () => {
@@ -8,7 +8,7 @@ describe('Logger Node', () => {
     };
     const logDef = ProxyHelper.create(LoggerNode, loggerMock);
     const data = { data: true };
-    (await logDef.createInstance()).handleInput(
+    (await logDef.createInstance(new NodeState())).handleInput(
       logDef.inputs[0].identifier,
       data,
     );

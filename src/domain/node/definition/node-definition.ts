@@ -3,6 +3,7 @@ import { NodeOutputDefinition } from './node-output-definition';
 import { Identifiable } from '../identifiable';
 import { NodeAttributeDefinition } from './node-attribute-definition';
 import { NodeInstance } from '../instance/node-instance';
+import { NodeState } from '../state/node-state';
 
 export abstract class NodeDefinition extends Identifiable {
   abstract attributes: NodeAttributeDefinition[];
@@ -11,5 +12,5 @@ export abstract class NodeDefinition extends Identifiable {
 
   abstract outputs: NodeOutputDefinition[];
 
-  abstract createInstance(): Promise<NodeInstance>;
+  abstract createInstance(state: NodeState): Promise<NodeInstance>;
 }

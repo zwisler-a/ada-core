@@ -3,10 +3,10 @@ import { ProxyHelper } from '../proxy-helper';
 import { Attribute } from '../decorator/node-attribute.decorator';
 import { Input } from '../decorator/node-input.decorator';
 import { Output } from '../decorator/node-output.decorator';
-import { ProxyNodeDefinition } from '../nodes/proxy-node-definition';
 import { SingletonProxyNodeDefinition } from '../nodes/singleton-proxy-node-definition';
 import { Node } from '../decorator/node.decorator';
 import { Deconstruct } from '../decorator/node-deconstruct.decorator';
+import { NodeState } from '../../node/state/node-state';
 
 describe('ProxyHelper', () => {
   it('should create a node', function () {
@@ -51,7 +51,7 @@ describe('ProxyHelper', () => {
     expect(node.inputs.length).toBe(1);
     expect(node.attributes.length).toBe(1);
 
-    const instance = await node.createInstance();
+    const instance = await node.createInstance(new NodeState());
 
     instance.handleInput('1', 'data');
     expect(inputSpy).toBeCalledWith('data');

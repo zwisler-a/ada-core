@@ -4,13 +4,14 @@ import { NodeOutputDefinition } from '../node/definition/node-output-definition'
 import { DataHolder } from '../node/data-holder';
 import { NodeInstance } from '../node/instance/node-instance';
 import { NodeDefinition } from '../node/definition/node-definition';
+import { NodeState } from '../node/state/node-state';
 
 export class TestNodeInstance extends NodeInstance {
   public static instanceCount = 0;
   private instanceNo = TestNodeInstance.instanceCount++;
 
   constructor(def: NodeDefinition, private cb) {
-    super(def);
+    super(def, new NodeState());
   }
 
   handleInput(input: string, data: DataHolder) {

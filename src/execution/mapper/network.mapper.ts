@@ -4,7 +4,13 @@ import {
   NetworkRepresentation,
   NodeRepresentation,
 } from '../../persistance';
-import { Edge, Network, NodeInstance } from '../../domain';
+import {
+  Edge,
+  Network,
+  NetworkState,
+  NodeInstance,
+  NodeState,
+} from '../../domain';
 import { AvailableNodeService } from '../service/available-node.service';
 
 @Injectable()
@@ -13,9 +19,11 @@ export class NetworkMapper {
 
   constructor(private availableNodesService: AvailableNodeService) {}
 
-  async createNetwork(rep: NetworkRepresentation) {
+  async createNetwork(rep: NetworkRepresentation, state: NetworkState) {
     const nodes = await Promise.all(
-      rep.nodes.map((nodeRep) => this.createNode(nodeRep)),
+      rep.nodes.map((nodeRep) =>
+        this.createNode(nodeRep, state.get(nodeRep.id)),
+      ),
     );
     const edges = await Promise.all(
       rep.edges.map((edgeRep) => this.createEdge(edgeRep, nodes)),
@@ -27,11 +35,11 @@ export class NetworkMapper {
     return network;
   }
 
-  async createNode(node: NodeRepresentation) {
+  async createNode(node: NodeRepresentation, nodeState: NodeState) {
     const nodeDefinition = await this.availableNodesService.getByIdentifier(
       node.definitionId,
     );
-    const instance = await nodeDefinition.createInstance();
+    const instance = await nodeDefinition.createInstance(nodeState);
     instance.identifier = node.id;
     instance.name = node.name;
     instance.description = node.description;

@@ -3,6 +3,7 @@ import {
   NodeDefinition,
   NodeInputDefinition,
   NodeOutputDefinition,
+  NodeState,
 } from '../../domain';
 import { RemoteNodeInstance } from './remote-node-instance';
 import { RemoteApiService } from '../service/remote-api.service';
@@ -30,13 +31,14 @@ export class RemoteNode extends NodeDefinition {
     this.description = remoteNode.description;
   }
 
-  async createInstance() {
+  async createInstance(state: NodeState) {
     const identifier = await this.api.createInstance(
       this.connectorIdentifier,
       this.identifier,
     );
     return new RemoteNodeInstance(
       this,
+      state,
       identifier,
       this.connectorIdentifier,
       this.api,

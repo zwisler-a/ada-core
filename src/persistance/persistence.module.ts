@@ -9,6 +9,7 @@ import { NodeMapperService } from './mapper/node-mapper.service';
 import { EdgeMapperService } from './mapper/edge-mapper.service';
 import { NodeAttributeMapperService } from './mapper/node-attribute-mapper.service';
 import { NetworkMapperService } from './mapper/network-mapper.service';
+import { NetworkStateMapperService } from './mapper/network-state-mapper.service';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { NetworkMapperService } from './mapper/network-mapper.service';
     EdgeMapperService,
     NodeAttributeMapperService,
     NetworkMapperService,
+    NetworkStateMapperService,
   ],
   exports: [PersistenceService],
 })

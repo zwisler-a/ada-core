@@ -53,7 +53,6 @@ export class AmqpService {
   }
 
   private connectorQueueCallback(message) {
-    this.logger.debug(`[ConnectorQueue]: Received connector specification`);
     try {
       this.connectors$.next(JSON.parse(message.content.toString()));
       this.connectorChannel.ack(message);

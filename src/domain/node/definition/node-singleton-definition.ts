@@ -1,10 +1,14 @@
 import { NodeInstance } from '../instance/node-instance';
 import { DataHolder } from '../data-holder';
 import { NodeDefinition } from './node-definition';
+import { NodeState } from '../state/node-state';
 
 class NodeCallbackInstance extends NodeInstance {
-  constructor(private singletonDefinition: NodeSingletonDefinition) {
-    super(singletonDefinition);
+  constructor(
+    private singletonDefinition: NodeSingletonDefinition,
+    nodeState: NodeState,
+  ) {
+    super(singletonDefinition, nodeState);
   }
 
   handleInput(input: string, data: DataHolder) {
@@ -19,8 +23,8 @@ class NodeCallbackInstance extends NodeInstance {
 export abstract class NodeSingletonDefinition extends NodeDefinition {
   protected instances: NodeInstance[] = [];
 
-  async createInstance() {
-    const instance = new NodeCallbackInstance(this);
+  async createInstance(state: NodeState) {
+    const instance = new NodeCallbackInstance(this, state);
     this.instances.push(instance);
     return instance;
   }

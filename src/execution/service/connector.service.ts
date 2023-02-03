@@ -14,7 +14,6 @@ export class ConnectorService {
   }
 
   updateConnector(con: Connector) {
-    this.logger.debug(`Updating external service "${con.name}".`);
     const existing = this.connectors.find((exist) => exist.name === con.name);
     if (existing) {
       this.connectors = this.connectors.map((existing) =>

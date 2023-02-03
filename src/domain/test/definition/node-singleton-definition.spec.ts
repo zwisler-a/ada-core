@@ -3,6 +3,7 @@ import { NodeAttributeDefinition } from '../../node/definition/node-attribute-de
 import { NodeOutputDefinition } from '../../node/definition/node-output-definition';
 import { NodeSingletonDefinition } from '../../node/definition/node-singleton-definition';
 import { DataHolder } from '../../node/data-holder';
+import { NodeState } from '../../node/state/node-state';
 
 class TestNodeDef extends NodeSingletonDefinition {
   spy: any;
@@ -20,8 +21,8 @@ describe('Node Singleton', () => {
     const def = new TestNodeDef();
     const spy1 = jest.fn();
     const spy2 = jest.fn();
-    const instance1 = await def.createInstance();
-    const instance2 = await def.createInstance();
+    const instance1 = await def.createInstance(new NodeState());
+    const instance2 = await def.createInstance(new NodeState());
     instance1.outputs[0].subscribe(spy1);
     instance2.outputs[0].subscribe(spy2);
     const data = { data: true };
@@ -33,8 +34,8 @@ describe('Node Singleton', () => {
   });
   it('should update all instance outputs', async function () {
     const def = new TestNodeDef();
-    const instance1 = await def.createInstance();
-    const instance2 = await def.createInstance();
+    const instance1 = await def.createInstance(new NodeState());
+    const instance2 = await def.createInstance(new NodeState());
     const data = { data: true };
     def.updateAttribute('1', data);
     expect(instance1.getAttribute('1')).toBe(data);

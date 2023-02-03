@@ -4,6 +4,7 @@ import { NodeInputInstance } from './node-input-instance';
 import { NodeAttributeInstance } from './node-attribute-instance';
 import { NodeOutputInstance } from './node-output-instance';
 import { Identifiable } from '../identifiable';
+import { NodeState } from '../state/node-state';
 
 export abstract class NodeInstance extends Identifiable {
   definition: NodeDefinition;
@@ -12,12 +13,14 @@ export abstract class NodeInstance extends Identifiable {
   outputs: NodeOutputInstance[];
   inputs: NodeInputInstance[];
 
-  constructor(definition: NodeDefinition) {
+  constructor(definition: NodeDefinition, state: NodeState) {
     super();
     this.definition = definition;
     this.inputs = definition.inputs?.map((input) => input.createInstance(this));
     this.outputs = definition.outputs?.map((o) => o.createInstance(this));
-    this.attributes = definition.attributes?.map((a) => a.createInstance());
+    this.attributes = definition.attributes?.map((a) =>
+      a.createInstance(state.get(a.identifier)),
+    );
   }
 
   abstract handleInput(identifier: string, data: DataHolder);
