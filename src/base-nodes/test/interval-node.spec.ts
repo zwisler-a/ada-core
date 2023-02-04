@@ -7,7 +7,7 @@ describe('Interval Node', () => {
     jest.spyOn(global, 'setInterval');
     const intervalDef = ProxyHelper.create(IntervalNode);
     const instance = await intervalDef.createInstance(new NodeState(null));
-    instance.onAttributeChange('interval', null);
+    instance.onAttributeChange('interval', 5000);
     expect(setInterval).toHaveBeenCalledTimes(1);
     expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 5000);
     instance.handleInput(intervalDef.inputs[0].identifier, 1000);

@@ -33,9 +33,9 @@ export function proxyAttributeChange(
     const attrState = state.get(attribute.definition.identifier);
     if (attribute.descriptor) {
       const orgSetter = attribute.descriptor.set;
-      attribute.descriptor.set = (value: any) => {
+      attribute.descriptor.set = function (value: any) {
         updateFn(attribute.definition.identifier, value);
-        orgSetter(value);
+        orgSetter.bind(instance)(value);
       };
       attribute.descriptor.get = () => attrState.get();
       Object.defineProperty(

@@ -14,19 +14,20 @@ import { Initialize } from '../../domain/proxy/decorator/node-initialize.decorat
   description: 'Emits a value in a fixed interval',
 })
 export class IntervalNode {
-  private _interval: DataHolder = '5000';
+  private _time: DataHolder = '5000';
+
   @Attribute({
     identifier: 'interval',
     name: 'Interval',
     description: 'Time between the emission of values',
   })
   set interval(v: DataHolder) {
-    this._interval = v;
+    this._time = v;
     this.setIntervalFromAttributes();
   }
 
   get interval() {
-    return this._interval ?? 5000;
+    return this._time ?? 5000;
   }
 
   @Attribute({
