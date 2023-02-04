@@ -25,11 +25,6 @@ export class Network extends Identifiable {
       );
       this.subscriptions.push(subscription);
     });
-    this.nodes.forEach((node) => {
-      node.attributes.forEach((attr) =>
-        node.onAttributeChange(attr.definition.identifier, attr.value),
-      );
-    });
     this.nodes.forEach((node) => node.initialize());
   }
 

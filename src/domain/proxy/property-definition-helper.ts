@@ -1,5 +1,6 @@
 import { Identifiable } from '../node/identifiable';
 import { NodeAttributeProxyDefinition } from './decorator/node-attribute.decorator';
+import { NodeState } from '../node/state/node-state';
 
 export function proxyIdentifiable(target: any, instance: Identifiable) {
   Object.defineProperty(target, 'identifier', {
@@ -25,23 +26,29 @@ export function proxyIdentifiable(target: any, instance: Identifiable) {
 export function proxyAttributeChange(
   instance: any,
   attributes: NodeAttributeProxyDefinition[],
+  state: NodeState,
   updateFn: (identifier: string, value: string) => void,
 ) {
   attributes.forEach((attribute) => {
-    let value;
+    const attrState = state.get(attribute.definition.identifier);
     if (attribute.descriptor) {
       const orgSetter = attribute.descriptor.set;
       attribute.descriptor.set = (value: any) => {
         updateFn(attribute.definition.identifier, value);
         orgSetter(value);
       };
+      attribute.descriptor.get = () => attrState.get();
+      Object.defineProperty(
+        instance,
+        attribute.propertyKey,
+        attribute.descriptor,
+      );
     } else {
       Object.defineProperty(instance, attribute.propertyKey, {
         set(v: any) {
-          value = v;
           updateFn(attribute.definition.identifier, v);
         },
-        get: () => value,
+        get: () => attrState.get(),
       });
     }
   });

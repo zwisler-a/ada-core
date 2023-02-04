@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { NetworkState } from '../../domain';
+import { NetworkState, NetworkStateSnapshot } from '../../domain';
 import { NetworkStateRepresentation } from '../../persistance/dto/network-state.representation';
 
 @Injectable()
@@ -14,5 +14,16 @@ export class NetworkStateMapper {
       });
     });
     return state;
+  }
+
+  stateToRepresentation(state: NetworkStateSnapshot) {
+    const rep = new NetworkStateRepresentation();
+    Object.keys(state).forEach((node) => {
+      rep.nodes[node] = { attributes: {} };
+      Object.keys(state[node]).forEach((attribute) => {
+        rep.nodes[node].attributes[attribute] = state[node][attribute];
+      });
+    });
+    return rep;
   }
 }

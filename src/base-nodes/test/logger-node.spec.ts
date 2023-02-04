@@ -8,7 +8,7 @@ describe('Logger Node', () => {
     };
     const logDef = ProxyHelper.create(LoggerNode, loggerMock);
     const data = { data: true };
-    (await logDef.createInstance(new NodeState())).handleInput(
+    (await logDef.createInstance(new NodeState(null))).handleInput(
       logDef.inputs[0].identifier,
       data,
     );

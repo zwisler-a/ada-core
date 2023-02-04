@@ -53,12 +53,12 @@ describe('Flip Flop Network', () => {
    *
    **/
   it('should', async () => {
-    const into = await identityDef.createInstance(new NodeState());
-    const out = await identityDef.createInstance(new NodeState());
-    const blNoop = await identityDef.createInstance(new NodeState());
-    const trNoop = await identityDef.createInstance(new NodeState());
-    const tlInv = await inverterDef.createInstance(new NodeState());
-    const brInv = await inverterDef.createInstance(new NodeState());
+    const into = await identityDef.createInstance(new NodeState(null));
+    const out = await identityDef.createInstance(new NodeState(null));
+    const blNoop = await identityDef.createInstance(new NodeState(null));
+    const trNoop = await identityDef.createInstance(new NodeState(null));
+    const tlInv = await inverterDef.createInstance(new NodeState(null));
+    const brInv = await inverterDef.createInstance(new NodeState(null));
 
     const edges = [
       new Edge(brInv.outputs[0], into.inputs[0]),

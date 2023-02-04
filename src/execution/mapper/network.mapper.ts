@@ -28,7 +28,7 @@ export class NetworkMapper {
     const edges = await Promise.all(
       rep.edges.map((edgeRep) => this.createEdge(edgeRep, nodes)),
     );
-    const network = new Network(nodes, edges);
+    const network = new Network(nodes, edges, state);
     network.identifier = rep.id;
     network.name = rep.name;
     network.description = rep.description;

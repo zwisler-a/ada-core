@@ -1,8 +1,4 @@
 import {
-  SINGLETON_NODE_DATA_HOLDER,
-  SingletonNodeOptions,
-} from './decorator/singleton-node.decorator';
-import {
   INPUT_DATA_HOLDER,
   NodeInputProxyDefinition,
 } from './decorator/node-input.decorator';
@@ -17,25 +13,19 @@ import {
 import { NodeDefinition } from '../node/definition/node-definition';
 import {
   NODE_DATA_HOLDER,
-  NodeOptions,
   NodeProxyDefinition,
 } from './decorator/node.decorator';
-import { SingletonProxyNodeDefinition } from './nodes/singleton-proxy-node-definition';
-import { ProxyNodeDefinition } from './nodes/proxy-node-definition';
+import { ProxyNodeDefinition } from './proxy-node-definition';
 import {
   DECONSTRUCT_DATA_HOLDER,
   NodeDeconstructProxyDefinition,
 } from './decorator/node-deconstruct.decorator';
+import { INITIALIZE_DATA_HOLDER } from './decorator/node-initialize.decorator';
 
 export class ProxyHelper {
-  static create(
-    nodeClass: any,
-    ...dependencies: any[]
-  ): ProxyNodeDefinition | SingletonProxyNodeDefinition {
+  static create(nodeClass: any, ...dependencies: any[]): ProxyNodeDefinition {
     const nodeOptions: NodeProxyDefinition =
       nodeClass.prototype[NODE_DATA_HOLDER];
-    const nodeSingletonOptions: SingletonNodeOptions =
-      nodeClass.prototype[SINGLETON_NODE_DATA_HOLDER];
     const inputOptions: NodeInputProxyDefinition[] =
       nodeClass.prototype[INPUT_DATA_HOLDER];
     const outputOptions: NodeOutputProxyDefinition[] =
@@ -44,28 +34,18 @@ export class ProxyHelper {
       nodeClass.prototype[ATTRIBUTE_DATA_HOLDER];
     const deconstructOptions: NodeDeconstructProxyDefinition =
       nodeClass.prototype[DECONSTRUCT_DATA_HOLDER];
+    const initializeOptions: NodeDeconstructProxyDefinition =
+      nodeClass.prototype[INITIALIZE_DATA_HOLDER];
     if (nodeOptions) {
       return new ProxyNodeDefinition(
         inputOptions,
         outputOptions,
         attributeOptions,
         deconstructOptions,
+        initializeOptions,
         nodeOptions,
         (def: NodeDefinition) => new nodeClass(def, ...dependencies),
       );
     }
-    if (nodeSingletonOptions && deconstructOptions) {
-      throw new Error('Deconstruct is not supported on SingletonNodes!');
-    }
-    if (nodeSingletonOptions) {
-      return new SingletonProxyNodeDefinition(
-        inputOptions,
-        outputOptions,
-        attributeOptions,
-        nodeSingletonOptions,
-        (def: NodeDefinition) => new nodeClass(def, ...dependencies),
-      );
-    }
-    throw new Error('Could not create Proxy: Missing definitions!');
   }
 }

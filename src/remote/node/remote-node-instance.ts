@@ -6,9 +6,12 @@ import {
 } from '../../domain';
 import { RemoteApiService } from '../service/remote-api.service';
 import { filter, Observable } from 'rxjs';
-import { IOEvent } from '../events/io.event';
-import { OutputEvent } from '../events/output.event';
-import { AttributeEvent } from '../events/attribute.event';
+import {
+  AttributeEvent,
+  IOEvent,
+  IOEventType,
+  OutputEvent,
+} from '@ada/remote-lib';
 
 export class RemoteNodeInstance extends NodeInstance {
   private instanceUpdates$: Observable<IOEvent>;
@@ -26,13 +29,13 @@ export class RemoteNodeInstance extends NodeInstance {
       this.remoteIdentifier,
     );
     this.instanceUpdates$
-      .pipe(filter((io) => io.type === 'OUTPUT'))
+      .pipe(filter((io) => io.type === IOEventType.OUTPUT))
       .subscribe((event: OutputEvent) =>
         this.updateOutput(event.outputIdentifier, event.value),
       );
 
     this.instanceUpdates$
-      .pipe(filter((io) => io.type === 'ATTRIBUTE'))
+      .pipe(filter((io) => io.type === IOEventType.ATTRIBUTE))
       .subscribe((event: AttributeEvent) =>
         this.updateAttribute(event.attributeIdentifier, event.value),
       );

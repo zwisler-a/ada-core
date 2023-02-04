@@ -4,11 +4,17 @@ import { PersistenceService } from '../../persistance';
 import { NetworkMapper } from '../mapper/network.mapper';
 import { NetworkStateRepresentation } from '../../persistance/dto/network-state.representation';
 import { NetworkStateMapper } from '../mapper/network-state.mapper';
+import { Subscription } from '../../domain/observable';
 
 @Injectable()
 export class NetworkExecutionService {
   private logger: Logger = new Logger(NetworkExecutionService.name);
-  private networks: Network[] = [];
+  private networks: {
+    [networkId: string]: {
+      network: Network;
+      stateSubscription: Subscription<any>;
+    };
+  } = {};
 
   constructor(
     private persistenceService: PersistenceService,
@@ -17,18 +23,15 @@ export class NetworkExecutionService {
   ) {}
 
   private isNetworkRunning(id: string) {
-    const inMemoryNetwork = this.networks.find(
-      (network) => network.identifier === id,
-    );
-    return !!inMemoryNetwork;
+    return !!this.networks[id];
   }
 
   private getRunningNetwork(id: string) {
-    return this.networks.find((network) => network.identifier === id);
+    return this.networks[id];
   }
 
   private removeRunningNetwork(id: string) {
-    this.networks = this.networks.filter((n) => n.identifier !== id);
+    delete this.networks[id];
   }
 
   async executeNetworkById(networkId: string) {
@@ -52,12 +55,20 @@ export class NetworkExecutionService {
         this.logger.debug(`Creating empty state ...`);
         networkState = new NetworkStateRepresentation();
       }
+      const state = this.networkStateMapper.representationToState(networkState);
       this.logger.debug(`Creating network from representation ...`);
       const network = await this.networkMapper.createNetwork(
         networkRepresentation,
-        this.networkStateMapper.representationToState(networkState),
+        state,
       );
-      this.networks.push(network);
+      this.logger.debug(`Initialize with ${JSON.stringify(state.snapshot())}`);
+      const stateSubscription = network.state.subscribe((state) => {
+        this.persistenceService.saveState(
+          networkId,
+          this.networkStateMapper.stateToRepresentation(state),
+        );
+      });
+      this.networks[networkId] = { network, stateSubscription };
       network.start();
       return true;
     }
@@ -66,8 +77,9 @@ export class NetworkExecutionService {
   async stopNetworkById(networkId: string) {
     if (this.isNetworkRunning(networkId)) {
       this.logger.debug(`Stopping network with id ${networkId}!`);
-      const network = this.getRunningNetwork(networkId);
+      const { network, stateSubscription } = this.getRunningNetwork(networkId);
       network.stop();
+      stateSubscription.unsubscribe();
       this.removeRunningNetwork(networkId);
     } else {
       this.logger.debug(`Network is not running!`);
@@ -76,6 +88,6 @@ export class NetworkExecutionService {
   }
 
   getRunning() {
-    return this.networks;
+    return Object.keys(this.networks);
   }
 }

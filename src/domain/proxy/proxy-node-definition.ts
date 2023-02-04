@@ -1,19 +1,20 @@
-import { NodeInstance } from '../../node/instance/node-instance';
-import { NodeInputProxyDefinition } from '../decorator/node-input.decorator';
-import { NodeOutputProxyDefinition } from '../decorator/node-output.decorator';
-import { NodeAttributeProxyDefinition } from '../decorator/node-attribute.decorator';
-import { NodeDefinition } from '../../node/definition/node-definition';
-import { DataHolder } from '../../node/data-holder';
-import { NodeAttributeDefinition } from '../../node/definition/node-attribute-definition';
-import { NodeInputDefinition } from '../../node/definition/node-input-definition';
-import { NodeOutputDefinition } from '../../node/definition/node-output-definition';
-import { Identifiable } from '../../node/identifiable';
+import { NodeInstance } from '../node/instance/node-instance';
+import { NodeInputProxyDefinition } from './decorator/node-input.decorator';
+import { NodeOutputProxyDefinition } from './decorator/node-output.decorator';
+import { NodeAttributeProxyDefinition } from './decorator/node-attribute.decorator';
+import { NodeDefinition } from '../node/definition/node-definition';
+import { DataHolder } from '../node/data-holder';
+import { NodeAttributeDefinition } from '../node/definition/node-attribute-definition';
+import { NodeInputDefinition } from '../node/definition/node-input-definition';
+import { NodeOutputDefinition } from '../node/definition/node-output-definition';
+import { Identifiable } from '../node/identifiable';
 import {
   proxyAttributeChange,
   proxyIdentifiable,
-} from '../property-definition-helper';
-import { NodeDeconstructProxyDefinition } from '../decorator/node-deconstruct.decorator';
-import { NodeState } from '../../node/state/node-state';
+} from './property-definition-helper';
+import { NodeDeconstructProxyDefinition } from './decorator/node-deconstruct.decorator';
+import { NodeState } from '../node/state/node-state';
+import { NodeInitializeProxyDefinition } from './decorator/node-initialize.decorator';
 
 class ProxyNodeInstance extends NodeInstance {
   constructor(
@@ -21,6 +22,7 @@ class ProxyNodeInstance extends NodeInstance {
     private proxyOutputs: NodeOutputProxyDefinition[],
     private proxyAttribute: NodeAttributeProxyDefinition[],
     private proxyDeconstruct: NodeDeconstructProxyDefinition,
+    private proxyInitialize: NodeInitializeProxyDefinition,
     private nodeDefinition: NodeDefinition,
     private state: NodeState,
     private instance,
@@ -66,6 +68,7 @@ class ProxyNodeInstance extends NodeInstance {
     proxyAttributeChange(
       this.instance,
       this.proxyAttribute,
+      this.state,
       (identifier, value) => this.updateAttribute(identifier, value),
     );
   }
@@ -73,6 +76,11 @@ class ProxyNodeInstance extends NodeInstance {
   deconstruct() {
     if (this.proxyDeconstruct?.propertyKey)
       this.instance[this.proxyDeconstruct.propertyKey]();
+  }
+
+  initialize() {
+    if (this.proxyInitialize?.propertyKey)
+      this.instance[this.proxyInitialize.propertyKey]();
   }
 }
 
@@ -89,6 +97,7 @@ export class ProxyNodeDefinition extends NodeDefinition {
     private proxyOutputs: NodeOutputProxyDefinition[] = [],
     private proxyAttribute: NodeAttributeProxyDefinition[] = [],
     private proxyDeconstruct: NodeDeconstructProxyDefinition,
+    private proxyInitialize: NodeInitializeProxyDefinition,
     private nodeDefinition: Identifiable,
     private instantiateFunction: (def: NodeDefinition) => any,
   ) {
@@ -105,6 +114,7 @@ export class ProxyNodeDefinition extends NodeDefinition {
         this.proxyOutputs,
         this.proxyAttribute,
         this.proxyDeconstruct,
+        this.proxyInitialize,
         this,
         state,
         this.instantiateFunction(this),

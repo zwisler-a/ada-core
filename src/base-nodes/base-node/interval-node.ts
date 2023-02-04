@@ -1,5 +1,12 @@
-import { DataHolder } from '../../domain';
-import { Attribute, Deconstruct, Input, Node, Output } from '../../domain';
+import {
+  Attribute,
+  DataHolder,
+  Deconstruct,
+  Input,
+  Node,
+  Output,
+} from '../../domain';
+import { Initialize } from '../../domain/proxy/decorator/node-initialize.decorator';
 
 @Node({
   identifier: 'interval',
@@ -52,7 +59,7 @@ export class IntervalNode {
     name: 'Start interval',
     description: 'Starts the interval if stopped',
   })
-  startInterval(data: DataHolder) {
+  startInterval() {
     this.setIntervalFromAttributes();
   }
 
@@ -61,13 +68,14 @@ export class IntervalNode {
     name: 'Stop interval',
     description: 'Stops the interval if stopped',
   })
-  stopInterval(data: DataHolder) {
+  stopInterval() {
     if (this.intervalRef) {
       clearInterval(this.intervalRef);
       this.intervalRef = null;
     }
   }
 
+  @Initialize()
   private setIntervalFromAttributes() {
     if (this.intervalRef) {
       clearInterval(this.intervalRef);

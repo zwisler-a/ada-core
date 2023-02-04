@@ -6,7 +6,7 @@ describe('Interval Node', () => {
     jest.useFakeTimers();
     jest.spyOn(global, 'setInterval');
     const intervalDef = ProxyHelper.create(IntervalNode);
-    const instance = await intervalDef.createInstance(new NodeState());
+    const instance = await intervalDef.createInstance(new NodeState(null));
     instance.onAttributeChange('interval', null);
     expect(setInterval).toHaveBeenCalledTimes(1);
     expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 5000);

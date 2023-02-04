@@ -16,11 +16,17 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@ada/remote-lib": [
+        "node_modules/remote-lib/src/"
+      ]
+    }
   },
   "exclude": [
     "node_modules",
     "dist",
-    "editor"
+    "editor",
+    "remote-lib"
   ]
 }

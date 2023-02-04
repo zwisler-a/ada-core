@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { AmqpService } from './amqp.service';
-import { CreateInstanceEvent } from '../events/create-instance.event';
+import {
+  AttributeEvent,
+  CreateInstanceEvent,
+  DestroyInstanceEvent,
+  InputEvent,
+  IOEventType,
+} from '@ada/remote-lib';
 import { RemoteNode } from '../node/remote-node';
-import { InputEvent } from '../events/input.event';
-import { AttributeEvent } from '../events/attribute.event';
-import { DestroyInstanceEvent } from '../events/destroy-instance.event';
 import { filter } from 'rxjs';
 import { ConnectorService } from '../../execution';
 
@@ -47,13 +50,15 @@ export class RemoteApiService {
   async createInstance(
     connectorIdentifier: string,
     definitionIdentifier: string,
+    state: { [attributeId: string]: any },
   ) {
     const instanceId = uuidv4();
     const event: CreateInstanceEvent = {
-      type: 'CREATE',
+      type: IOEventType.CREATE,
       connectorIdentifier,
       definitionIdentifier,
       nodeInstanceIdentifier: instanceId,
+      state,
     };
     this.amqp.send(event);
     return instanceId;
@@ -61,7 +66,7 @@ export class RemoteApiService {
 
   destroyInstance(connectorIdentifier: string, nodeInstanceIdentifier: string) {
     const event: DestroyInstanceEvent = {
-      type: 'DESTROY',
+      type: IOEventType.DESTROY,
       connectorIdentifier,
       nodeInstanceIdentifier,
     };
@@ -75,7 +80,7 @@ export class RemoteApiService {
     data: string,
   ) {
     const event: InputEvent = {
-      type: 'INPUT',
+      type: IOEventType.INPUT,
       connectorIdentifier,
       nodeInstanceIdentifier,
       inputIdentifier,
@@ -91,7 +96,7 @@ export class RemoteApiService {
     data: string,
   ) {
     const event: AttributeEvent = {
-      type: 'ATTRIBUTE',
+      type: IOEventType.ATTRIBUTE,
       connectorIdentifier,
       nodeInstanceIdentifier,
       attributeIdentifier,

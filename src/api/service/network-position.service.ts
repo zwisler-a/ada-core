@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { NetworkExecutionService } from '../../execution/service/network-execution.service';
+import { NetworkExecutionService } from '../../execution';
 import { NetworkDtoMapper } from '../mapper/network.mapper';
 import { PositionService } from '../../graphic/position.service';
 import { NetworkDto } from '../dto/network.dto';
@@ -17,9 +17,7 @@ export class NetworkPositionService {
 
   async getAllNetworks() {
     const networks = await this.persistenceService.getAll();
-    const runningNetworkIds = this.networkExecutionService
-      .getRunning()
-      .map((n) => n.identifier);
+    const runningNetworkIds = this.networkExecutionService.getRunning();
     const networksAndPositions = await Promise.all(
       networks.map(async (network) => ({
         network,

@@ -5,6 +5,7 @@
     "test",
     "dist",
     "**/*spec.ts",
-    "editor"
+    "editor",
+    "remote-lib"
   ]
 }

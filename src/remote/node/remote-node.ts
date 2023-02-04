@@ -7,7 +7,7 @@ import {
 } from '../../domain';
 import { RemoteNodeInstance } from './remote-node-instance';
 import { RemoteApiService } from '../service/remote-api.service';
-import { RemoteNodeDefinition } from '../events/connector.event';
+import { RemoteNodeDefinition } from '@ada/remote-lib';
 
 export class RemoteNode extends NodeDefinition {
   attributes = this.remoteNode.attributes.map((def) =>
@@ -35,6 +35,7 @@ export class RemoteNode extends NodeDefinition {
     const identifier = await this.api.createInstance(
       this.connectorIdentifier,
       this.identifier,
+      {},
     );
     return new RemoteNodeInstance(
       this,

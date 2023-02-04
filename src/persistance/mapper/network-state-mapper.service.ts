@@ -9,7 +9,9 @@ export class NetworkStateMapperService {
     network.nodes.forEach((node) => {
       const nodeState = state.nodes[node.id] || { attributes: {} };
       node.attributes.forEach((attribute) => {
-        nodeState[attribute.id] = attribute.value;
+        nodeState.attributes[attribute.attributeDefinitionId] = JSON.parse(
+          attribute.value,
+        );
       });
       state.nodes[node.id] = nodeState;
     });
@@ -21,9 +23,11 @@ export class NetworkStateMapperService {
       const networkNode = network.nodes.find((node) => node.id === nodeId);
       Object.keys(state.nodes[nodeId].attributes).forEach((attributeId) => {
         const attribute = networkNode.attributes.find(
-          (attribute) => attribute.id === attributeId,
+          (attribute) => attribute.attributeDefinitionId === attributeId,
         );
-        attribute.value = networkNode.attributes[attributeId].value;
+        attribute.value = JSON.stringify(
+          state.nodes[nodeId].attributes[attributeId],
+        );
       });
     });
     return network;

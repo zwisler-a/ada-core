@@ -1,10 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import * as amqplib from 'amqplib';
+import { ConnectorEvent, IOEvent } from '../events';
 import { Subject } from 'rxjs';
-import { ConnectorEvent, IOEvent } from '@ada/remote-lib';
-import * as process from 'process';
 
-@Injectable()
 export class AmqpService {
   private logger = new Logger(AmqpService.name);
   private connectorExchange = 'smart.queue.connector';
@@ -13,12 +11,16 @@ export class AmqpService {
   private conn: any;
   private ioChannel: any;
 
-  public connectors$ = new Subject<ConnectorEvent>();
   public ioEvents$ = new Subject<IOEvent>();
   private connectorChannel: any;
 
+  private resolve: (v: any) => void;
+  ready: Promise<any> = new Promise((res) => {
+    this.resolve = res;
+  });
+
   async initialize() {
-    this.conn = await amqplib.connect('amqp://' + process.env.RABBIT_HOST);
+    this.conn = await amqplib.connect('amqp://localhost');
 
     this.connectorChannel = await this.conn.createChannel();
     await this.connectorChannel.assertExchange(
@@ -37,10 +39,6 @@ export class AmqpService {
       this.connectorExchange,
       '',
     );
-    this.connectorChannel.consume(
-      connectorQueue.queue,
-      this.connectorQueueCallback.bind(this),
-    );
 
     this.ioChannel = await this.conn.createChannel();
     await this.ioChannel.assertExchange(this.ioExchange, 'fanout', {
@@ -49,15 +47,7 @@ export class AmqpService {
     const ioQueue = await this.ioChannel.assertQueue('', { exclusive: true });
     this.ioChannel.bindQueue(ioQueue.queue, this.ioExchange, '');
     this.ioChannel.consume(ioQueue.queue, this.ioQueueCallback.bind(this));
-  }
-
-  private connectorQueueCallback(message) {
-    try {
-      this.connectors$.next(JSON.parse(message.content.toString()));
-      this.connectorChannel.ack(message);
-    } catch (e) {
-      this.logger.error(`Failed to parse connector message`);
-    }
+    this.resolve(null);
   }
 
   private ioQueueCallback(message) {
@@ -69,9 +59,17 @@ export class AmqpService {
     }
   }
 
-  send(message: IOEvent) {
+  sendIO(message: IOEvent) {
     this.ioChannel.publish(
       this.ioExchange,
+      '',
+      Buffer.from(JSON.stringify(message)),
+    );
+  }
+
+  sendConnector(message: ConnectorEvent) {
+    this.connectorChannel.publish(
+      this.connectorExchange,
       '',
       Buffer.from(JSON.stringify(message)),
     );

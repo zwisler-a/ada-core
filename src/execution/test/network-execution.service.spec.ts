@@ -3,6 +3,7 @@ import { NetworkExecutionService } from '../service/network-execution.service';
 import { NetworkRepresentation, PersistenceService } from '../../persistance';
 import { NetworkMapper } from '../mapper/network.mapper';
 import { AvailableNodeService } from '../service/available-node.service';
+import { NetworkStateMapper } from '../mapper/network-state.mapper';
 
 describe('NetworkExecutionService', () => {
   let testSubject: NetworkExecutionService;
@@ -11,6 +12,7 @@ describe('NetworkExecutionService', () => {
     findById: jest.fn(),
     getAll: jest.fn(),
     delete: jest.fn(),
+    getStateByNetworkId: jest.fn(),
   } as unknown as PersistenceService;
   const avNodesFake = {
     getAvailableNodes: jest.fn(),
@@ -20,6 +22,7 @@ describe('NetworkExecutionService', () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         NetworkMapper,
+        NetworkStateMapper,
         NetworkExecutionService,
         { provide: PersistenceService, useValue: fakeService },
         { provide: AvailableNodeService, useValue: avNodesFake },

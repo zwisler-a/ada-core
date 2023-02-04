@@ -5,7 +5,7 @@ import { NodeState } from '../../domain';
 describe('Mapper Node', () => {
   it('should map', async () => {
     const mapperDef = ProxyHelper.create(MapperNode);
-    const instance = await mapperDef.createInstance(new NodeState());
+    const instance = await mapperDef.createInstance(new NodeState(null));
     const spy = jest.fn();
     instance.onAttributeChange('MapperFunction', '(data)=>data.string');
 
