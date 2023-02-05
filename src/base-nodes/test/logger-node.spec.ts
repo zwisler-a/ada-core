@@ -1,5 +1,5 @@
 import { LoggerNode } from '../base-node/logger-node';
-import { NodeState, ProxyHelper } from '../../domain';
+import { NodeState, ProxyHelper } from '@ada/lib';
 
 describe('Logger Node', () => {
   it('should log', async () => {

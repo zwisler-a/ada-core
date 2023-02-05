@@ -4,14 +4,8 @@ import {
   NetworkRepresentation,
   NodeRepresentation,
 } from '../../persistance';
-import {
-  Edge,
-  Network,
-  NetworkState,
-  NodeInstance,
-  NodeState,
-} from '../../domain';
 import { AvailableNodeService } from '../service/available-node.service';
+import { Edge, Network, NetworkState, NodeInstance, NodeState } from '@ada/lib';
 
 @Injectable()
 export class NetworkMapper {
@@ -39,6 +33,7 @@ export class NetworkMapper {
     const nodeDefinition = await this.availableNodesService.getByIdentifier(
       node.definitionId,
     );
+    if (!nodeDefinition) return null;
     const instance = await nodeDefinition.createInstance(nodeState);
     instance.identifier = node.id;
     instance.name = node.name;

@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "preinstall": "npm run link:remote-lib",
+    "preinstall": "npm run link:lib",
     "build:editor": "cd editor && npm run build && cp -r dist/ ../client/editor/",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -20,7 +20,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "link:remote-lib": "cd remote-lib && npm link && cd .. && npm link @ada/remote-lib"
+    "link:lib": "cd lib && npm link && cd .. && npm link @ada/lib"
   },
   "dependencies": {
     "@nestjs/axios": "^1.0.1",

@@ -2,11 +2,11 @@ import {
   Attribute,
   DataHolder,
   Deconstruct,
+  Initialize,
   Input,
   Node,
   Output,
-} from '../../domain';
-import { Initialize } from '../../domain/proxy/decorator/node-initialize.decorator';
+} from '@ada/lib';
 
 @Node({
   identifier: 'interval',

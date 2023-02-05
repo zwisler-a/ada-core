@@ -1,4 +1,4 @@
-import { DataHolder } from '../../domain';
+import { DataHolder } from '@ada/lib';
 
 export class NetworkStateRepresentation {
   nodes: {

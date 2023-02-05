@@ -1,6 +1,5 @@
-import { ProxyHelper } from '../../domain';
 import { MapperNode } from '../base-node/mapper-node';
-import { NodeState } from '../../domain';
+import { NodeState, ProxyHelper } from '@ada/lib';
 
 describe('Mapper Node', () => {
   it('should map', async () => {

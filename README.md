@@ -1,58 +1,29 @@
-# Smartstuff
+# Ada Core
 
-[Documentation](./docs/)
+> General automation tool
 
-### Example Network
+### [Documentation](./docs/)
 
-```json
-{
-  "name": "New network",
-  "description": "This is a test network",
-  "nodes": [
-    {
-      "identifier": "logger-node",
-      "name": "Test Logger",
-      "description": "This should log",
-      "definitionId": "logger"
-    },
-    {
-      "identifier": "mapper-node",
-      "name": "Mapper node",
-      "description": "This should map the message",
-      "definitionId": "mapper",
-      "attributes": [
-        {
-          "identifier": "MapperFunction",
-          "value": "function (obj){return ({message: 'Hallo'})}"
-        }
-      ]
-    },
-    {
-      "identifier": "interval-node",
-      "name": "Test interval",
-      "description": "This should emit every 5 seconds",
-      "definitionId": "interval"
-    }
-  ],
-  "edges": [
-    {
-      "identifier": "edge1",
-      "name": "To Mapper",
-      "description": "Go To Mapper",
-      "outputNodeIdentifier": "interval-node",
-      "outputIdentifier": "intervalOut",
-      "inputNodeIdentifier": "mapper-node",
-      "inputIdentifier": "in"
-    },
-    {
-      "identifier": "edge2",
-      "name": "To Logger",
-      "description": "Go To Logger",
-      "outputNodeIdentifier": "mapper-node",
-      "outputIdentifier": "out",
-      "inputNodeIdentifier": "logger-node",
-      "inputIdentifier": "loggerIn"
-    }
-  ]
-}
-```
+Example:
+<span style="margin:auto">
+![](./docs/resources/editor-overview.jpeg)
+</span>
+
+### TODOs
+
+- Handle missing Connectors
+    - Missing during network start
+    - Timout during network start
+    - Reappearing while network is running
+- Merge Client and Editor
+    - Proper data management
+    - proper integration into core
+- @ada/lib
+    - Build & Tests
+    - RabbitMQ Config
+
+### Connectors
+
+- WIP: Google Assistant
+- WIP: Whatsapp
+- WIP: Tuya / Smart Life

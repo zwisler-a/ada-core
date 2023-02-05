@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { NetworkState, NetworkStateSnapshot } from '../../domain';
 import { NetworkStateRepresentation } from '../../persistance/dto/network-state.representation';
+import { NetworkState, NetworkStateSnapshot } from '@ada/lib';
 
 @Injectable()
 export class NetworkStateMapper {

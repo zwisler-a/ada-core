@@ -7,19 +7,12 @@ import {
   DestroyInstanceEvent,
   InputEvent,
   IOEventType,
-} from '@ada/remote-lib';
-import { RemoteNode } from '../node/remote-node';
+} from '@ada/lib';
 import { filter } from 'rxjs';
-import { ConnectorService } from '../../execution';
 
 @Injectable()
 export class RemoteApiService {
-  constructor(
-    private amqp: AmqpService,
-    private connectorService: ConnectorService,
-  ) {
-    this.subscribeToConnectorUpdate();
-  }
+  constructor(private amqp: AmqpService) {}
 
   createInstanceObservable(connectorId: string, instanceId: string) {
     return this.amqp.ioEvents$.pipe(
@@ -29,22 +22,6 @@ export class RemoteApiService {
           io.nodeInstanceIdentifier === instanceId,
       ),
     );
-  }
-
-  private subscribeToConnectorUpdate() {
-    this.amqp.connectors$.subscribe((connector) => {
-      this.connectorService.updateConnector({
-        name: connector.name,
-        description: connector.description,
-        nodeProvider: {
-          getAvailableNodes: async () => {
-            return connector.nodes.map(
-              (node) => new RemoteNode(node, connector.identifier, this),
-            );
-          },
-        },
-      });
-    });
   }
 
   async createInstance(

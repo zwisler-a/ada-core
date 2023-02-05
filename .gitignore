@@ -1,6 +1,8 @@
 # compiled output
 editor/dist
+lib/dist
 editor/node_modules
+lib/node_modules
 /dist
 /node_modules
 

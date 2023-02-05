@@ -27,4 +27,11 @@ export class ConnectorService {
   getAll() {
     return [...this.connectors];
   }
+
+  remove(del: Connector) {
+    this.logger.debug(`Removing connector ${del.name}`);
+    this.connectors = this.connectors.filter(
+      (connector) => connector.name !== del.name,
+    );
+  }
 }

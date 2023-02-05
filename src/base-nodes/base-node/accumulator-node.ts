@@ -1,4 +1,4 @@
-import { Attribute, DataHolder, Input, Node, Output } from '../../domain';
+import { Attribute, DataHolder, Input, Node, Output } from '@ada/lib';
 
 @Node({
   identifier: 'accumulator',

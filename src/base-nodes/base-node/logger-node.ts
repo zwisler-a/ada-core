@@ -1,11 +1,11 @@
+import { Logger } from '@nestjs/common';
 import {
   DataHolder,
   Input,
   Node,
   NodeDefinition,
   NodeInstance,
-} from '../../domain';
-import { Logger } from '@nestjs/common';
+} from '@ada/lib';
 
 @Node({
   identifier: 'logger',

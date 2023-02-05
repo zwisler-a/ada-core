@@ -1,10 +1,8 @@
 import { NetworkDto } from '../dto/network.dto';
-import { Network } from '../../domain/node/network';
 import { EdgeDtoMapper } from './edge.mapper';
 import { NodeDtoMapper } from './node.mapper';
 import { Injectable } from '@nestjs/common';
 import { Position } from '../../graphic/position.interface';
-import { NodeInstance } from '../../domain/node/instance/node-instance';
 import { NetworkRepresentation, NodeRepresentation } from '../../persistance';
 
 @Injectable()

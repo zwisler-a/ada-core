@@ -1,22 +1,19 @@
 import { NodeInputDefinitionDto } from '../dto/node-input-definition.dto';
 import { NodeOutputDefinitionDto } from '../dto/node-output-definition.dto';
 import { NodeDefinitionDto } from '../dto/node-definition.dto';
-import { NodeDefinition } from '../../domain/node/definition/node-definition';
-import { NodeInputDefinition } from '../../domain/node/definition/node-input-definition';
-import { NodeOutputDefinition } from '../../domain/node/definition/node-output-definition';
-import { NodeInputInstance } from '../../domain/node/instance/node-input-instance';
-import { NodeInputInstanceDto } from '../dto/node-input-instance.dto';
-import { NodeOutputInstance } from '../../domain/node/instance/node-output-instance';
-import { NodeOutputInstanceDto } from '../dto/node-output-instance.dto';
-import { NodeInstance } from '../../domain/node/instance/node-instance';
 import { Injectable } from '@nestjs/common';
-import { AvailableNodeService } from '../../execution/service/available-node.service';
+import { AvailableNodeService } from '../../execution';
 import { NodeInstanceDto } from '../dto/node-instance.dto';
 import { AttributeDtoMapper } from './attribute.mapper';
-import { NodeAttributeDefinition } from '../../domain/node/definition/node-attribute-definition';
 import { NodeAttributeDefinitionDto } from '../dto/node-attribute-definition.dto';
 import { Position } from '../../graphic/position.interface';
 import { NodeRepresentation } from '../../persistance';
+import {
+  NodeAttributeDefinition,
+  NodeDefinition,
+  NodeInputDefinition,
+  NodeOutputDefinition,
+} from '@ada/lib';
 
 @Injectable()
 export class NodeDtoMapper {

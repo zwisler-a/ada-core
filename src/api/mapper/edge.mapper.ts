@@ -1,8 +1,6 @@
-import { Edge } from '../../domain/node/edge';
 import { EdgeDto } from '../dto/edge.dto';
 import { NodeDtoMapper } from './node.mapper';
 import { Injectable } from '@nestjs/common';
-import { NodeInstance } from '../../domain/node/instance/node-instance';
 import { EdgeRepresentation, NodeRepresentation } from '../../persistance';
 
 @Injectable()

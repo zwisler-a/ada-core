@@ -1,8 +1,4 @@
-import { DataHolder } from '../../domain/node/data-holder';
-import { Node } from '../../domain/proxy';
-import { Input } from '../../domain/proxy';
-import { Output } from '../../domain/proxy';
-import { Attribute } from '../../domain/proxy';
+import { Attribute, DataHolder, Input, Node, Output } from '@ada/lib';
 
 @Node({
   identifier: 'delay-node',

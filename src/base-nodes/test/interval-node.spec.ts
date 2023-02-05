@@ -1,5 +1,5 @@
 import { IntervalNode } from '../base-node/interval-node';
-import { NodeState, ProxyHelper } from '../../domain';
+import { NodeState, ProxyHelper } from '@ada/lib';
 
 describe('Interval Node', () => {
   it('should interval', async () => {

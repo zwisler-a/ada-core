@@ -1,4 +1,4 @@
-import { NodeDefinition } from '../../domain/node/definition/node-definition';
+import { NodeDefinition } from '@ada/lib';
 
 export interface NodeProvider {
   getAvailableNodes(): Promise<NodeDefinition[]>;

@@ -1,10 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Network } from '../../domain';
 import { PersistenceService } from '../../persistance';
 import { NetworkMapper } from '../mapper/network.mapper';
 import { NetworkStateRepresentation } from '../../persistance/dto/network-state.representation';
 import { NetworkStateMapper } from '../mapper/network-state.mapper';
-import { Subscription } from '../../domain/observable';
+import { Network } from '@ada/lib';
 
 @Injectable()
 export class NetworkExecutionService {
@@ -12,7 +11,7 @@ export class NetworkExecutionService {
   private networks: {
     [networkId: string]: {
       network: Network;
-      stateSubscription: Subscription<any>;
+      stateSubscription: any;
     };
   } = {};
 
