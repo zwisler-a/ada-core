@@ -1,15 +1,5 @@
 version: '3.3'
 services:
-  ada-db:
-    image: mysql:latest
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'db'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
-    ports:
-      - '3307:3306'
   rabbitmq:
     image: rabbitmq:3-management-alpine
     restart: always
@@ -21,20 +11,21 @@ services:
       context: .
       dockerfile: ./Dockerfile
     depends_on:
-      - ada-db
       - rabbitmq
     environment:
       USE_PROXY_EDITOR: 'false'
-      DB_HOST: 'ada-db'
-      DB_PORT: 3306
+      DB_FILE: './db.sqlite'
       RABBIT_HOST: 'rabbitmq'
+      JWT_SECRET: WHATWHAT
+      GOOGLE_PROFILE_API_URL: https://www.googleapis.com/oauth2/v1/userinfo
+      GOOGLE_CLIENT_ID: 1031579332754-ql323h2k9ae4c0us047tt7m1mgb0n148.apps.googleusercontent.com
+      GOOGLE_SECRET: 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
     ports:
       - "3000:3000"
 
   openai:
     image: zwisler/ada-openai:latest
     depends_on:
-      - ada-db
       - rabbitmq
     environment:
       AMQP_URL: "amqp://rabbitmq"
@@ -43,7 +34,6 @@ services:
   whatsapp:
     image: zwisler/ada-whatsapp:latest
     depends_on:
-      - ada-db
       - rabbitmq
     environment:
       AMQP_URL: "amqp://rabbitmq"

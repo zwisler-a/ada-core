@@ -1,8 +1,8 @@
 # Base image
-FROM node:18
+FROM node:18 AS builder
 
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /app/
 
 # Bundle app source
 COPY . .
@@ -11,5 +11,11 @@ RUN cd editor && npm install
 RUN npm run build:editor
 RUN npm run build
 
-# Start the server using the production build
-CMD [ "node", "dist/main.js" ]
+
+FROM node:18-alpine
+WORKDIR /app/
+COPY --from=builder /app/dist/ ./
+COPY --from=builder /app/client/ ../client/
+COPY package*.json ./
+RUN npm ci --omit=dev
+CMD [ "node", "main.js" ]

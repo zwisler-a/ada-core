@@ -2494,6 +2494,11 @@
       });
     }
     saveNetwork() {
+      var _a;
+      const nameInput = this.querySelector("[js-network-name]");
+      if (nameInput) {
+        networkManipulationStore.setName((_a = nameInput.value) != null ? _a : "Network");
+      }
       networkManipulationStore.save().then(() => {
         notificationStore.display({
           content: "Network saved",
@@ -2513,7 +2518,7 @@
       return `<div class="toolbar">
             <a href="/"><button>Close</button></a>
             <b>${((_a = state.network) == null ? void 0 : _a.active) ? "Running" : "Stopped"}</b>
-            <span>${state.network ? state.network.name : ""}</span>
+            <span>${state.network ? `<input js-network-name value="${state.network.name}" />` : ""}</span>
             <span class="flex-fill"></span>
             ${((_b = state.network) == null ? void 0 : _b.active) ? `<button js-click="stopNetwork">Stop Network</button>` : `<button js-click="runNetwork">Run Network</button>`}
             <button js-click="saveNetwork">Save Network</button>

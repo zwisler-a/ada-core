@@ -18,7 +18,7 @@ export class AmqpService {
   private connectorChannel: any;
 
   async initialize() {
-    this.conn = await amqplib.connect('amqp://' + process.env.RABBIT_HOST);
+    this.conn = await amqplib.connect(process.env.AMQP_URL);
 
     this.connectorChannel = await this.conn.createChannel();
     await this.connectorChannel.assertExchange(

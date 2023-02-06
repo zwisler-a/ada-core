@@ -58,6 +58,10 @@ export class ToolbarComponent extends StatefulComponent<ToolbarComponentState> {
   }
 
   saveNetwork() {
+    const nameInput: HTMLInputElement = this.querySelector('[js-network-name]');
+    if (nameInput) {
+      networkManipulationStore.setName(nameInput.value ?? 'Network');
+    }
     networkManipulationStore
       .save()
       .then(() => {
@@ -79,7 +83,11 @@ export class ToolbarComponent extends StatefulComponent<ToolbarComponentState> {
     return `<div class="toolbar">
             <a href="/"><button>Close</button></a>
             <b>${state.network?.active ? 'Running' : 'Stopped'}</b>
-            <span>${state.network ? state.network.name : ''}</span>
+            <span>${
+              state.network
+                ? `<input js-network-name value="${state.network.name}" />`
+                : ''
+            }</span>
             <span class="flex-fill"></span>
             ${
               state.network?.active
