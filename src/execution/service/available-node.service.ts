@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConnectorService } from './connector.service';
-import { NodeDefinition } from '@ada/lib';
+import { NodeDefinition } from '@zwisler/ada-lib';
 
 @Injectable()
 export class AvailableNodeService {

@@ -5,7 +5,7 @@ editor/node_modules
 lib/node_modules
 /dist
 /node_modules
-
+.env
 # Logs
 logs
 *.log

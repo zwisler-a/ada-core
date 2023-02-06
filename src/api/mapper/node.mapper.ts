@@ -13,7 +13,7 @@ import {
   NodeDefinition,
   NodeInputDefinition,
   NodeOutputDefinition,
-} from '@ada/lib';
+} from '@zwisler/ada-lib';
 
 @Injectable()
 export class NodeDtoMapper {

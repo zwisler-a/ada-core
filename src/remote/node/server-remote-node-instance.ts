@@ -9,7 +9,7 @@ import {
   NodeInstance,
   NodeState,
   OutputEvent,
-} from '@ada/lib';
+} from '@zwisler/ada-lib';
 
 export class ServerRemoteNodeInstance extends NodeInstance {
   private instanceUpdates$: Observable<IOEvent>;

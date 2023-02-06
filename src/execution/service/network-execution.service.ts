@@ -3,7 +3,7 @@ import { PersistenceService } from '../../persistance';
 import { NetworkMapper } from '../mapper/network.mapper';
 import { NetworkStateRepresentation } from '../../persistance/dto/network-state.representation';
 import { NetworkStateMapper } from '../mapper/network-state.mapper';
-import { Network } from '@ada/lib';
+import { Network } from '@zwisler/ada-lib';
 
 @Injectable()
 export class NetworkExecutionService {

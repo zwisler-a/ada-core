@@ -6,7 +6,7 @@ import {
   Input,
   Node,
   Output,
-} from '@ada/lib';
+} from '@zwisler/ada-lib';
 
 @Node({
   identifier: 'interval',

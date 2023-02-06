@@ -1,20 +1,23 @@
 import { Module } from '@nestjs/common';
-import { ConnectorService } from '../execution/service/connector.service';
+import { ConnectorService, CoreModule } from '../execution';
 import { BaseNodeProvider } from './base-node.provider';
-import { CoreModule } from '../execution/core.module';
+import { HttpModule, HttpService } from '@nestjs/axios';
 
 @Module({
-  imports: [CoreModule],
+  imports: [CoreModule, HttpModule],
   controllers: [],
   providers: [],
   exports: [],
 })
 export class BaseNodesModule {
-  constructor(private connectorService: ConnectorService) {
+  constructor(
+    private connectorService: ConnectorService,
+    private http: HttpService,
+  ) {
     this.connectorService.register({
       name: 'Base Logic',
       description: 'Provides a set of basic building blocks',
-      nodeProvider: new BaseNodeProvider(),
+      nodeProvider: new BaseNodeProvider(this.http),
     });
   }
 }

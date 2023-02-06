@@ -7,7 +7,8 @@ import {
   DestroyInstanceEvent,
   InputEvent,
   IOEventType,
-} from '@ada/lib';
+  NodeState,
+} from '@zwisler/ada-lib';
 import { filter } from 'rxjs';
 
 @Injectable()
@@ -27,7 +28,7 @@ export class RemoteApiService {
   async createInstance(
     connectorIdentifier: string,
     definitionIdentifier: string,
-    state: { [attributeId: string]: any },
+    state: NodeState,
   ) {
     const instanceId = uuidv4();
     const event: CreateInstanceEvent = {
@@ -35,7 +36,7 @@ export class RemoteApiService {
       connectorIdentifier,
       definitionIdentifier,
       nodeInstanceIdentifier: instanceId,
-      state,
+      state: state.snapshot(),
     };
     this.amqp.send(event);
     return instanceId;

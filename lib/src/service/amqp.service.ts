@@ -1,7 +1,6 @@
 import * as amqplib from 'amqplib';
 import { ConnectorEvent, IOEvent } from '../events';
 import { Subject } from 'rxjs';
-import { NodeDefinition } from '../domain';
 
 export class AmqpService {
   private connectorExchange = 'smart.queue.connector';
@@ -18,8 +17,8 @@ export class AmqpService {
     this.resolve = res;
   });
 
-  async initialize() {
-    this.conn = await amqplib.connect('amqp://localhost');
+  async initialize(amqpUrl: string) {
+    this.conn = await amqplib.connect(amqpUrl);
 
     this.connectorChannel = await this.conn.createChannel();
     await this.connectorChannel.assertExchange(
@@ -45,7 +44,6 @@ export class AmqpService {
     const ioQueue = await this.ioChannel.assertQueue('', { exclusive: true });
     this.ioChannel.bindQueue(ioQueue.queue, this.ioExchange, '');
     this.ioChannel.consume(ioQueue.queue, this.ioQueueCallback.bind(this));
-    console.log('Connection established');
     this.resolve(null);
   }
 
@@ -64,29 +62,19 @@ export class AmqpService {
     );
   }
 
-  sendConnector(
-    identifier: string,
-    name: string,
-    description: string,
-    nodes: NodeDefinition[],
-  ) {
-    const message: ConnectorEvent = {
-      identifier,
-      name,
-      description,
-      nodes: nodes.map((node) => ({
-        name: node.name,
-        description: node.description,
-        identifier: node.identifier,
-        attributes: node.attributes,
-        inputs: node.inputs,
-        outputs: node.outputs,
-      })),
-    };
+  sendConnector(message: ConnectorEvent) {
     this.connectorChannel.publish(
       this.connectorExchange,
       '',
       Buffer.from(JSON.stringify(message)),
     );
+  }
+
+  close() {
+    try {
+      this.ioChannel.close();
+      this.connectorChannel.close();
+      this.conn.close();
+    } catch (e) {}
   }
 }

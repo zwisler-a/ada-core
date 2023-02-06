@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { NodeAttributeDto } from '../dto/node-attribute.dto';
 import { NodeAttributeRepresentation } from '../../persistance';
 import { v4 as uuidv4 } from 'uuid';
-import { NodeAttributeDefinition } from '@ada/lib';
+import { NodeAttributeDefinition } from '@zwisler/ada-lib';
 
 @Injectable()
 export class AttributeDtoMapper {

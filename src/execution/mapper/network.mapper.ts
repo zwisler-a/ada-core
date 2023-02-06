@@ -5,7 +5,13 @@ import {
   NodeRepresentation,
 } from '../../persistance';
 import { AvailableNodeService } from '../service/available-node.service';
-import { Edge, Network, NetworkState, NodeInstance, NodeState } from '@ada/lib';
+import {
+  Edge,
+  Network,
+  NetworkState,
+  NodeInstance,
+  NodeState,
+} from '@zwisler/ada-lib';
 
 @Injectable()
 export class NetworkMapper {

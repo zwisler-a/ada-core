@@ -5,7 +5,7 @@ import {
   Node,
   NodeDefinition,
   NodeInstance,
-} from '@ada/lib';
+} from '@zwisler/ada-lib';
 
 @Node({
   identifier: 'logger',

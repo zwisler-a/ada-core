@@ -2,6 +2,7 @@ import { RemoteApiService } from './remote-api.service';
 import { AmqpService } from './amqp.service';
 import {
   AttributeEvent,
+  ConnectorEvent,
   DestroyInstanceEvent,
   InputEvent,
   IOEvent,
@@ -19,6 +20,10 @@ export class NodeRegisterService {
   ) {}
 
   private instances: { [nodeInstanceId: string]: NodeInstance } = {};
+
+  close() {
+    this.amqp.close();
+  }
 
   async register(
     nodes: NodeDefinition[],
@@ -44,8 +49,30 @@ export class NodeRegisterService {
     });
     if (this.healthPingIntervalRef) clearInterval(this.healthPingIntervalRef);
     this.healthPingIntervalRef = setInterval(() => {
-      this.amqp.sendConnector(connectorId, name, description, nodes);
+      this.sendConnectorUpdate(connectorId, name, description, nodes);
     }, 5000);
+  }
+
+  private sendConnectorUpdate(
+    connectorId: string,
+    name: string,
+    description: string,
+    nodes: NodeDefinition[],
+  ) {
+    const message: ConnectorEvent = {
+      identifier: connectorId,
+      name,
+      description,
+      nodes: nodes.map((node) => ({
+        name: node.name,
+        description: node.description,
+        identifier: node.identifier,
+        attributes: node.attributes,
+        inputs: node.inputs,
+        outputs: node.outputs,
+      })),
+    };
+    this.amqp.sendConnector(message);
   }
 
   private createLifecycleHooks(connectorId: string, instance: NodeInstance) {

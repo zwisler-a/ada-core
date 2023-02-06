@@ -1,10 +1,11 @@
 {
-  "name": "@ada/lib",
+  "name": "@zwisler/ada-lib",
   "version": "1.0.0",
   "description": "",
   "scripts": {
     "build": "tsc",
-    "build:watch": "tsc --watch"
+    "build:watch": "tsc --watch",
+    "publish": "npm run build && npm publish --access public"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

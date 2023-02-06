@@ -8,8 +8,7 @@ WORKDIR /usr/src/app
 COPY . .
 RUN npm install
 
-RUN cd editor && npm install && npm run build
-
+RUN npm run build:editor
 RUN npm run build
 
 # Start the server using the production build

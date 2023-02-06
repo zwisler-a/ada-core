@@ -20,9 +20,30 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    depends_on:
+      - ada-db
+      - rabbitmq
     environment:
-      DB_HOST: 'smartstuff-dev'
+      USE_PROXY_EDITOR: 'false'
+      DB_HOST: 'ada-db'
       DB_PORT: 3306
       RABBIT_HOST: 'rabbitmq'
     ports:
       - "3000:3000"
+
+  openai:
+    image: zwisler/ada-openai:latest
+    depends_on:
+      - ada-db
+      - rabbitmq
+    environment:
+      AMQP_URL: "amqp://rabbitmq"
+      OPENAI_API_KEY: ''
+
+  whatsapp:
+    image: zwisler/ada-whatsapp:latest
+    depends_on:
+      - ada-db
+      - rabbitmq
+    environment:
+      AMQP_URL: "amqp://rabbitmq"

@@ -1,5 +1,5 @@
 import { MapperNode } from '../base-node/mapper-node';
-import { NodeState, ProxyHelper } from '@ada/lib';
+import { NodeState, ProxyHelper } from '@zwisler/ada-lib';
 
 describe('Mapper Node', () => {
   it('should map', async () => {

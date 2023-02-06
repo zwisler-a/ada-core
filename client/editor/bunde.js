@@ -2285,6 +2285,18 @@
       );
       this.next(network);
     }
+    createNetwork() {
+      const id = uuidv4();
+      this.next({
+        edges: [],
+        nodes: [],
+        name: "New Network",
+        description: "",
+        identifier: id,
+        active: false
+      });
+      return id;
+    }
     getNumberOfNodes() {
       return this.network.nodes.length;
     }
@@ -2402,12 +2414,14 @@
       }
       if (state.nodes.loading)
         return "...";
-      const nodeHtml = state.nodes.data.map((node) => `
+      const nodeHtml = state.nodes.data.map(
+        (node) => `
                     <div class="node-card" js-click="addNode" js-node-def-id="${node.identifier}" >
                         <h1>${node.name} <button>Add</button></h1>
                         <p>${node.description}</p>
                     </div>
-                `).join("");
+                `
+      ).join("");
       return `<div>
             <button js-click="toggleDisplay">Close</button>
             <div class="node-container">
@@ -2449,20 +2463,7 @@
       super(initialState2);
     }
     connectedCallback() {
-      this.useStore(
-        "network",
-        networksStore.select(networkSelector(this.getAttribute("networkId")))
-      );
-    }
-    static get observedAttributes() {
-      return ["networkId"];
-    }
-    attributeChangedCallback(name, oldValue, newValue) {
-      super.attributeChangedCallback(name, oldValue, newValue);
-      this.useStore(
-        "network",
-        networksStore.select(networkSelector(this.getAttribute("networkId")))
-      );
+      this.useStore("network", networkManipulationStore);
     }
     runNetwork() {
       CoreService.startNetwork(this.getAttribute("networkId")).then(() => {
@@ -2506,14 +2507,15 @@
       });
     }
     render(state) {
+      var _a, _b;
       if (!state.network)
         return "";
       return `<div class="toolbar">
             <a href="/"><button>Close</button></a>
-            <b>${state.network.active ? "Running" : "Stopped"}</b>
+            <b>${((_a = state.network) == null ? void 0 : _a.active) ? "Running" : "Stopped"}</b>
             <span>${state.network ? state.network.name : ""}</span>
             <span class="flex-fill"></span>
-            ${state.network.active ? `<button js-click="stopNetwork">Stop Network</button>` : `<button js-click="runNetwork">Run Network</button>`}
+            ${((_b = state.network) == null ? void 0 : _b.active) ? `<button js-click="stopNetwork">Stop Network</button>` : `<button js-click="runNetwork">Run Network</button>`}
             <button js-click="saveNetwork">Save Network</button>
             
             <app-available-nodes></app-available-nodes>
@@ -2548,7 +2550,9 @@
       this.ctx.font = `${headerTextSize}px Arial`;
       const titleMetrics = this.ctx.measureText(node.name);
       this.ctx.font = `${descriptionTextSize}px Arial`;
-      const descriptionMetrics = this.ctx.measureText(node.description);
+      const descriptionMetrics = this.ctx.measureText(
+        node.description
+      );
       this.ctx.font = `${rowTextSize}px Arial`;
       const attributeMetrics = (_b = (_a = node.attributes) == null ? void 0 : _a.map((o) => this.ctx.measureText(o.name))) != null ? _b : [];
       const inputMetrics = (_d = (_c = node.inputs) == null ? void 0 : _c.map((o) => this.ctx.measureText(o.name))) != null ? _d : [];
@@ -2570,28 +2574,62 @@
       this.ctx.fillStyle = "black";
       this.ctx.font = `${headerTextSize}px Arial`;
       currentRowY += headerTextSize;
-      this.ctx.fillText(node.name, cam.transX(node.x + nodePadding), cam.transY(currentRowY));
+      this.ctx.fillText(
+        node.name,
+        cam.transX(node.x + nodePadding),
+        cam.transY(currentRowY)
+      );
       this.ctx.fillStyle = "black";
       this.ctx.font = `${descriptionTextSize}px Arial`;
       currentRowY += descriptionTextSize + linePadding;
-      this.ctx.fillText(node.description, cam.transX(node.x + nodePadding), cam.transY(currentRowY));
-      this.drawLine(cam.transX(node.x), cam.transY(node.y + headerHeight), cam.transX(node.x + width), cam.transY(node.y + headerHeight));
+      this.ctx.fillText(
+        node.description,
+        cam.transX(node.x + nodePadding),
+        cam.transY(currentRowY)
+      );
+      this.drawLine(
+        cam.transX(node.x),
+        cam.transY(node.y + headerHeight),
+        cam.transX(node.x + width),
+        cam.transY(node.y + headerHeight)
+      );
       this.ctx.fillStyle = "black";
       this.ctx.font = `${rowTextSize}px Arial`;
       currentRowY += linePadding;
-      const identifiable = [...(_g = node == null ? void 0 : node.attributes) != null ? _g : [], ...(_h = node == null ? void 0 : node.inputs) != null ? _h : [], ...(_i = node == null ? void 0 : node.outputs) != null ? _i : []];
+      const identifiable = [
+        ...(_g = node == null ? void 0 : node.attributes) != null ? _g : [],
+        ...(_h = node == null ? void 0 : node.inputs) != null ? _h : [],
+        ...(_i = node == null ? void 0 : node.outputs) != null ? _i : []
+      ];
       identifiable.forEach((element) => {
-        this.ctx.fillStyle = "rgba(0,0,0,0.06)";
         element.pos = {
           x: node.x,
           y: currentRowY + linePadding / 2,
           width,
           height: linePadding + rowTextSize
         };
-        this.ctx.fillRect(cam.transX(node.x), cam.transY(currentRowY + linePadding / 2), width, linePadding + rowTextSize);
+        if (node.attributes.includes(element)) {
+          this.ctx.fillStyle = "rgba(0,0,0,0.00)";
+        }
+        if (node.outputs.includes(element)) {
+          this.ctx.fillStyle = "rgba(0,82,255,0.06)";
+        }
+        if (node.inputs.includes(element)) {
+          this.ctx.fillStyle = "rgba(85,255,0,0.06)";
+        }
+        this.ctx.fillRect(
+          cam.transX(node.x),
+          cam.transY(currentRowY + linePadding / 2),
+          width,
+          linePadding + rowTextSize
+        );
         this.ctx.fillStyle = "black";
         currentRowY += rowTextSize + linePadding;
-        this.ctx.fillText(element.name, cam.transX(node.x + nodePadding), cam.transY(currentRowY));
+        this.ctx.fillText(
+          element.name,
+          cam.transX(node.x + nodePadding),
+          cam.transY(currentRowY)
+        );
       });
       node.pos = {
         x: node.x,
@@ -2600,7 +2638,13 @@
         height
       };
       this.ctx.beginPath();
-      this.ctx.roundRect(cam.transX(node.x), cam.transY(node.y), width, height, 4);
+      this.ctx.roundRect(
+        cam.transX(node.x),
+        cam.transY(node.y),
+        width,
+        height,
+        4
+      );
       this.ctx.stroke();
     }
     drawLine(x, y, x2, y2) {
@@ -2997,10 +3041,6 @@
       this.tools = {};
     }
     async connectedCallback() {
-      if (this.hasAttribute("networkId")) {
-        this.updateState({ networkId: this.getAttribute("networkId") });
-        this.initializeWith(this.getAttribute("networkId"));
-      }
       networkManipulationStore.pipe(
         switchMap(
           (network) => cameraStore.pipe(map((camera) => ({ camera, network })))
@@ -3008,7 +3048,14 @@
       ).subscribe(({ network, camera }) => {
         if (this.masterRenderer)
           this.masterRenderer.render(network, camera);
+        console.log("render");
       });
+      if (this.hasAttribute("networkId")) {
+        this.updateState({ networkId: this.getAttribute("networkId") });
+        this.initializeWith(this.getAttribute("networkId"));
+      } else {
+        this.updateState({ networkId: networkManipulationStore.createNetwork() });
+      }
     }
     static get observedAttributes() {
       return ["networkId"];

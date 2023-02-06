@@ -7,7 +7,7 @@ import {
   NodeOutputDefinition,
   NodeState,
   RemoteNodeDefinition,
-} from '@ada/lib';
+} from '@zwisler/ada-lib';
 
 export class ServerRemoteNodeDefinition extends NodeDefinition {
   attributes = this.remoteNode.attributes.map((def) =>
@@ -36,7 +36,7 @@ export class ServerRemoteNodeDefinition extends NodeDefinition {
     const identifier = await this.api.createInstance(
       this.connectorIdentifier,
       this.identifier,
-      {},
+      state,
     );
     const instance = new ServerRemoteNodeInstance(
       this,

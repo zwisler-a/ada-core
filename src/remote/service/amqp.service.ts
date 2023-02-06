@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as amqplib from 'amqplib';
 import { Subject } from 'rxjs';
-import { ConnectorEvent, IOEvent } from '@ada/lib';
+import { ConnectorEvent, IOEvent } from '@zwisler/ada-lib';
 import * as process from 'process';
 
 @Injectable()

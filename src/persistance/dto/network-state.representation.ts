@@ -1,4 +1,4 @@
-import { DataHolder } from '@ada/lib';
+import { DataHolder } from '@zwisler/ada-lib';
 
 export class NetworkStateRepresentation {
   nodes: {

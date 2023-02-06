@@ -1,4 +1,4 @@
-import { Attribute, DataHolder, Input, Node, Output } from '@ada/lib';
+import { Attribute, DataHolder, Input, Node, Output } from '@zwisler/ada-lib';
 
 @Node({
   identifier: 'delay-node',
