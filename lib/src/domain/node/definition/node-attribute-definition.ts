@@ -8,10 +8,6 @@ export class NodeAttributeDefinition extends Identifiable {
   }
 
   static from(identifier: string, name: string, description: string) {
-    const attr = new NodeAttributeDefinition();
-    attr.identifier = identifier;
-    attr.name = name;
-    attr.description = description;
-    return attr;
+    return new NodeAttributeDefinition(identifier, name, description);
   }
 }

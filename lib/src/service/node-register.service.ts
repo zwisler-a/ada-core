@@ -1,25 +1,17 @@
-import { RemoteApiService } from './remote-api.service';
 import { AmqpService } from './amqp.service';
-import {
-  AttributeEvent,
-  ConnectorEvent,
-  DestroyInstanceEvent,
-  InputEvent,
-  IOEvent,
-  IOEventType,
-} from '../events';
-import { filter, Subscription } from 'rxjs';
-import { NodeDefinition, NodeInstance, NodeState } from '../domain';
+import { ConnectorEvent } from '../events';
+import { NodeDefinition } from '../domain';
+import { Logger } from '../logger';
+import { InstanceManagerService } from './instance-manager.service';
 
 export class NodeRegisterService {
   private healthPingIntervalRef: any;
 
   constructor(
+    private logger: Logger,
     private amqp: AmqpService,
-    private apiService: RemoteApiService,
+    private instanceManager: InstanceManagerService,
   ) {}
-
-  private instances: { [nodeInstanceId: string]: NodeInstance } = {};
 
   close() {
     this.amqp.close();
@@ -32,20 +24,9 @@ export class NodeRegisterService {
     description: string,
   ) {
     await this.amqp.ready;
-    console.log('Registering ', connectorId);
+    this.logger.log(`Registering Connector ${connectorId} - ${name}`);
     nodes.forEach((node) => {
-      this.apiService
-        .createInstanceCreateObservable(connectorId, node.identifier)
-        .subscribe(async (event) => {
-          const instance = await node.createInstance(
-            NodeState.from(event.state),
-          );
-          instance.identifier = event.nodeInstanceIdentifier;
-          this.instances[instance.identifier] = instance;
-
-          this.createLifecycleHooks(connectorId, instance);
-          this.createOutputHooks(connectorId, instance);
-        });
+      this.instanceManager.watchForInstantiation(connectorId, node);
     });
     if (this.healthPingIntervalRef) clearInterval(this.healthPingIntervalRef);
     this.healthPingIntervalRef = setInterval(() => {
@@ -73,58 +54,5 @@ export class NodeRegisterService {
       })),
     };
     this.amqp.sendConnector(message);
-  }
-
-  private createLifecycleHooks(connectorId: string, instance: NodeInstance) {
-    const instanceSubscriptions = new Subscription();
-    const instance$ = this.apiService.createInstanceObservable(
-      connectorId,
-      instance.identifier,
-    );
-    instanceSubscriptions.add(
-      instance$
-        .pipe(filter((ev: IOEvent) => ev.type === IOEventType.INPUT))
-        .subscribe((ev: InputEvent) => {
-          instance.handleInput(ev.inputIdentifier, JSON.parse(ev.value));
-        }),
-    );
-
-    instanceSubscriptions.add(
-      instance$
-        .pipe(filter((ev: IOEvent) => ev.type === IOEventType.ATTRIBUTE))
-        .subscribe((ev: AttributeEvent) => {
-          instance.onAttributeChange(
-            ev.attributeIdentifier,
-            JSON.parse(ev.value),
-          );
-        }),
-    );
-    instance$
-      .pipe(filter((ev: IOEvent) => ev.type === IOEventType.DESTROY))
-      .subscribe((event: DestroyInstanceEvent) => {
-        this.instances[event.nodeInstanceIdentifier].deconstruct();
-        instanceSubscriptions.unsubscribe();
-      });
-  }
-
-  private createOutputHooks(connectorId: string, instance: NodeInstance) {
-    instance.updateAttribute = (identifier, value) => {
-      this.apiService.updateAttribute(
-        connectorId,
-        instance.identifier,
-        identifier,
-        JSON.stringify(value),
-      );
-      return true;
-    };
-    instance.updateOutput = (identifier, value) => {
-      this.apiService.updateOutput(
-        connectorId,
-        instance.identifier,
-        identifier,
-        JSON.stringify(value),
-      );
-      return true;
-    };
   }
 }

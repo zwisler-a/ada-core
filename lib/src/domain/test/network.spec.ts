@@ -3,6 +3,7 @@ import { Edge } from '../node/edge';
 import { DataHolder } from '../node/data-holder';
 import { Network } from '../node/network';
 import { NodeState } from '../node/state/node-state';
+import { Identifiable } from '../node/identifiable';
 
 describe('Flip Flop Network', () => {
   jest.useFakeTimers();
@@ -53,12 +54,30 @@ describe('Flip Flop Network', () => {
    *
    **/
   it('should', async () => {
-    const into = await identityDef.createInstance(new NodeState(null));
-    const out = await identityDef.createInstance(new NodeState(null));
-    const blNoop = await identityDef.createInstance(new NodeState(null));
-    const trNoop = await identityDef.createInstance(new NodeState(null));
-    const tlInv = await inverterDef.createInstance(new NodeState(null));
-    const brInv = await inverterDef.createInstance(new NodeState(null));
+    const into = await identityDef.createInstance(
+      new NodeState(null),
+      Identifiable.create(''),
+    );
+    const out = await identityDef.createInstance(
+      new NodeState(null),
+      Identifiable.create(''),
+    );
+    const blNoop = await identityDef.createInstance(
+      new NodeState(null),
+      Identifiable.create(''),
+    );
+    const trNoop = await identityDef.createInstance(
+      new NodeState(null),
+      Identifiable.create(''),
+    );
+    const tlInv = await inverterDef.createInstance(
+      new NodeState(null),
+      Identifiable.create(''),
+    );
+    const brInv = await inverterDef.createInstance(
+      new NodeState(null),
+      Identifiable.create(''),
+    );
 
     const edges = [
       new Edge(brInv.outputs[0], into.inputs[0]),

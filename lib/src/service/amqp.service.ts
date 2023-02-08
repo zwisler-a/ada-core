@@ -1,8 +1,11 @@
 import * as amqplib from 'amqplib';
 import { ConnectorEvent, IOEvent } from '../events';
 import { Subject } from 'rxjs';
+import { Logger } from '../logger';
 
 export class AmqpService {
+  constructor(private logger: Logger) {}
+
   private connectorExchange = 'smart.queue.connector';
   private ioExchange = 'smart.queue.io';
 
@@ -45,6 +48,7 @@ export class AmqpService {
     this.ioChannel.bindQueue(ioQueue.queue, this.ioExchange, '');
     this.ioChannel.consume(ioQueue.queue, this.ioQueueCallback.bind(this));
     this.resolve(null);
+    this.logger.log('AMQP Connected');
   }
 
   private ioQueueCallback(message) {

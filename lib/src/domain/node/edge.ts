@@ -7,6 +7,6 @@ export class Edge extends Identifiable {
     public readonly output: NodeOutputInstance,
     public readonly input: NodeInputInstance,
   ) {
-    super();
+    super('', '', '');
   }
 }

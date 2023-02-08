@@ -1,14 +1,22 @@
 import { Module } from '@nestjs/common';
 import { ConnectorService, CoreModule } from '../execution';
 import { HttpModule } from '@nestjs/axios';
-import { RemoteApiService } from './service/remote-api.service';
+import { RemoteNodeApiService } from './service/remote-node-api.service';
 import { AmqpService } from './service/amqp.service';
 import { RemoteConnectorService } from './service/remote-connector.service';
+import { ConnectorHealthService } from './service/connector-health.service';
+import { RemoteConnectorNodeManagerService } from './service/remote-connector-node-manager.service';
 
 @Module({
   imports: [CoreModule, HttpModule],
   controllers: [],
-  providers: [RemoteApiService, RemoteConnectorService, AmqpService],
+  providers: [
+    RemoteNodeApiService,
+    ConnectorHealthService,
+    RemoteConnectorNodeManagerService,
+    RemoteConnectorService,
+    AmqpService,
+  ],
 })
 export class RemoteModule {
   constructor(

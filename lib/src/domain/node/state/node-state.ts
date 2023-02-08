@@ -34,6 +34,7 @@ export class NodeState extends Subject<NodeStateSnapshot> {
   }
 
   static from(snapshot: NodeStateSnapshot) {
+    if (!snapshot) return new NodeState(null);
     const state = new NodeState(null);
     Object.keys(snapshot).forEach((key) => {
       const attr = state.get(key);

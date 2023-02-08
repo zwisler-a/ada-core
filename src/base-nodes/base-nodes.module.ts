@@ -15,6 +15,7 @@ export class BaseNodesModule {
     private http: HttpService,
   ) {
     this.connectorService.register({
+      identifier: 'base',
       name: 'Base Logic',
       description: 'Provides a set of basic building blocks',
       nodeProvider: new BaseNodeProvider(this.http),

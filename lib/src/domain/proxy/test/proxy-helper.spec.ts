@@ -2,6 +2,7 @@ import { ProxyHelper } from '../proxy-helper';
 import { Node } from '../decorator/node.decorator';
 import { Deconstruct } from '../decorator/node-deconstruct.decorator';
 import { NodeState } from '../../node/state/node-state';
+import { Identifiable } from '../../node/identifiable';
 
 describe('ProxyHelper', () => {
   it('should deconstruct an instance', async function () {
@@ -20,7 +21,10 @@ describe('ProxyHelper', () => {
     }
 
     const node = ProxyHelper.create(TestNode);
-    const instance = await node.createInstance(new NodeState(null));
+    const instance = await node.createInstance(
+      new NodeState(null),
+      Identifiable.create(''),
+    );
     instance.deconstruct();
     expect(spy).toHaveBeenCalledTimes(1);
   });

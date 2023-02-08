@@ -13,7 +13,7 @@ export class Network extends Identifiable {
     public edges: Edge[],
     public state: NetworkState = new NetworkState(),
   ) {
-    super();
+    super('', '', '');
   }
 
   start() {

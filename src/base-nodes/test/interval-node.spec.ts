@@ -1,12 +1,15 @@
 import { IntervalNode } from '../base-node/interval-node';
-import { NodeState, ProxyHelper } from '@zwisler/ada-lib';
+import { Identifiable, NodeState, ProxyHelper } from '@zwisler/ada-lib';
 
 describe('Interval Node', () => {
   it('should interval', async () => {
     jest.useFakeTimers();
     jest.spyOn(global, 'setInterval');
     const intervalDef = ProxyHelper.create(IntervalNode);
-    const instance = await intervalDef.createInstance(new NodeState(null));
+    const instance = await intervalDef.createInstance(
+      new NodeState(null),
+      Identifiable.create(''),
+    );
     instance.onAttributeChange('interval', 5000);
     expect(setInterval).toHaveBeenCalledTimes(1);
     expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 5000);

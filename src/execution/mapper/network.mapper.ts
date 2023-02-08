@@ -40,17 +40,11 @@ export class NetworkMapper {
       node.definitionId,
     );
     if (!nodeDefinition) return null;
-    const instance = await nodeDefinition.createInstance(nodeState);
-    instance.identifier = node.id;
-    instance.name = node.name;
-    instance.description = node.description;
-    node.attributes.forEach((attribute) =>
-      instance.updateAttribute(
-        attribute.attributeDefinitionId,
-        attribute.value,
-      ),
-    );
-    return instance;
+    return await nodeDefinition.createInstance(nodeState, {
+      identifier: node.id,
+      name: node.name,
+      description: node.description,
+    });
   }
 
   async createEdge(

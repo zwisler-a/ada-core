@@ -11,10 +11,6 @@ export class NodeInputDefinition extends Identifiable {
   }
 
   static from(identifier: string, name: string, description: string) {
-    const input = new NodeInputDefinition();
-    input.identifier = identifier;
-    input.name = name;
-    input.description = description;
-    return input;
+    return new NodeInputDefinition(identifier, name, description);
   }
 }

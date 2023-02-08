@@ -13,14 +13,16 @@ export class ConnectorService {
     this.connectors.push(con);
   }
 
-  updateConnector(con: Connector) {
-    const existing = this.connectors.find((exist) => exist.name === con.name);
+  updateConnector(con: Partial<Connector>) {
+    const existing = this.connectors.find(
+      (exist) => exist.identifier === con.identifier,
+    );
     if (existing) {
       this.connectors = this.connectors.map((existing) =>
-        existing.name === con.name ? con : existing,
+        existing.identifier === con.identifier
+          ? Object.assign({}, existing, con)
+          : existing,
       );
-    } else {
-      this.connectors.push(con);
     }
   }
 
@@ -28,10 +30,10 @@ export class ConnectorService {
     return [...this.connectors];
   }
 
-  remove(del: Connector) {
-    this.logger.debug(`Removing connector ${del.name}`);
+  remove(connectorId: string) {
+    this.logger.debug(`Removing connector ${connectorId}`);
     this.connectors = this.connectors.filter(
-      (connector) => connector.name !== del.name,
+      (connector) => connector.identifier !== connectorId,
     );
   }
 }

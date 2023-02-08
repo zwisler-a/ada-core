@@ -11,10 +11,6 @@ export class NodeOutputDefinition extends Identifiable {
   }
 
   static from(identifier: string, name: string, description: string) {
-    const output = new NodeOutputDefinition();
-    output.identifier = identifier;
-    output.name = name;
-    output.description = description;
-    return output;
+    return new NodeOutputDefinition(identifier, name, description);
   }
 }

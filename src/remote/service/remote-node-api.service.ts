@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 import { AmqpService } from './amqp.service';
 import {
   AttributeEvent,
@@ -12,7 +11,7 @@ import {
 import { filter } from 'rxjs';
 
 @Injectable()
-export class RemoteApiService {
+export class RemoteNodeApiService {
   constructor(private amqp: AmqpService) {}
 
   createInstanceObservable(connectorId: string, instanceId: string) {
@@ -26,11 +25,11 @@ export class RemoteApiService {
   }
 
   async createInstance(
+    instanceId: string,
     connectorIdentifier: string,
     definitionIdentifier: string,
     state: NodeState,
   ) {
-    const instanceId = uuidv4();
     const event: CreateInstanceEvent = {
       type: IOEventType.CREATE,
       connectorIdentifier,
@@ -39,7 +38,6 @@ export class RemoteApiService {
       state: state.snapshot(),
     };
     this.amqp.send(event);
-    return instanceId;
   }
 
   destroyInstance(connectorIdentifier: string, nodeInstanceIdentifier: string) {

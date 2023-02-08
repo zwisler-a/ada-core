@@ -8,37 +8,31 @@ import { NodeAttributeDefinition } from '../node/definition/node-attribute-defin
 import { NodeInputDefinition } from '../node/definition/node-input-definition';
 import { NodeOutputDefinition } from '../node/definition/node-output-definition';
 import { Identifiable } from '../node/identifiable';
-import {
-  proxyAttributeChange,
-  proxyIdentifiable,
-} from './property-definition-helper';
+import { proxyAttributeChange } from './property-definition-helper';
 import { NodeDeconstructProxyDefinition } from './decorator/node-deconstruct.decorator';
 import { NodeState } from '../node/state/node-state';
 import { NodeInitializeProxyDefinition } from './decorator/node-initialize.decorator';
 
 class ProxyNodeInstance extends NodeInstance {
   constructor(
+    identifiable: Identifiable,
     private proxyInputs: NodeInputProxyDefinition[],
     private proxyOutputs: NodeOutputProxyDefinition[],
     private proxyAttribute: NodeAttributeProxyDefinition[],
     private proxyDeconstruct: NodeDeconstructProxyDefinition,
     private proxyInitialize: NodeInitializeProxyDefinition,
     private nodeDefinition: NodeDefinition,
-    private state: NodeState,
-    private instance,
+    protected state: NodeState,
+    private classInstance,
   ) {
-    super(nodeDefinition, state);
-    this.identifier = nodeDefinition.identifier;
-    this.name = nodeDefinition.name;
-    this.description = nodeDefinition.description;
+    super(identifiable, nodeDefinition, state);
     this.initializeOutputs();
     this.initializeAttributes();
-    proxyIdentifiable(this, this.instance);
   }
 
   private initializeOutputs() {
     this.proxyOutputs?.forEach((output) => {
-      this.instance[output.propertyKey] = (data: DataHolder) => {
+      this.classInstance[output.propertyKey] = (data: DataHolder) => {
         this.updateOutput(output.definition.identifier, data);
       };
     });
@@ -49,10 +43,14 @@ class ProxyNodeInstance extends NodeInstance {
       (input) => input.definition.identifier === identifier,
     );
     if (input) {
-      this.instance[input.propertyKey](data);
+      this.classInstance[input.propertyKey](data);
     } else {
       throw new Error('Unknown input received!');
     }
+  }
+
+  getNodeStateSnapshot() {
+    return this.state.snapshot();
   }
 
   onAttributeChange(identifier: string, value: DataHolder) {
@@ -60,13 +58,13 @@ class ProxyNodeInstance extends NodeInstance {
       (input) => input.definition.identifier === identifier,
     );
     if (input) {
-      this.instance[input.propertyKey] = value;
+      this.classInstance[input.propertyKey] = value;
     }
   }
 
   private initializeAttributes() {
     proxyAttributeChange(
-      this.instance,
+      this.classInstance,
       this.proxyAttribute,
       this.state,
       (identifier, value) => this.updateAttribute(identifier, value),
@@ -75,12 +73,12 @@ class ProxyNodeInstance extends NodeInstance {
 
   deconstruct() {
     if (this.proxyDeconstruct?.propertyKey)
-      this.instance[this.proxyDeconstruct.propertyKey]();
+      this.classInstance[this.proxyDeconstruct.propertyKey]();
   }
 
   initialize() {
     if (this.proxyInitialize?.propertyKey)
-      this.instance[this.proxyInitialize.propertyKey]();
+      this.classInstance[this.proxyInitialize.propertyKey]();
   }
 }
 
@@ -101,15 +99,20 @@ export class ProxyNodeDefinition extends NodeDefinition {
     private nodeDefinition: Identifiable,
     private instantiateFunction: (def: NodeDefinition) => any,
   ) {
-    super();
-    this.identifier = nodeDefinition.identifier;
-    this.name = nodeDefinition.name;
-    this.description = nodeDefinition.description;
+    super(
+      nodeDefinition.identifier,
+      nodeDefinition.name,
+      nodeDefinition.description,
+    );
   }
 
-  createInstance(state: NodeState): Promise<NodeInstance> {
+  createInstance(
+    state: NodeState,
+    identifiable: Identifiable,
+  ): Promise<NodeInstance> {
     return Promise.resolve(
       new ProxyNodeInstance(
+        identifiable,
         this.proxyInputs,
         this.proxyOutputs,
         this.proxyAttribute,

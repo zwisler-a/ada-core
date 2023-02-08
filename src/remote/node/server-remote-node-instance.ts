@@ -1,8 +1,9 @@
-import { RemoteApiService } from '../service/remote-api.service';
+import { RemoteNodeApiService } from '../service/remote-node-api.service';
 import { filter, Observable } from 'rxjs';
 import {
   AttributeEvent,
   DataHolder,
+  Identifiable,
   IOEvent,
   IOEventType,
   NodeDefinition,
@@ -13,19 +14,28 @@ import {
 
 export class ServerRemoteNodeInstance extends NodeInstance {
   private instanceUpdates$: Observable<IOEvent>;
-  private isActive = true;
 
   constructor(
+    identifier: Identifiable,
     definition: NodeDefinition,
     state: NodeState,
-    private remoteIdentifier: string,
     private connectorIdentifier: string,
-    private api: RemoteApiService,
+    private api: RemoteNodeApiService,
   ) {
-    super(definition, state);
+    super(identifier, definition, state);
+    this.init();
+  }
+
+  async init() {
+    await this.api.createInstance(
+      this.identifier,
+      this.connectorIdentifier,
+      this.definition.identifier,
+      this.state,
+    );
     this.instanceUpdates$ = this.api.createInstanceObservable(
       this.connectorIdentifier,
-      this.remoteIdentifier,
+      this.identifier,
     );
     this.instanceUpdates$
       .pipe(filter((io) => io.type === IOEventType.OUTPUT))
@@ -44,31 +54,25 @@ export class ServerRemoteNodeInstance extends NodeInstance {
   }
 
   handleInput(input: string, data: DataHolder) {
-    if (!this.isActive) return;
     this.api.updateInput(
       this.connectorIdentifier,
-      this.remoteIdentifier,
+      this.identifier,
       input,
       JSON.stringify(data),
     );
   }
 
-  onAttributeChange(identifier: string, value: DataHolder) {
+  /* onAttributeChange(identifier: string, value: DataHolder) {
     if (!this.isActive) return;
     this.api.updateAttribute(
       this.connectorIdentifier,
-      this.remoteIdentifier,
+      this.identifier,
       identifier,
       JSON.stringify(value),
     );
-  }
+  } */
 
   deconstruct() {
-    this.api.destroyInstance(this.connectorIdentifier, this.remoteIdentifier);
-  }
-
-  connectorTimeout() {
-    this.name = 'Not available!';
-    this.isActive = false;
+    this.api.destroyInstance(this.connectorIdentifier, this.identifier);
   }
 }

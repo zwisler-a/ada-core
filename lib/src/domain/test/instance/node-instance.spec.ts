@@ -5,12 +5,21 @@ import { NodeOutputDefinition } from '../../node/definition/node-output-definiti
 import { NodeInstance } from '../../node/instance/node-instance';
 import { DataHolder } from '../../node/data-holder';
 import { NodeState } from '../../node/state/node-state';
+import { Identifiable } from '../../node/identifiable';
 
 class TestNodeInstance extends NodeInstance {
+  constructor(a, b) {
+    super(Identifiable.create(''), a, b);
+  }
+
   handleInput(input: string, data: DataHolder) {}
 }
 
 class TestNodeDef extends NodeDefinition {
+  constructor() {
+    super('', '', '');
+  }
+
   attributes = [NodeAttributeDefinition.from('1', '1', '1')];
   inputs = [NodeInputDefinition.from('1', '1', '1')];
   outputs = [NodeOutputDefinition.from('1', '1', '1')];

@@ -2,6 +2,7 @@ import { AmqpService } from './service/amqp.service';
 import { RemoteApiService } from './service/remote-api.service';
 import { NodeRegisterService } from './service/node-register.service';
 import { ConsoleLogger, Logger } from './logger';
+import { InstanceManagerService } from './service/instance-manager.service';
 
 export * from './events/index';
 export * from './domain/index';
@@ -16,10 +17,11 @@ export async function setup({
   logger = new ConsoleLogger(),
   amqpUrl,
 }: AdaLibConfiguration) {
-  const amqp = new AmqpService();
+  const amqp = new AmqpService(logger);
   await amqp.initialize(amqpUrl);
-  const apiService = new RemoteApiService(amqp);
-  const nodeRegisterer = new NodeRegisterService(amqp, apiService);
+  const apiService = new RemoteApiService(logger, amqp);
+  const instanceManager = new InstanceManagerService(logger, apiService);
+  const nodeRegisterer = new NodeRegisterService(logger, amqp, instanceManager);
   await amqp.ready;
   return nodeRegisterer;
 }

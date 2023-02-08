@@ -5,13 +5,14 @@ import { DataHolder } from '../node/data-holder';
 import { NodeInstance } from '../node/instance/node-instance';
 import { NodeDefinition } from '../node/definition/node-definition';
 import { NodeState } from '../node/state/node-state';
+import { Identifiable } from '../node/identifiable';
 
 export class TestNodeInstance extends NodeInstance {
   public static instanceCount = 0;
   private instanceNo = TestNodeInstance.instanceCount++;
 
   constructor(def: NodeDefinition, private cb) {
-    super(def, new NodeState(null));
+    super(Identifiable.create(''), def, new NodeState(null));
   }
 
   handleInput(input: string, data: DataHolder) {
@@ -20,6 +21,10 @@ export class TestNodeInstance extends NodeInstance {
 }
 
 export class TestNode extends NodeDefinition {
+  constructor() {
+    super('', '', '');
+  }
+
   public cb: any;
 
   async createInstance() {

@@ -13,8 +13,12 @@ export abstract class NodeInstance extends Identifiable {
   outputs: NodeOutputInstance[];
   inputs: NodeInputInstance[];
 
-  constructor(definition: NodeDefinition, state: NodeState) {
-    super();
+  constructor(
+    identifiable: Identifiable,
+    definition: NodeDefinition,
+    protected state: NodeState,
+  ) {
+    super(identifiable);
     this.definition = definition;
     this.inputs = definition.inputs?.map((input) => input.createInstance(this));
     this.outputs = definition.outputs?.map((o) => o.createInstance(this));
@@ -24,6 +28,10 @@ export abstract class NodeInstance extends Identifiable {
   }
 
   abstract handleInput(identifier: string, data: DataHolder);
+
+  getNodeStateSnapshot() {
+    return this.state.snapshot();
+  }
 
   updateOutput(identifier: string, data: DataHolder) {
     const instance = this.outputs.find(

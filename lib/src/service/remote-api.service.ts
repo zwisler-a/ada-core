@@ -6,9 +6,10 @@ import {
   IOEventType,
   OutputEvent,
 } from '../events';
+import { Logger } from '../logger';
 
 export class RemoteApiService {
-  constructor(private amqp: AmqpService) {}
+  constructor(private logger: Logger, private amqp: AmqpService) {}
 
   createInstanceObservable(connectorId: string, instanceId: string) {
     return this.amqp.ioEvents$.pipe(
