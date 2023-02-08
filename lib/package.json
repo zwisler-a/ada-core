@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "publish": "npm run test && npm run build && npm publish --access public",
+    "tbp": "npm run test && npm run build && npm publish --access public",
     "test": "jest"
   },
   "main": "dist/index.js",
