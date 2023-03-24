@@ -24,7 +24,10 @@ async function bootstrap() {
   app.use(cookieParser());
   if (process.env.USE_PROXY_EDITOR === 'true')
     app.use('/editor', proxy('localhost:8000'));
-  const config = new DocumentBuilder().setTitle('Smartstuff').build();
+  const config = new DocumentBuilder()
+    .setTitle('Smartstuff')
+    .addBearerAuth()
+    .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 

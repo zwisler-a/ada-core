@@ -21,7 +21,7 @@ export class RemoteApiService {
     );
   }
 
-  createInstanceCreateObservable(connectorId: string, definition: string) {
+  createInstantiationObservable(connectorId: string, definition: string) {
     return this.amqp.ioEvents$.pipe(
       filter((io) => io.type === IOEventType.CREATE),
       filter(

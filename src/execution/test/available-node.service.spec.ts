@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { AvailableNodeService } from '../service/available-node.service';
 import { ConnectorService } from '../service/connector.service';
-import { NodeDefinition } from '../../domain';
+import { NodeDefinition } from '@zwisler/ada-lib';
 
 describe('NetworkService', () => {
   let testSubject: AvailableNodeService;
@@ -17,6 +17,7 @@ describe('NetworkService', () => {
 
   it('should contain nodes', async () => {
     connectorService.register({
+      identifier: '',
       name: '',
       description: '',
       nodeProvider: {

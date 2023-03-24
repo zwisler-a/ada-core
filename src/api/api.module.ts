@@ -10,11 +10,11 @@ import { ConnectorDtoMapper } from './mapper/connector.mapper';
 import { ConnectorController } from './controller/connector.controller';
 import { NetworkPositionService } from './service/network-position.service';
 import { GraphicModule } from '../graphic/graphic.module';
-import { AuthModule } from '../auth/auth.module';
 import { PersistenceModule } from '../persistance';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
-  imports: [CoreModule, PersistenceModule, GraphicModule, AuthModule],
+  imports: [CoreModule, PersistenceModule, GraphicModule],
   controllers: [NodeController, NetworkController, ConnectorController],
   providers: [
     NetworkPositionService,
@@ -23,6 +23,7 @@ import { PersistenceModule } from '../persistance';
     NetworkDtoMapper,
     EdgeDtoMapper,
     AttributeDtoMapper,
+    JwtStrategy,
   ],
   exports: [],
 })

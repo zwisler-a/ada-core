@@ -1,4 +1,4 @@
-import { NodeInputDefinition } from '../../node/definition/node-input-definition';
+import { NodeInputDefinition } from '../../domain/node/definition/node-input-definition';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface NodeInputOptions {

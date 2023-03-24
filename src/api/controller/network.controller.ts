@@ -12,8 +12,8 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { NetworkExecutionService } from '../../execution/service/network-execution.service';
 import { NetworkDto } from '../dto/network.dto';
 import { NetworkPositionService } from '../service/network-position.service';
-import { UnauthorizedFilter } from '../../auth/unauthorized.filter';
-import { JwtAuthGuard } from '../../auth/strategies/jwt.strategy';
+import { UnauthorizedFilter } from '../unauthorized.filter';
+import { JwtAuthGuard } from '../jwt.strategy';
 
 @ApiTags('Core')
 @Controller('/core/network')

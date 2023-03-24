@@ -1,4 +1,4 @@
-import { NodeOutputDefinition } from '../../node/definition/node-output-definition';
+import { NodeOutputDefinition } from '../../domain/node/definition/node-output-definition';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface NodeOutputOptions {

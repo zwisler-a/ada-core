@@ -1,6 +1,6 @@
-import { Identifiable } from '../node/identifiable';
+import { Identifiable } from '../domain/node/identifiable';
 import { NodeAttributeProxyDefinition } from './decorator/node-attribute.decorator';
-import { NodeState } from '../node/state/node-state';
+import { NodeState } from '../domain/node/state/node-state';
 
 export function proxyIdentifiable(target: any, instance: Identifiable) {
   Object.defineProperty(target, 'identifier', {

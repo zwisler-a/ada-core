@@ -39,6 +39,7 @@
     "dotenv": "^16.0.3",
     "express-http-proxy": "^1.6.3",
     "express-session": "^1.17.3",
+    "jwks-rsa": "^3.0.1",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",

@@ -4,7 +4,7 @@ services:
     image: rabbitmq:3-management-alpine
     restart: always
     ports:
-      - "5672:5672"
+      - "5671:5672"
       - "15672:15672"
   app:
     build:
@@ -22,6 +22,21 @@ services:
       GOOGLE_SECRET: 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
     ports:
       - "3000:3000"
+
+  ui:
+    image: zwisler/ada-ui:latest
+    environment:
+      NOOP: 'a'
+    ports:
+      - "4200:80"
+
+  auth:
+    image: zwisler/ada-auth:latest
+    environment:
+      BASE_URL: "http://localhost:8080/"
+      ALLOWED_REDIRECTS: "http://localhost:4200/"
+    ports:
+      - "8080:8080"
 
   openai:
     image: zwisler/ada-openai:latest

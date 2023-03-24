@@ -3,8 +3,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { ApiModule } from './api/api.module';
-import { AuthModule } from './auth/auth.module';
-import { CoreModule } from './execution/core.module';
+import { CoreModule } from './execution';
 import { BaseNodesModule } from './base-nodes/base-nodes.module';
 import { GraphicModule } from './graphic/graphic.module';
 import { RemoteModule } from './remote/remote.module';
@@ -25,7 +24,6 @@ import * as process from 'process';
     }),
     ApiModule,
     CoreModule,
-    AuthModule,
     GraphicModule,
 
     RemoteModule,

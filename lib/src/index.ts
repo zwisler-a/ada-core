@@ -4,6 +4,7 @@ import { NodeRegisterService } from './service/node-register.service';
 import { ConsoleLogger, Logger } from './logger';
 import { InstanceManagerService } from './service/instance-manager.service';
 
+export * from './proxy';
 export * from './events/index';
 export * from './domain/index';
 export * from './logger';

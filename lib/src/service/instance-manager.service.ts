@@ -26,7 +26,7 @@ export class InstanceManagerService {
 
   watchForInstantiation(connectorId: string, nodeDefinition: NodeDefinition) {
     this.apiService
-      .createInstanceCreateObservable(connectorId, nodeDefinition.identifier)
+      .createInstantiationObservable(connectorId, nodeDefinition.identifier)
       .subscribe(async (event) => {
         this.logger.log(
           `Creating node for ${nodeDefinition.identifier} with id  ${event.nodeInstanceIdentifier}`,
@@ -48,31 +48,32 @@ export class InstanceManagerService {
     const instance$ = this.apiService
       .createInstanceObservable(connectorId, instance.identifier)
       .pipe(this.unknownInstancePipe(connectorId));
-    instanceSubscriptions.add(
-      instance$
-        .pipe(filter((ev: IOEvent) => ev.type === IOEventType.INPUT))
-        .subscribe((ev: InputEvent) => {
-          instance.handleInput(ev.inputIdentifier, JSON.parse(ev.value));
-        }),
-    );
 
-    instanceSubscriptions.add(
-      instance$
-        .pipe(filter((ev: IOEvent) => ev.type === IOEventType.ATTRIBUTE))
-        .subscribe((ev: AttributeEvent) => {
-          instance.onAttributeChange(
-            ev.attributeIdentifier,
-            JSON.parse(ev.value),
-          );
-        }),
-    );
-    instance$
+    const inputSubscription = instance$
+      .pipe(filter((ev: IOEvent) => ev.type === IOEventType.INPUT))
+      .subscribe((ev: InputEvent) => {
+        instance.handleInput(ev.inputIdentifier, JSON.parse(ev.value));
+      });
+    instanceSubscriptions.add(inputSubscription);
+
+    const attributeSubscription = instance$
+      .pipe(filter((ev: IOEvent) => ev.type === IOEventType.ATTRIBUTE))
+      .subscribe((ev: AttributeEvent) => {
+        instance.onAttributeChange(
+          ev.attributeIdentifier,
+          JSON.parse(ev.value),
+        );
+      });
+    instanceSubscriptions.add(attributeSubscription);
+
+    const destroySubscription = instance$
       .pipe(filter((ev: IOEvent) => ev.type === IOEventType.DESTROY))
       .subscribe((event: DestroyInstanceEvent) => {
         this.instances[event.nodeInstanceIdentifier].deconstruct();
         instanceSubscriptions.unsubscribe();
         this.logger.log(`Destroy node with id ${event.nodeInstanceIdentifier}`);
       });
+    instanceSubscriptions.add(destroySubscription);
   }
 
   private createOutputHooks(connectorId: string, instance: NodeInstance) {

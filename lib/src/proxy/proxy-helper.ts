@@ -10,7 +10,7 @@ import {
   ATTRIBUTE_DATA_HOLDER,
   NodeAttributeProxyDefinition,
 } from './decorator/node-attribute.decorator';
-import { NodeDefinition } from '../node/definition/node-definition';
+import { NodeDefinition } from '../domain/node/definition/node-definition';
 import {
   NODE_DATA_HOLDER,
   NodeProxyDefinition,

@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ConnectorService } from '../../execution/service/connector.service';
+import { ConnectorService } from '../../execution';
 import { ConnectorDto } from '../dto/connector.dto';
 import { ConnectorDtoMapper } from '../mapper/connector.mapper';
 

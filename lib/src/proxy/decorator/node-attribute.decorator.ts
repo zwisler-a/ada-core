@@ -1,4 +1,4 @@
-import { NodeAttributeDefinition } from '../../node/definition/node-attribute-definition';
+import { NodeAttributeDefinition } from '../../domain/node/definition/node-attribute-definition';
 
 export interface NodeAttributeOptions {
   identifier: string;

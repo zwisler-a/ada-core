@@ -1,16 +1,16 @@
-import { NodeInstance } from '../node/instance/node-instance';
+import { NodeInstance } from '../domain/node/instance/node-instance';
 import { NodeInputProxyDefinition } from './decorator/node-input.decorator';
 import { NodeOutputProxyDefinition } from './decorator/node-output.decorator';
 import { NodeAttributeProxyDefinition } from './decorator/node-attribute.decorator';
-import { NodeDefinition } from '../node/definition/node-definition';
-import { DataHolder } from '../node/data-holder';
-import { NodeAttributeDefinition } from '../node/definition/node-attribute-definition';
-import { NodeInputDefinition } from '../node/definition/node-input-definition';
-import { NodeOutputDefinition } from '../node/definition/node-output-definition';
-import { Identifiable } from '../node/identifiable';
+import { NodeDefinition } from '../domain/node/definition/node-definition';
+import { DataHolder } from '../domain/node/data-holder';
+import { NodeAttributeDefinition } from '../domain/node/definition/node-attribute-definition';
+import { NodeInputDefinition } from '../domain/node/definition/node-input-definition';
+import { NodeOutputDefinition } from '../domain/node/definition/node-output-definition';
+import { Identifiable } from '../domain/node/identifiable';
 import { proxyAttributeChange } from './property-definition-helper';
 import { NodeDeconstructProxyDefinition } from './decorator/node-deconstruct.decorator';
-import { NodeState } from '../node/state/node-state';
+import { NodeState } from '../domain/node/state/node-state';
 import { NodeInitializeProxyDefinition } from './decorator/node-initialize.decorator';
 
 class ProxyNodeInstance extends NodeInstance {

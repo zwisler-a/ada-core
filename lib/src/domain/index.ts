@@ -1,4 +1,3 @@
-export * from './proxy';
 export * from './node/network';
 export * from './node/edge';
 export * from './node/data-holder';

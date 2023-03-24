@@ -1,4 +1,4 @@
-import { Attribute, Input, Node, Output, ProxyHelper } from '../proxy';
+import { Attribute, Input, Node, Output, ProxyHelper } from '../../proxy';
 import { Edge } from '../node/edge';
 import { DataHolder } from '../node/data-holder';
 import { Network } from '../node/network';
