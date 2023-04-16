@@ -9,11 +9,13 @@ import * as session from 'express-session';
 import * as proxy from 'express-http-proxy';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as process from 'process';
-
-console.log(process.env);
+import { RetainingLogger } from './logger/logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+    bufferLogs: true,
+  });
   app.use(
     session({
       secret: process.env.SESSION_SECRET || 'a',
@@ -31,6 +33,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 
+  app.useLogger(await app.get(RetainingLogger));
   await app.listen(3000);
 }
 

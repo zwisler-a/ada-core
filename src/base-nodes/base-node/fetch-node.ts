@@ -18,8 +18,8 @@ export class FetchNode {
 
   @Input({
     identifier: 'in1',
-    name: 'CombineWith',
-    description: 'Data',
+    name: 'Fetch',
+    description: "{url, opts}",
   })
   fetchData(data: DataHolder) {
     if (data['url'] && data['opts']) {

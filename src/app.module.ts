@@ -8,9 +8,11 @@ import { BaseNodesModule } from './base-nodes/base-nodes.module';
 import { GraphicModule } from './graphic/graphic.module';
 import { RemoteModule } from './remote/remote.module';
 import * as process from 'process';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
+    LoggerModule,
     TypeOrmModule.forRoot({
       // TODO Env
       type: 'sqljs',

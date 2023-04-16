@@ -10,7 +10,12 @@ export class NodeAttributeMapperService {
     const attr = new NodeAttributeRepresentation();
     attr.attributeDefinitionId = entity.attributeDefinitionId;
     attr.id = entity.id;
-    attr.value = JSON.parse(entity.value ?? '""');
+    try {
+      attr.value = JSON.parse(entity.value ?? "\"\"");
+    } catch (e) {
+      this.logger.warn("Could not parse attribute value", entity.value, e);
+    }
+
     return attr;
   }
 

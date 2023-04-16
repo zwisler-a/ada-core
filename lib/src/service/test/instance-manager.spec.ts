@@ -17,6 +17,8 @@ describe('Instance Manager', () => {
   let manager: InstanceManagerService;
 
   beforeEach(() => {
+    instantiation$ = new Subject();
+    instance$ = new Subject();
     api = {
       createInstantiationObservable: jest.fn(() => instantiation$),
       createInstanceObservable: jest.fn(() => instance$),
@@ -49,7 +51,7 @@ describe('Instance Manager', () => {
 
   it('should receive input', async () => {
     @Node({ name: '1', identifier: '1' })
-    class TestNodeDef {
+    class TestNodeDef2 {
       constructor(def, private spy) {}
 
       @Input({ name: '1', identifier: 'input' })
@@ -59,7 +61,8 @@ describe('Instance Manager', () => {
     }
 
     const spy = jest.fn();
-    manager.watchForInstantiation('1', ProxyHelper.create(TestNodeDef, spy));
+    console.log(TestNodeDef2)
+    manager.watchForInstantiation('1', ProxyHelper.create(TestNodeDef2, spy));
     const instantiationEvent: CreateInstanceEvent = {
       type: IOEventType.CREATE,
       state: {},
@@ -84,7 +87,7 @@ describe('Instance Manager', () => {
 
   it('should not receive input after deconstruct', async () => {
     @Node({ name: '1', identifier: '1' })
-    class TestNodeDef {
+    class TestNodeDef3 {
       constructor(def, private inputSpy, private deconstructSpy) {}
 
       @Input({ name: '', identifier: 'input' })
@@ -102,7 +105,7 @@ describe('Instance Manager', () => {
     const dspy = jest.fn();
     manager.watchForInstantiation(
       '1',
-      ProxyHelper.create(TestNodeDef, spy, dspy),
+      ProxyHelper.create(TestNodeDef3, spy, dspy),
     );
     const instantiationEvent: CreateInstanceEvent = {
       type: IOEventType.CREATE,

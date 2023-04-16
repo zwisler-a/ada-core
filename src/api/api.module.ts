@@ -12,9 +12,11 @@ import { NetworkPositionService } from './service/network-position.service';
 import { GraphicModule } from '../graphic/graphic.module';
 import { PersistenceModule } from '../persistance';
 import { JwtStrategy } from './jwt.strategy';
+import { LoggerGateway } from './gateway/logger.gateway';
+import { LoggerModule } from '../logger/logger.module';
 
 @Module({
-  imports: [CoreModule, PersistenceModule, GraphicModule],
+  imports: [CoreModule, PersistenceModule, GraphicModule, LoggerModule],
   controllers: [NodeController, NetworkController, ConnectorController],
   providers: [
     NetworkPositionService,
@@ -24,6 +26,7 @@ import { JwtStrategy } from './jwt.strategy';
     EdgeDtoMapper,
     AttributeDtoMapper,
     JwtStrategy,
+    LoggerGateway,
   ],
   exports: [],
 })

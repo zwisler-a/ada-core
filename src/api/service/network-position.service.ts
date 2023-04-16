@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { NetworkExecutionService } from '../../execution';
-import { NetworkDtoMapper } from '../mapper/network.mapper';
-import { PositionService } from '../../graphic/position.service';
-import { NetworkDto } from '../dto/network.dto';
-import { Position } from '../../graphic/position.interface';
-import { PersistenceService } from '../../persistance';
+import { Injectable } from "@nestjs/common";
+import { NetworkExecutionService } from "../../execution";
+import { NetworkDtoMapper } from "../mapper/network.mapper";
+import { PositionService } from "../../graphic/position.service";
+import { NetworkDto } from "../dto/network.dto";
+import { Position } from "../../graphic/position.interface";
+import { PersistenceService } from "../../persistance";
 
 @Injectable()
 export class NetworkPositionService {
@@ -12,8 +12,9 @@ export class NetworkPositionService {
     private persistenceService: PersistenceService,
     private networkExecutionService: NetworkExecutionService,
     private networkDtoMapper: NetworkDtoMapper,
-    private positionService: PositionService,
-  ) {}
+    private positionService: PositionService
+  ) {
+  }
 
   async getAllNetworks() {
     const networks = await this.persistenceService.getAll();
@@ -22,20 +23,20 @@ export class NetworkPositionService {
       networks.map(async (network) => ({
         network,
         positions: await this.positionService.findPositionsFor(
-          network.nodes.map((n) => n.id),
-        ),
-      })),
+          network.nodes.map((n) => n.id)
+        )
+      }))
     );
     return Promise.all(
       networksAndPositions.map((networkAndPosition) =>
         this.networkDtoMapper.networkToDto(
           {
             ...networkAndPosition.network,
-            active: runningNetworkIds.includes(networkAndPosition.network.id),
+            active: runningNetworkIds.includes(networkAndPosition.network.id)
           },
-          networkAndPosition.positions,
-        ),
-      ),
+          networkAndPosition.positions
+        )
+      )
     );
   }
 
@@ -45,8 +46,8 @@ export class NetworkPositionService {
         ({
           identifier: node.identifier,
           x: node.x,
-          y: node.y,
-        } as Position),
+          y: node.y
+        } as Position)
     );
     const savedPositions = await this.positionService.savePositions(positions);
 
@@ -57,12 +58,30 @@ export class NetworkPositionService {
 
   async deleteNetwork(id: string) {
     const networkStopped = await this.networkExecutionService.stopNetworkById(
-      id,
+      id
     );
     if (networkStopped) {
       await this.persistenceService.delete(id);
       return { success: true };
     }
     return { success: false };
+  }
+
+  async get(id: string) {
+    const network = await this.persistenceService.findById(id);
+    const runningNetworkIds = this.networkExecutionService.getRunning();
+    const networkAndPosition = {
+      network,
+      positions: await this.positionService.findPositionsFor(
+        network.nodes.map((n) => n.id)
+      )
+    };
+    return this.networkDtoMapper.networkToDto(
+      {
+        ...networkAndPosition.network,
+        active: runningNetworkIds.includes(networkAndPosition.network.id)
+      },
+      networkAndPosition.positions
+    );
   }
 }

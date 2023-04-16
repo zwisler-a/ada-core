@@ -2,23 +2,24 @@ import {
   Identifiable,
   NodeDefinition,
   NodeInstance,
-  NodeState,
-} from '../domain';
-import { RemoteApiService } from './remote-api.service';
-import { filter, MonoTypeOperatorFunction, Subscription, tap } from 'rxjs';
+  NodeState
+} from "../domain";
+import { RemoteApiService } from "./remote-api.service";
+import { filter, MonoTypeOperatorFunction, Subscription, take, tap } from "rxjs";
 import {
   AttributeEvent,
   DestroyInstanceEvent,
   InputEvent,
   IOEvent,
-  IOEventType,
-} from '../events';
-import { Logger } from '../logger';
+  IOEventType
+} from "../events";
+import { Logger } from "../logger";
 
 export class InstanceManagerService {
   private instances: { [nodeInstanceId: string]: NodeInstance } = {};
 
-  constructor(private logger: Logger, private apiService: RemoteApiService) {}
+  constructor(private logger: Logger, private apiService: RemoteApiService) {
+  }
 
   isRegistered(nodeInstanceId: string) {
     return this.instances[nodeInstanceId];
@@ -29,11 +30,15 @@ export class InstanceManagerService {
       .createInstantiationObservable(connectorId, nodeDefinition.identifier)
       .subscribe(async (event) => {
         this.logger.log(
-          `Creating node for ${nodeDefinition.identifier} with id  ${event.nodeInstanceIdentifier}`,
+          `Creating node for ${nodeDefinition.identifier} with id  ${event.nodeInstanceIdentifier}`
         );
+        if(this.instances[event.nodeInstanceIdentifier]) {
+          this.logger.log(`An instance with the id ${event.nodeInstanceIdentifier} already exists ...`)
+          return;
+        }
         const instance = await nodeDefinition.createInstance(
           NodeState.from(event.state),
-          Identifiable.create(event.nodeInstanceIdentifier),
+          Identifiable.create(event.nodeInstanceIdentifier)
         );
         instance.identifier = event.nodeInstanceIdentifier;
         this.instances[instance.identifier] = instance;
@@ -61,19 +66,19 @@ export class InstanceManagerService {
       .subscribe((ev: AttributeEvent) => {
         instance.onAttributeChange(
           ev.attributeIdentifier,
-          JSON.parse(ev.value),
+          JSON.parse(ev.value)
         );
       });
     instanceSubscriptions.add(attributeSubscription);
 
-    const destroySubscription = instance$
-      .pipe(filter((ev: IOEvent) => ev.type === IOEventType.DESTROY))
+    instance$
+      .pipe(filter((ev: IOEvent) => ev.type === IOEventType.DESTROY), take(1))
       .subscribe((event: DestroyInstanceEvent) => {
         this.instances[event.nodeInstanceIdentifier].deconstruct();
+        delete this.instances[event.nodeInstanceIdentifier];
         instanceSubscriptions.unsubscribe();
         this.logger.log(`Destroy node with id ${event.nodeInstanceIdentifier}`);
       });
-    instanceSubscriptions.add(destroySubscription);
   }
 
   private createOutputHooks(connectorId: string, instance: NodeInstance) {
@@ -82,7 +87,7 @@ export class InstanceManagerService {
         connectorId,
         instance.identifier,
         identifier,
-        JSON.stringify(value),
+        JSON.stringify(value)
       );
       return true;
     };
@@ -91,23 +96,23 @@ export class InstanceManagerService {
         connectorId,
         instance.identifier,
         identifier,
-        JSON.stringify(value),
+        JSON.stringify(value)
       );
       return true;
     };
   }
 
   private unknownInstancePipe(
-    connectorId: string,
+    connectorId: string
   ): MonoTypeOperatorFunction<IOEvent> {
     return (source$) =>
       source$.pipe(
         filter((event) => event.connectorIdentifier === connectorId),
         tap((event) => {
           if (!this.isRegistered(event.nodeInstanceIdentifier)) {
-            this.logger.log('Unknown instance ... what now?');
+            this.logger.log("Unknown instance ... what now?");
           }
-        }),
+        })
       );
   }
 }

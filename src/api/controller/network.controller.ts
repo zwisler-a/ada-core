@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { NetworkExecutionService } from '../../execution/service/network-execution.service';
+import { NetworkExecutionService } from '../../execution';
 import { NetworkDto } from '../dto/network.dto';
 import { NetworkPositionService } from '../service/network-position.service';
 import { UnauthorizedFilter } from '../unauthorized.filter';
@@ -32,6 +32,17 @@ export class NetworkController {
   @Get()
   async getAllNetworks() {
     return this.networkPositionService.getAllNetworks();
+  }
+
+  @UseFilters(UnauthorizedFilter)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    operationId: 'get-network',
+  })
+  @ApiResponse({ type: NetworkDto })
+  @Get(':id')
+  async getNetwork(@Param('id') id: string) {
+    return this.networkPositionService.get(id);
   }
 
   @UseFilters(UnauthorizedFilter)
