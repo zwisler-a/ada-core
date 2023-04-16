@@ -6,6 +6,22 @@ services:
     ports:
       - "5671:5672"
       - "15672:15672"
+
+  traefik:
+    image: "traefik:v2.9"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "3001:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
   app:
     build:
       context: .
@@ -13,30 +29,42 @@ services:
     depends_on:
       - rabbitmq
     environment:
+      AMQP_URL: 'amqp://rabbitmq'
       USE_PROXY_EDITOR: 'false'
       DB_FILE: './db.sqlite'
       RABBIT_HOST: 'rabbitmq'
-      JWT_SECRET: WHATWHAT
-      GOOGLE_PROFILE_API_URL: https://www.googleapis.com/oauth2/v1/userinfo
-      GOOGLE_CLIENT_ID: 1031579332754-ql323h2k9ae4c0us047tt7m1mgb0n148.apps.googleusercontent.com
-      GOOGLE_SECRET: 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
+      AUTH_URL: 'http://auth.localhost/'
+      JWKS_URL: 'http://auth:8080/.well-known/jwks.json'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`localhost`)"
+      - "traefik.http.routers.app.entrypoints=web"
     ports:
       - "3000:3000"
 
   ui:
     image: zwisler/ada-ui:latest
-    environment:
-      NOOP: 'a'
     ports:
       - "4200:80"
+    environment:
+      CORE_URL: "http://localhost"
+      AUTH_URL: "http://auth.localhost/"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ui.rule=Host(`ui.localhost`)"
+      - "traefik.http.routers.ui.entrypoints=web"
 
   auth:
     image: zwisler/ada-auth:latest
     environment:
-      BASE_URL: "http://localhost:8080/"
-      ALLOWED_REDIRECTS: "http://localhost:4200/"
+      BASE_URL: "http://auth.localhost/"
+      ALLOWED_REDIRECTS: "http://ui.localhost/"
     ports:
       - "8080:8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=Host(`auth.localhost`)"
+      - "traefik.http.routers.auth.entrypoints=web"
 
   openai:
     image: zwisler/ada-openai:latest
@@ -44,7 +72,7 @@ services:
       - rabbitmq
     environment:
       AMQP_URL: "amqp://rabbitmq"
-      OPENAI_API_KEY: ''
+      OPENAI_API_KEY: ${OPEN_AI_KEY}
 
   whatsapp:
     image: zwisler/ada-whatsapp:latest

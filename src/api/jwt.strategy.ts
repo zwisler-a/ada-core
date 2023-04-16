@@ -3,6 +3,7 @@ import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 import express from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import * as jwksRsa from 'jwks-rsa';
+import * as process from 'process';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -22,10 +23,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: `http://localhost:8080/.well-known/jwks.json`,
+        jwksUri: `${process.env.JWKS_URL}`,
       }),
       ignoreExpiration: false,
-      issuer: 'http://localhost:8080/',
+      issuer: process.env.AUTH_URL,
       audience: 'ada',
       algorithms: ['RS256'],
     });
