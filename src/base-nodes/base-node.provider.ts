@@ -11,6 +11,7 @@ import { CombineLatestNode } from './base-node/combine-latest-node';
 import { FetchNode } from './base-node/fetch-node';
 import { HttpService } from '@nestjs/axios';
 import { CronNode } from './base-node/cron-node';
+import { LoopNode } from './base-node/loop-node';
 
 export class BaseNodeProvider implements NodeProvider {
   private logger = new Logger('Logger Node');
@@ -28,6 +29,7 @@ export class BaseNodeProvider implements NodeProvider {
       ProxyHelper.create(CombineLatestNode),
       ProxyHelper.create(FetchNode, this.http),
       ProxyHelper.create(CronNode),
+      ProxyHelper.create(LoopNode),
     ];
   }
 }
