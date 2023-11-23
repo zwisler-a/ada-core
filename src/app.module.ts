@@ -14,12 +14,20 @@ import { LoggerModule } from './logger/logger.module';
   imports: [
     LoggerModule,
     TypeOrmModule.forRoot({
-      // TODO Env
-      type: 'sqljs',
-      autoSave: true,
-      location: process.env.DB_FILE,
+      type: process.env.DB_TYPE as any,
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT, 3306),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       synchronize: true,
       autoLoadEntities: true,
+      ...(process.env.DB_TYPE === 'sqljs'
+        ? {
+            autoSave: true,
+            location: process.env.DB_FILE,
+          }
+        : {}),
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),

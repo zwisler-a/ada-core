@@ -22,6 +22,15 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
+  mariadb:
+    image: "mariadb:latest"
+    environment:
+      MARIADB_USER: "user"
+      MARIADB_PASSWORD: "password"
+      MARIADB_ROOT_PASSWORD: "root"
+    ports:
+      - "3306:3306"
+
   app:
     build:
       context: .

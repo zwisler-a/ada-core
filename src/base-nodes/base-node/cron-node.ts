@@ -57,8 +57,6 @@ export class CronNode {
     }
   }
 
-  constructor(private http: HttpService) {}
-
   @Output({
     identifier: 'out',
     name: 'Trigger',

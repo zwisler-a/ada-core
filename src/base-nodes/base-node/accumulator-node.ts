@@ -38,7 +38,7 @@ export class AccumulatorNode {
       'data',
       `return (${this.accumulatorFunction})(acc,data)`,
     );
-    this.data = func(JSON.parse(this.data), data);
+    this.data = func(this.data, data);
     this.output(this.data);
   }
 }
